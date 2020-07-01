@@ -6,7 +6,7 @@
 #    By: bpeeters <bpeeters@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2020/03/11 00:50:41 by bpeeters       #+#    #+#                 #
-#    Updated: 2020/06/30 12:12:20 by mpeerdem      ########   odam.nl          #
+#    Updated: 2020/07/01 08:50:48 by mpeerdem      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -34,7 +34,7 @@ $(LIBFT):
 	cp $(LIBFTMAP)/$(LIBFT) .
 
 test: all
-	@./minishell
+	./minishell
 
 $(ODIR)/%.o: $(SDIR)/%.c $(INC)/$(HEADER)
 	@mkdir -p $(ODIR)
