@@ -5,8 +5,8 @@
 #                                                      +:+                     #
 #    By: bpeeters <bpeeters@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
-#    Created: 2020/03/11 00:50:41 by bpeeters       #+#    #+#                 #
-#    Updated: 2020/06/30 12:12:20 by mpeerdem      ########   odam.nl          #
+#    Created: 2020/03/11 00:50:41 by bpeeters      #+#    #+#                  #
+#    Updated: 2020/06/30 15:45:08 by bpeeters      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -43,10 +43,10 @@ $(ODIR)/%.o: $(SDIR)/%.c $(INC)/$(HEADER)
 clean:
 	@$(RM) $(OBJ)
 	@$(RM) libftprintf.a
-	@make clean -C $(LIB)
+	@make clean -C $(LIBFTMAP)
 
 fclean: clean
 	@$(RM) $(NAME)
-	@make fclean -C $(LIB)
+	@make fclean -C $(LIBFTMAP)
 
 re: fclean all
