@@ -6,7 +6,7 @@
 #    By: bpeeters <bpeeters@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2020/03/11 00:50:41 by bpeeters      #+#    #+#                  #
-#    Updated: 2020/07/01 09:12:21 by bpeeters      ########   odam.nl          #
+#    Updated: 2020/07/02 19:31:22 by bpeeters      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,7 +30,7 @@ $(NAME): $(OBJS) $(LIBFT)
 	$(CC) -L$(LIBFTMAP) -lft -o $(NAME) $(OBJS)
 
 $(LIBFT):
-	make -C $(LIBFTMAP)
+	make bonus -C $(LIBFTMAP)
 
 test: all
 	./minishell
