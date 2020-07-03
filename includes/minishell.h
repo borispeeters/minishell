@@ -6,7 +6,7 @@
 /*   By: bpeeters <bpeeters@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/03/11 14:04:34 by bpeeters      #+#    #+#                 */
-/*   Updated: 2020/07/03 14:55:55 by bpeeters      ########   odam.nl         */
+/*   Updated: 2020/07/03 15:11:06 by bpeeters      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,12 +26,5 @@ typedef enum	e_quote
 	SNGL_QUOTE,
 	DBL_QUOTE
 }				t_quote;
-
-typedef struct		s_lexer
-{
-	char			*token;
-	struct s_lexer	*next;
-}					t_lexer;
-
 
 #endif
