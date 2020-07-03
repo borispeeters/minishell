@@ -6,7 +6,7 @@
 /*   By: bpeeters <bpeeters@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/06/30 15:48:06 by bpeeters      #+#    #+#                 */
-/*   Updated: 2020/07/03 15:03:18 by bpeeters      ########   odam.nl         */
+/*   Updated: 2020/07/03 16:10:06 by bpeeters      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,19 +95,30 @@ t_list	*lexer(char *line)
 		}
 		else if (token_active == INACTIVE)
 		{
-			if (!isspace(*line))
+			if (is_metacharacter(*line))
+			{
+				token_start = line;
+				token_len = 0;
+				token_active = META;
+			}
+			else if (!isspace(*line))
 			{
 				token_start = line;
 				token_len = 0;
 				token_active = ACTIVE;
 			}
 		}
-		else if (token_active == META)
+		else if (token_active == META && quote == NO_QUOTE)
 		{
 			ft_lstadd_back(&head, ft_lstnew(ft_substr(token_start, 0, token_len)));
-			token_start = line;
-			token_len = 0;
-			token_active = ACTIVE;
+			if (isspace(*line))
+				token_active = INACTIVE;
+			else
+			{
+				token_start = line;
+				token_len = 0;
+				token_active = ACTIVE;
+			}
 		}
 		if (token_active >= ACTIVE)
 			++token_len;
