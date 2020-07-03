@@ -6,7 +6,7 @@
 /*   By: bpeeters <bpeeters@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/06/30 15:48:06 by bpeeters      #+#    #+#                 */
-/*   Updated: 2020/07/02 19:30:41 by bpeeters      ########   odam.nl         */
+/*   Updated: 2020/07/03 15:03:18 by bpeeters      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,80 +36,100 @@ int		is_metacharacter(int c)
 	return (0);
 }
 
-t_lexer	*lexer(char *line)
+t_list	*lexer(char *line)
 {
 	t_list	*head;
 	t_quote	quote;
 	char	*token_start;
 	int		token_len;
-	t_bool	token_active;
+	t_token	token_active;
 
 	head = NULL;
 	quote = NO_QUOTE;
 	token_start = NULL;
-	token_len = 1;
-	token_active = FALSE;
+	token_len = 0;
+	token_active = INACTIVE;
 	while (*line)
 	{
-		if (quote != NO_QUOTE || !isspace(*line))
+		if (*line == '\"' && quote != SNGL_QUOTE)
 		{
-			if (*line == '\"' && quote != SNGL_QUOTE)
+			if (quote == DBL_QUOTE)
+				quote = NO_QUOTE;
+			else if (quote == NO_QUOTE)
 			{
-				if (quote == DBL_QUOTE)
-					quote = NO_QUOTE;
-				else if (quote == NO_QUOTE)
+				quote = DBL_QUOTE;
+				if (token_active == INACTIVE)
 				{
-					quote = DBL_QUOTE;
-					if (token_active == FALSE)
-					{
-						token_active = TRUE;
-						token_start = line;
-						token_len = 1;
-					}
-				}
-			}
-			else if (*line == '\'' && quote != DBL_QUOTE)
-			{
-				if (quote == SNGL_QUOTE)
-					quote = NO_QUOTE;
-				else if (quote == NO_QUOTE)
-				{
-					quote = SNGL_QUOTE;
-					if (token_active == FALSE)
-					{
-						token_active = TRUE;
-						token_start = line;
-						token_len = 1;
-					}
-				}
-			}
-			else
-			{
-				if (token_active == TRUE)
-				{
-					if (is_metacharacter(*line))
-					{
-						ft_lstadd_back(&head, ft_lstnew(ft_substr(token_start, 0, token_len)));
-						token_start = line;
-						token_len = 1;
-					}
+					token_active = ACTIVE;
+					token_start = line;
+					token_len = 0;
 				}
 			}
 		}
-		if (token_active == TRUE)
+		else if (*line == '\'' && quote != DBL_QUOTE)
+		{
+			if (quote == SNGL_QUOTE)
+				quote = NO_QUOTE;
+			else if (quote == NO_QUOTE)
+			{
+				quote = SNGL_QUOTE;
+				if (token_active == INACTIVE)
+				{
+					token_active = ACTIVE;
+					token_start = line;
+					token_len = 0;
+				}
+			}
+		}
+		if (token_active == ACTIVE && quote == NO_QUOTE)
+		{
+			if (is_metacharacter(*line))
+			{
+				ft_lstadd_back(&head, ft_lstnew(ft_substr(token_start, 0, token_len)));
+				token_start = line;
+				token_len = 0;
+				token_active = META;
+			}
+			if (isspace(*line) && quote == NO_QUOTE)
+				token_active = INACTIVE;
+		}
+		else if (token_active == INACTIVE)
+		{
+			if (!isspace(*line))
+			{
+				token_start = line;
+				token_len = 0;
+				token_active = ACTIVE;
+			}
+		}
+		else if (token_active == META)
+		{
+			ft_lstadd_back(&head, ft_lstnew(ft_substr(token_start, 0, token_len)));
+			token_start = line;
+			token_len = 0;
+			token_active = ACTIVE;
+		}
+		if (token_active >= ACTIVE)
 			++token_len;
 		++line;
 	}
-	return NULL;
+	if (token_active >= ACTIVE)
+		ft_lstadd_back(&head, ft_lstnew(ft_substr(token_start, 0, token_len)));
+	return (head);
 }
 
-void	print_list(t_lexer *node)
+void	print_list(t_list *node)
 {
+	write(1, "_____START TOKENS________\n\n", 27);
 	while (node)
 	{
-		write(1, node->token, ft_strlen(node->token));
+		write(1, "[", 1);
+		write(1, node->content, ft_strlen(node->content));
+		write(1, "]", 1);
+		write(1, "\n", 1);
 		node = node->next;
 	}
+	write(1, "\n_____END TOKENS__________\n\n", 27);
 }
 
 int	main(int argc, char **argv, char **envp)
@@ -120,7 +140,7 @@ int	main(int argc, char **argv, char **envp)
 
 	char	*line;
 	int		status;
-	t_lexer	*tokens;
+	t_list	*tokens;
 
 	char	prompt[] = "minishell> ";
 

@@ -6,18 +6,19 @@
 /*   By: bpeeters <bpeeters@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/03/11 14:04:34 by bpeeters      #+#    #+#                 */
-/*   Updated: 2020/07/02 19:02:31 by bpeeters      ########   odam.nl         */
+/*   Updated: 2020/07/03 14:55:55 by bpeeters      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-typedef enum	e_bool
+typedef enum	e_token
 {
-	FALSE,
-	TRUE
-}				t_bool;
+	INACTIVE,
+	ACTIVE,
+	META
+}				t_token;
 
 typedef enum	e_quote
 {
