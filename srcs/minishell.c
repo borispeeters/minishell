@@ -6,7 +6,7 @@
 /*   By: bpeeters <bpeeters@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/06/30 15:48:06 by bpeeters      #+#    #+#                 */
-/*   Updated: 2020/07/03 16:10:06 by bpeeters      ########   odam.nl         */
+/*   Updated: 2020/07/06 11:01:05 by bpeeters      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,15 +17,15 @@
 
 int		isspace(int c)
 {
-	return (c == ' ' || c == '	');
+	return (c == ' ' || c == '\t');
 }
 
 int		is_metacharacter(int c)
 {
-	char	metachar[12];
+	char	metachar[8];
 	int		i;
 
-	ft_strlcpy(metachar, " \t\n|;()<>", 11);
+	ft_strlcpy(metachar, "\n|;()<>", 8);
 	i = 0;
 	while (metachar[i])
 	{
@@ -91,7 +91,10 @@ t_list	*lexer(char *line)
 				token_active = META;
 			}
 			if (isspace(*line) && quote == NO_QUOTE)
+			{
+				ft_lstadd_back(&head, ft_lstnew(ft_substr(token_start, 0, token_len)));
 				token_active = INACTIVE;
+			}
 		}
 		else if (token_active == INACTIVE)
 		{
