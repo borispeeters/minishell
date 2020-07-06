@@ -1,16 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        ::::::::            */
-/*   minishell.h                                        :+:    :+:            */
+/*   minishell.c                                        :+:    :+:            */
 /*                                                     +:+                    */
-/*   By: mpeerdem <marvin@codam.nl>                   +#+                     */
+/*   By: bpeeters <bpeeters@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
-/*   Created: 2020/07/01 08:46:28 by mpeerdem      #+#    #+#                 */
-/*   Updated: 2020/07/06 09:34:29 by mark          ########   odam.nl         */
+/*   Created: 2020/06/30 15:48:06 by bpeeters      #+#    #+#                 */
+/*   Updated: 2020/07/01 09:14:31 by bpeeters      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINISHELL_H
-# define MINISHELL_H
+#include "libft.h"
 
-#endif
+int	main(int argc, char **argv, char **envp)
+{
+	(void)argc;
+	(void)argv;
+	(void)envp;
+	return (0);
+}
