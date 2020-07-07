@@ -6,7 +6,7 @@
 #    By: bpeeters <bpeeters@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2020/03/11 00:50:41 by bpeeters      #+#    #+#                  #
-#    Updated: 2020/07/02 19:31:22 by bpeeters      ########   odam.nl          #
+#    Updated: 2020/07/07 11:11:13 by bpeeters      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,7 @@ CC =		gcc
 CFLAGS =	-Wall -Werror -Wextra
 SDIR =		srcs
 ODIR =		objs
-_OBJS =		minishell
+_OBJS =		minishell lexer lexer_states shell_utils
 OBJS =		$(addsuffix .o, $(addprefix $(ODIR)/, $(_OBJS)))
 LIBFT =		libft.a
 LIBFTMAP =	libft
