@@ -6,7 +6,7 @@
 /*   By: bpeeters <bpeeters@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/06/30 15:48:06 by bpeeters      #+#    #+#                 */
-/*   Updated: 2020/07/03 16:10:06 by bpeeters      ########   odam.nl         */
+/*   Updated: 2020/07/09 11:12:25 by mpeerdem      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 #include <unistd.h>
 #include "libft.h"
 #include "minishell.h"
+
+void	parse(t_list *tokens);
 
 int		isspace(int c)
 {
@@ -162,6 +164,7 @@ int	main(int argc, char **argv, char **envp)
 		status = get_next_line(0, &line);
 		tokens = lexer(line);
 		print_list(tokens);
+		parse(tokens);
 	}
 	return (0);
 }

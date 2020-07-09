@@ -6,7 +6,7 @@
 #    By: bpeeters <bpeeters@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2020/03/11 00:50:41 by bpeeters      #+#    #+#                  #
-#    Updated: 2020/07/06 10:33:13 by mark          ########   odam.nl          #
+#    Updated: 2020/07/09 11:11:53 by mpeerdem      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,7 +17,8 @@ CC =		gcc
 CFLAGS =	-Wall -Werror -Wextra
 SDIR =		srcs
 ODIR =		objs
-_OBJS =		minishell
+_OBJS =		minishell \
+			parser/parse
 OBJS =		$(addsuffix .o, $(addprefix $(ODIR)/, $(_OBJS)))
 LIBFT =		libft.a
 LIBFTMAP =	libft
@@ -36,7 +37,7 @@ test: all
 	./minishell
 
 $(ODIR)/%.o: $(SDIR)/%.c $(INC)/$(HEADER)
-	@mkdir -p $(ODIR)
+	mkdir -p $(ODIR)/$(dir $*)
 	$(CC) $(CFLAGS) -I$(INC) -c $< -o $@
 
 clean:
