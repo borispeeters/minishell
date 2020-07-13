@@ -6,7 +6,7 @@
 #    By: bpeeters <bpeeters@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2020/03/11 00:50:41 by bpeeters      #+#    #+#                  #
-#    Updated: 2020/07/13 09:08:22 by mpeerdem      ########   odam.nl          #
+#    Updated: 2020/07/13 09:11:50 by mpeerdem      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,7 +19,7 @@ SDIR =		srcs
 ODIR =		objs
 _OBJS =		minishell \
 			parser/parse \
-			lexer/lexer lexer/lexer_status \
+			lexer/lexer lexer/lexer_states \
 			utils/shell_utils
 OBJS =		$(addsuffix .o, $(addprefix $(ODIR)/, $(_OBJS)))
 LIBFT =		libft.a
