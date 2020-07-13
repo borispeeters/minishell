@@ -6,7 +6,7 @@
 #    By: bpeeters <bpeeters@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2020/03/11 00:50:41 by bpeeters      #+#    #+#                  #
-#    Updated: 2020/07/13 09:11:50 by mpeerdem      ########   odam.nl          #
+#    Updated: 2020/07/13 09:35:26 by mpeerdem      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,17 +29,17 @@ LIBFTMAP =	libft
 
 all: $(NAME)
 
-$(NAME): $(OBJS) $(LIBFT)
+$(NAME): $(OBJS) $(LIBFTMAP)/$(LIBFT)
 	$(CC) -L$(LIBFTMAP) -lft -o $(NAME) $(OBJS)
 
-$(LIBFT):
-	make bonus -C $(LIBFTMAP)
+$(LIBFTMAP)/$(LIBFT):
+	make -C $(LIBFTMAP)
 
 test: all
 	./minishell
 
 $(ODIR)/%.o: $(SDIR)/%.c $(INC)/$(HEADER)
-	mkdir -p $(ODIR)/$(dir $*)
+	@mkdir -p $(ODIR)/$(dir $*)
 	$(CC) $(CFLAGS) -I$(INC) -c $< -o $@
 
 clean:
