@@ -6,7 +6,7 @@
 /*   By: mpeerdem <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/03/11 14:04:34 by bpeeters      #+#    #+#                 */
-/*   Updated: 2020/07/13 09:11:37 by mpeerdem      ########   odam.nl         */
+/*   Updated: 2020/07/13 13:34:09 by mpeerdem      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,10 +34,21 @@ typedef enum	e_pipe
 typedef struct	s_command
 {
 	char		**vars;
-	char		*file_in;
-	char		*file_out;
+	t_list		*files_in;
+	t_list		*files_out;
+	t_list		*out_modes;
 	t_pipe		pipe;
 }				t_command;
+
+/*
+**	Enum for different file open modes.
+*/
+
+typedef enum	e_filemode
+{
+	APPEND,
+	TRUNC
+}				t_filemode;
 
 typedef enum	e_token
 {
