@@ -6,7 +6,7 @@
 /*   By: bpeeters <bpeeters@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/06/30 15:48:06 by bpeeters      #+#    #+#                 */
-/*   Updated: 2020/07/07 13:07:55 by bpeeters      ########   odam.nl         */
+/*   Updated: 2020/07/13 09:07:08 by mpeerdem      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@ int		main(int argc, char **argv, char **envp)
 		status = get_next_line(0, &line);
 		tokens = lexer(line);
 		print_list(tokens);
+		parse(tokens);
 	}
 	return (0);
 }
