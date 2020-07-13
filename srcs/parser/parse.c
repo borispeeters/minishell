@@ -6,7 +6,7 @@
 /*   By: mpeerdem <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/09 11:02:36 by mpeerdem      #+#    #+#                 */
-/*   Updated: 2020/07/13 11:08:17 by mpeerdem      ########   odam.nl         */
+/*   Updated: 2020/07/13 14:15:06 by mpeerdem      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,11 @@ void		parse(t_list *tokens)
 	while (tokens != NULL)
 	{
 		token = (char *)tokens->content;
-		printf("Token %i: %s.\n", i, token);
+		if (token[0] == ';' || token[0] == '|' || token[0] == '<' ||
+				token[0] == '>')
+		{
+			printf("Token %i: [%s]\n", i, token);
+		}
 		i++;
 		tokens = tokens->next;
 	}
