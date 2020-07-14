@@ -6,7 +6,7 @@
 /*   By: mpeerdem <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/09 11:02:36 by mpeerdem      #+#    #+#                 */
-/*   Updated: 2020/07/14 12:43:55 by mpeerdem      ########   odam.nl         */
+/*   Updated: 2020/07/14 14:19:40 by mpeerdem      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ void		parse(t_list *tokens)
 	comm_table = NULL;
 	parser.start = tokens;
 	parser.length = 0;
+	parser.prev_sep = NO_SEPARATOR;
 	while (tokens != NULL)
 	{
 		token = (char *)tokens->content;
@@ -50,6 +51,7 @@ void		parse(t_list *tokens)
 		if (parser.sep)
 		{
 			make_command(&comm_table, &parser);
+			parser.prev_sep = parser.sep;
 			parser.length = -1;
 			parser.start = tokens->next;
 		}
@@ -70,6 +72,10 @@ void		parse(t_list *tokens)
 
 void		make_command(t_list **table, t_parser *parser)
 {
+	char	**vars;
+	t_list	*node;
+	int		i;
+
 	(void)table;
 	if (parser->length == 0 && parser->sep != NO_SEPARATOR)
 		printf("OEPS GING FOUT! :( \n");
@@ -77,5 +83,23 @@ void		make_command(t_list **table, t_parser *parser)
 	{
 		printf("Start is: [%s], Length [%i]\n", (char *)parser->start->content, parser->length);
 		printf("Separator is %i\n", (int)parser->sep);
+		vars = (char **)malloc(sizeof(char *) * (parser->length + 1));
+		node = parser->start;
+		i = 0;
+		while (node)
+		{
+			*(vars + i) = ft_strdup((char *)node->content);
+			node = node->next;
+			i++;
+		}
+		*(vars + i) = NULL;
+		printf("============\n");
+		while (*vars)
+		{
+			printf("-> %s\n", *vars);
+			vars++;
+		}
+		printf("============\n");
+		printf("Jeuj!\n");
 	}
 }

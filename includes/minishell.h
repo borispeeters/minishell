@@ -6,7 +6,7 @@
 /*   By: mpeerdem <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/03/11 14:04:34 by bpeeters      #+#    #+#                 */
-/*   Updated: 2020/07/14 12:43:20 by mpeerdem      ########   odam.nl         */
+/*   Updated: 2020/07/14 13:35:10 by mpeerdem      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ typedef struct	s_parser
 	t_list		*start;
 	int			length;
 	t_separator	sep;
+	t_separator	prev_sep;
 }				t_parser;
 
 /*
