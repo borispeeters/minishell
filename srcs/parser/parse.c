@@ -6,7 +6,7 @@
 /*   By: mpeerdem <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/09 11:02:36 by mpeerdem      #+#    #+#                 */
-/*   Updated: 2020/07/14 14:19:40 by mpeerdem      ########   odam.nl         */
+/*   Updated: 2020/07/14 14:40:02 by mpeerdem      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ void		make_command(t_list **table, t_parser *parser)
 		vars = (char **)malloc(sizeof(char *) * (parser->length + 1));
 		node = parser->start;
 		i = 0;
-		while (node)
+		while (node && i < parser->length)
 		{
 			*(vars + i) = ft_strdup((char *)node->content);
 			node = node->next;
