@@ -6,13 +6,28 @@
 /*   By: mpeerdem <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/09 11:02:36 by mpeerdem      #+#    #+#                 */
-/*   Updated: 2020/07/14 10:12:29 by mpeerdem      ########   odam.nl         */
+/*   Updated: 2020/07/14 12:43:55 by mpeerdem      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "libft.h"
 #include <stdio.h>//
+
+// DEBUG
+void	print_table(t_list *table)
+{
+	t_command	*command;
+
+	printf("\n_____COMMAND TABLE_____\n\n");
+	while (table != NULL)
+	{
+		command = (t_command *)table->content;
+		printf("Element.\n");
+		table = table->next;
+	}
+	printf("\n_____COMMAND TABLE_____\n");
+}
 
 /*
 **	The main parse function, will loop over the list and delegate work to
@@ -21,30 +36,31 @@
 
 void		parse(t_list *tokens)
 {
-	char	*token;
-	t_list	*command_start;
-	int		command_length;
-	int		separator;
-	t_list	*command_table;
+	char			*token;
+	t_parser		parser;
+	t_list			*comm_table;
 
-	command_table = NULL;
-	command_start = tokens;
-	command_length = 0;
+	comm_table = NULL;
+	parser.start = tokens;
+	parser.length = 0;
 	while (tokens != NULL)
 	{
 		token = (char *)tokens->content;
-		separator = is_command_separator(token);
-		if (separator)
+		parser.sep = is_command_separator(token);
+		if (parser.sep)
 		{
-			make_command(&comm_table, comm_start, comm_length, separator);
-			command_length = -1;
-			command_start = tokens->next;
+			make_command(&comm_table, &parser);
+			parser.length = -1;
+			parser.start = tokens->next;
 		}
-		command_length++;
+		parser.length++;
 		tokens = tokens->next;
 	}
-	if (command_length > 0)
-		make_command(&command_table, command_start, command_length);
+	if (parser.length > 0)
+		make_command(&comm_table, &parser);
+	
+	//
+	print_table(comm_table);
 }
 
 /*
@@ -52,9 +68,14 @@ void		parse(t_list *tokens)
 **	entry in the command table for it.
 */
 
-void		make_command(t_list **table, t_list *start_node, int length,
-				int separator)
+void		make_command(t_list **table, t_parser *parser)
 {
 	(void)table;
-	printf("Start is: [%s], Length [%i]\n", (char *)start_node->content, length);
+	if (parser->length == 0 && parser->sep != NO_SEPARATOR)
+		printf("OEPS GING FOUT! :( \n");
+	else
+	{
+		printf("Start is: [%s], Length [%i]\n", (char *)parser->start->content, parser->length);
+		printf("Separator is %i\n", (int)parser->sep);
+	}
 }

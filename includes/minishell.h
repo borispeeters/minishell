@@ -6,7 +6,7 @@
 /*   By: mpeerdem <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/03/11 14:04:34 by bpeeters      #+#    #+#                 */
-/*   Updated: 2020/07/14 10:13:17 by mpeerdem      ########   odam.nl         */
+/*   Updated: 2020/07/14 12:43:20 by mpeerdem      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,28 @@
 # define MINISHELL_H
 
 # include "libft.h"
+
+/*
+**	Enum for the different types of command separators.
+*/
+
+typedef enum	e_separator
+{
+	NO_SEPARATOR,
+	SEMICOLON,
+	PIPE
+}				t_separator;
+
+/*
+**	Struct for the parser.
+*/
+
+typedef struct	s_parser
+{
+	t_list		*start;
+	int			length;
+	t_separator	sep;
+}				t_parser;
 
 /*
 **	Enum for the different pipe options.
@@ -50,6 +72,10 @@ typedef enum	e_filemode
 	TRUNC
 }				t_filemode;
 
+/*
+**	Enum for different token states in the lexer.
+*/
+
 typedef enum	e_token
 {
 	INACTIVE,
@@ -57,12 +83,20 @@ typedef enum	e_token
 	META
 }				t_token;
 
+/*
+**	Enum for different quote states in the lexer.
+*/
+
 typedef enum	e_quote
 {
 	NO_QUOTE,
 	SNGL_QUOTE,
 	DBL_QUOTE
 }				t_quote;
+
+/*
+**	Struct to hold important information for the lexer.
+*/
 
 typedef struct	s_lexer
 {
@@ -72,21 +106,34 @@ typedef struct	s_lexer
 	t_token		token_active;
 }				t_lexer;
 
-t_list	*lexer(char *line);
-void	double_quote(t_lexer *lex, char *line);
-void	single_quote(t_lexer *lex, char *line);
-void	in_token(t_lexer *lex, char *line, t_list **head);
-void	out_of_token(t_lexer *lex, char *line);
-void	meta_encounter(t_lexer *lex, char *line, t_list **head);
-int		is_space(int c);
-int		is_metacharacter(int c);
-int		is_command_separator(char *token);
+/*
+**	lexer/lexer.c
+*/
+
+t_list			*lexer(char *line);
+
+/*
+**	lexer/lexer_states.c
+*/
+
+void			double_quote(t_lexer *lex, char *line);
+void			single_quote(t_lexer *lex, char *line);
+void			in_token(t_lexer *lex, char *line, t_list **head);
+void			out_of_token(t_lexer *lex, char *line);
+void			meta_encounter(t_lexer *lex, char *line, t_list **head);
+
+/*
+**	utils/shell_utils.c
+*/
+
+int				is_space(int c);
+int				is_metacharacter(int c);
+t_separator		is_command_separator(char *token);
 
 /*
 **	parser/parse.c
 */
 
-void	parse(t_list *tokens);
-void	make_command(t_list **table, t_list *start_node, int length);
-
+void			parse(t_list *tokens);
+void			make_command(t_list **table, t_parser *parser);
 #endif
