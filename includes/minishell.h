@@ -6,7 +6,7 @@
 /*   By: mpeerdem <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/03/11 14:04:34 by bpeeters      #+#    #+#                 */
-/*   Updated: 2020/07/14 08:59:32 by mpeerdem      ########   odam.nl         */
+/*   Updated: 2020/07/14 10:13:17 by mpeerdem      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,10 @@ void	meta_encounter(t_lexer *lex, char *line, t_list **head);
 int		is_space(int c);
 int		is_metacharacter(int c);
 int		is_command_separator(char *token);
+
+/*
+**	parser/parse.c
+*/
 
 void	parse(t_list *tokens);
 void	make_command(t_list **table, t_list *start_node, int length);
