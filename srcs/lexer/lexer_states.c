@@ -6,7 +6,7 @@
 /*   By: bpeeters <bpeeters@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/07 11:08:52 by bpeeters      #+#    #+#                 */
-/*   Updated: 2020/07/07 11:11:58 by bpeeters      ########   odam.nl         */
+/*   Updated: 2020/07/14 11:48:12 by bpeeters      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,8 @@ void	out_of_token(t_lexer *lex, char *line)
 
 void	meta_encounter(t_lexer *lex, char *line, t_list **head)
 {
+	if (*line == '>' || *(line + 1) == '>')
+		return ;
 	ft_lstadd_back(head, \
 	ft_lstnew(ft_substr(lex->token_start, 0, lex->token_len)));
 	if (isspace(*line))
