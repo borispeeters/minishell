@@ -6,7 +6,7 @@
 /*   By: mpeerdem <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/09 11:02:36 by mpeerdem      #+#    #+#                 */
-/*   Updated: 2020/07/15 14:15:19 by mpeerdem      ########   odam.nl         */
+/*   Updated: 2020/07/15 14:34:49 by mpeerdem      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,12 +43,11 @@ void		parse(t_list *tokens)
 	comm_table = NULL;
 	parser.start = tokens;
 	parser.length = 0;
-	parser.redirects = 0;
 	parser.prev_sep = NO_SEPARATOR;
 	while (tokens != NULL)
 	{
 		token = (char *)tokens->content;
-		parse_metacharacter(&parser, token);
+		parser.sep = is_separator(token);
 		if (parser.sep)
 		{
 			make_command(&comm_table, &parser);
@@ -64,17 +63,6 @@ void		parse(t_list *tokens)
 	
 	//
 	print_table(comm_table);
-}
-
-/*
-**	Check if the token is a meta character, and do the necessary actions.
-*/
-
-void		parse_metacharacter(t_parser *parser, char *token)
-{
-	parser->sep = is_separator(token);
-	if (is_redirect(token))
-		parser->redirects++;
 }
 
 /*
