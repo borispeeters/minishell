@@ -6,7 +6,7 @@
 #    By: bpeeters <bpeeters@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2020/03/11 00:50:41 by bpeeters      #+#    #+#                  #
-#    Updated: 2020/07/13 09:35:26 by mpeerdem      ########   odam.nl          #
+#    Updated: 2020/07/15 11:47:36 by mpeerdem      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,7 @@ ODIR =		objs
 _OBJS =		minishell \
 			parser/parse \
 			lexer/lexer lexer/lexer_states \
-			utils/shell_utils
+			utils/shell_utils utils/array_utils utils/command_utils
 OBJS =		$(addsuffix .o, $(addprefix $(ODIR)/, $(_OBJS)))
 LIBFT =		libft.a
 LIBFTMAP =	libft

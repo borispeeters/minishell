@@ -6,7 +6,7 @@
 /*   By: mpeerdem <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/09 11:02:36 by mpeerdem      #+#    #+#                 */
-/*   Updated: 2020/07/14 14:40:02 by mpeerdem      ########   odam.nl         */
+/*   Updated: 2020/07/15 11:49:24 by mpeerdem      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,11 +43,12 @@ void		parse(t_list *tokens)
 	comm_table = NULL;
 	parser.start = tokens;
 	parser.length = 0;
+	parser.redirects = 0;
 	parser.prev_sep = NO_SEPARATOR;
 	while (tokens != NULL)
 	{
 		token = (char *)tokens->content;
-		parser.sep = is_command_separator(token);
+		parse_metacharacter(&parser, token);
 		if (parser.sep)
 		{
 			make_command(&comm_table, &parser);
@@ -66,40 +67,33 @@ void		parse(t_list *tokens)
 }
 
 /*
+**	Check if the token is a meta character, and do the necessary actions.
+*/
+
+void		parse_metacharacter(t_parser *parser, char *token)
+{
+	if (ft_strcmp(token, ";") == 0)
+		parser->sep = SEMICOLON;
+	else if (ft_strcmp(token, "|") == 0)
+		parser->sep = PIPE;
+	else
+		parser->sep = NO_SEPARATOR;
+	if (ft_strcmp(token, ">") == 0 || ft_strcmp(token, ">>") == 0 || 
+			ft_strcmp(token, "<") == 0)
+		parser->redirects++;
+}
+
+/*
 **	This function will take a few links of the token list and create a new
 **	entry in the command table for it.
 */
 
 void		make_command(t_list **table, t_parser *parser)
 {
-	char	**vars;
-	t_list	*node;
-	int		i;
+	t_command		*command;
 
 	(void)table;
-	if (parser->length == 0 && parser->sep != NO_SEPARATOR)
-		printf("OEPS GING FOUT! :( \n");
-	else
-	{
-		printf("Start is: [%s], Length [%i]\n", (char *)parser->start->content, parser->length);
-		printf("Separator is %i\n", (int)parser->sep);
-		vars = (char **)malloc(sizeof(char *) * (parser->length + 1));
-		node = parser->start;
-		i = 0;
-		while (node && i < parser->length)
-		{
-			*(vars + i) = ft_strdup((char *)node->content);
-			node = node->next;
-			i++;
-		}
-		*(vars + i) = NULL;
-		printf("============\n");
-		while (*vars)
-		{
-			printf("-> %s\n", *vars);
-			vars++;
-		}
-		printf("============\n");
-		printf("Jeuj!\n");
-	}
+	command = prepare_command(parser);
+	if (command == NULL)
+		printf("Iets ging fout lmaoooo\n");
 }

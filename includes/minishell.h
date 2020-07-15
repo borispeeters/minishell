@@ -6,7 +6,7 @@
 /*   By: mpeerdem <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/03/11 14:04:34 by bpeeters      #+#    #+#                 */
-/*   Updated: 2020/07/14 13:35:10 by mpeerdem      ########   odam.nl         */
+/*   Updated: 2020/07/15 11:56:41 by mpeerdem      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,17 @@
 
 # include "libft.h"
 
+/*
+**	Enum for the different types of redirect.
+*/
+
+typedef enum	e_redirect
+{
+	NO_REDIRECT,
+	REDIRECT_IN,
+	REDIRECT_OUT_TRUNC,
+	REDIRECT_OUT_APPEND
+}				t_redirect;
 /*
 **	Enum for the different types of command separators.
 */
@@ -34,6 +45,7 @@ typedef struct	s_parser
 {
 	t_list		*start;
 	int			length;
+	int			redirects;
 	t_separator	sep;
 	t_separator	prev_sep;
 }				t_parser;
@@ -124,17 +136,34 @@ void			out_of_token(t_lexer *lex, char *line);
 void			meta_encounter(t_lexer *lex, char *line, t_list **head);
 
 /*
+**	utils/array_utils.c
+*/
+
+char			**malloc_var_array(int n);
+void			free_var_array(char **array);
+
+/*
+**	utils/command_utils.c
+*/
+
+t_command		*prepare_command(t_parser *parser);
+void			free_command(t_command *command);
+
+/*
 **	utils/shell_utils.c
 */
 
 int				is_space(int c);
 int				is_metacharacter(int c);
-t_separator		is_command_separator(char *token);
+t_separator		is_separator(char *token);
+t_redirect		is_redirect(char *token);
 
 /*
 **	parser/parse.c
 */
 
 void			parse(t_list *tokens);
+void			parse_metacharacter(t_parser *parser, char *token);
 void			make_command(t_list **table, t_parser *parser);
+
 #endif

@@ -6,7 +6,7 @@
 /*   By: bpeeters <bpeeters@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/07 10:00:57 by bpeeters      #+#    #+#                 */
-/*   Updated: 2020/07/14 11:30:39 by mpeerdem      ########   odam.nl         */
+/*   Updated: 2020/07/15 11:56:57 by mpeerdem      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,14 +35,29 @@ int				is_metacharacter(int c)
 }
 
 /*
-**	Small utility function that returns the type of separator it is (enum).
+**	This function will return an enum for which kind of separator the token is.
 */
 
-t_separator		is_command_separator(char *token)
+t_separator		is_separator(char *token)
 {
 	if (ft_strcmp(token, ";") == 0)
 		return (SEMICOLON);
 	if (ft_strcmp(token, "|") == 0)
 		return (PIPE);
 	return (NO_SEPARATOR);
+}
+
+/*
+**	This function will return an enum for which kind of redirect the token is.
+*/
+
+t_redirect		is_redirect(char *token)
+{
+	if (ft_strcmp(token, "<") == 0)
+		return (REDIRECT_IN);
+	if (ft_strcmp(token, ">") == 0)
+		return (REDIRECT_OUT_TRUNC);
+	if (ft_strcmp(token, ">>") == 0)
+		return (REDIRECT_OUT_APPEND);
+	return (NO_REDIRECT);
 }
