@@ -6,7 +6,7 @@
 /*   By: mpeerdem <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/09 11:02:36 by mpeerdem      #+#    #+#                 */
-/*   Updated: 2020/07/15 11:49:24 by mpeerdem      ########   odam.nl         */
+/*   Updated: 2020/07/15 14:15:19 by mpeerdem      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,15 +72,41 @@ void		parse(t_list *tokens)
 
 void		parse_metacharacter(t_parser *parser, char *token)
 {
-	if (ft_strcmp(token, ";") == 0)
-		parser->sep = SEMICOLON;
-	else if (ft_strcmp(token, "|") == 0)
-		parser->sep = PIPE;
-	else
-		parser->sep = NO_SEPARATOR;
-	if (ft_strcmp(token, ">") == 0 || ft_strcmp(token, ">>") == 0 || 
-			ft_strcmp(token, "<") == 0)
+	parser->sep = is_separator(token);
+	if (is_redirect(token))
 		parser->redirects++;
+}
+
+/*
+**	This function will check if the format of the command is valid, that mostly
+**	means no double redirects. Will return 0 if invalid, otherwise the length
+**	of the var list.
+*/
+
+int			validate_command(t_parser *parser)
+{
+	t_redirect	prev;
+	t_redirect	curr;
+	int			count;
+	t_list		*node;
+
+	count = 0;
+	prev = NO_REDIRECT;
+	node = parser->start;
+	while (node != NULL && !is_separator((char *)node->content))
+	{
+		count++;
+		prev = curr;
+		curr = is_redirect((char *)node->content);
+		if (curr != NO_REDIRECT)
+			count -= 2;
+		if (prev != NO_REDIRECT && curr != NO_REDIRECT)
+			return (0);
+		node = node->next;
+	}
+	if (curr != NO_REDIRECT)
+		return (0);
+	return (count);
 }
 
 /*
@@ -91,9 +117,12 @@ void		parse_metacharacter(t_parser *parser, char *token)
 void		make_command(t_list **table, t_parser *parser)
 {
 	t_command		*command;
+	int				length;
 
 	(void)table;
-	command = prepare_command(parser);
+	length = validate_command(parser);
+	printf("Length? [%i]\n", length);
+	command = prepare_command(parser, length);
 	if (command == NULL)
 		printf("Iets ging fout lmaoooo\n");
 }
