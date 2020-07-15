@@ -6,7 +6,7 @@
 /*   By: mpeerdem <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/03/11 14:04:34 by bpeeters      #+#    #+#                 */
-/*   Updated: 2020/07/13 09:11:37 by mpeerdem      ########   odam.nl         */
+/*   Updated: 2020/07/15 14:32:50 by bpeeters      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ void	single_quote(t_lexer *lex, char *line);
 void	in_token(t_lexer *lex, char *line, t_list **head);
 void	out_of_token(t_lexer *lex, char *line);
 void	meta_encounter(t_lexer *lex, char *line, t_list **head);
-int		isspace(int c);
+int		is_space(int c);
 int		is_metacharacter(int c);
 void	parse(t_list *tokens);
 

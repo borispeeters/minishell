@@ -6,7 +6,7 @@
 /*   By: bpeeters <bpeeters@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/07 11:08:52 by bpeeters      #+#    #+#                 */
-/*   Updated: 2020/07/14 11:48:12 by bpeeters      ########   odam.nl         */
+/*   Updated: 2020/07/15 14:39:43 by bpeeters      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ void	in_token(t_lexer *lex, char *line, t_list **head)
 		lex->token_len = 0;
 		lex->token_active = META;
 	}
-	if (isspace(*line) && lex->quote == NO_QUOTE)
+	if (is_space(*line) && lex->quote == NO_QUOTE)
 	{
 		ft_lstadd_back(head, \
 		ft_lstnew(ft_substr(lex->token_start, 0, lex->token_len)));
@@ -71,7 +71,7 @@ void	out_of_token(t_lexer *lex, char *line)
 		lex->token_len = 0;
 		lex->token_active = META;
 	}
-	else if (!isspace(*line))
+	else if (!is_space(*line))
 	{
 		lex->token_start = line;
 		lex->token_len = 0;
@@ -81,16 +81,17 @@ void	out_of_token(t_lexer *lex, char *line)
 
 void	meta_encounter(t_lexer *lex, char *line, t_list **head)
 {
-	if (*line == '>' || *(line + 1) == '>')
+	if (*line == '>')
 		return ;
 	ft_lstadd_back(head, \
 	ft_lstnew(ft_substr(lex->token_start, 0, lex->token_len)));
-	if (isspace(*line))
+	if (is_space(*line))
 		lex->token_active = INACTIVE;
 	else
 	{
 		lex->token_start = line;
 		lex->token_len = 0;
-		lex->token_active = ACTIVE;
+		if (!is_metacharacter(*line))
+			lex->token_active = ACTIVE;
 	}
 }
