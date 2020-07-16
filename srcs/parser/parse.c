@@ -6,7 +6,7 @@
 /*   By: mpeerdem <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/09 11:02:36 by mpeerdem      #+#    #+#                 */
-/*   Updated: 2020/07/16 11:32:03 by mpeerdem      ########   odam.nl         */
+/*   Updated: 2020/07/16 14:35:28 by mpeerdem      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,6 @@ void		parse(t_list *tokens)
 	}
 	if (parser.start != NULL)
 		create_command(&comm_table, &parser);
-	
 	//
 	print_table(comm_table);
 }
@@ -117,4 +116,6 @@ void		create_command(t_list **table, t_parser *parser)
 	printf("	New->command = %p\n", (t_command*)new->content);
 	printf("	New->command->vars[0] = %s\n", ((t_command*)new->content)->vars[0]);
 	ft_lstadd_back(table, new);
+
+	// if last has no PIPE OUT, execute the list.
 }

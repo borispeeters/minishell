@@ -6,7 +6,7 @@
 /*   By: mpeerdem <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/03/11 14:04:34 by bpeeters      #+#    #+#                 */
-/*   Updated: 2020/07/16 11:31:36 by mpeerdem      ########   odam.nl         */
+/*   Updated: 2020/07/16 11:38:09 by mpeerdem      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ typedef enum	e_redirect
 	REDIRECT_OUT_TRUNC,
 	REDIRECT_OUT_APPEND
 }				t_redirect;
+
 /*
 **	Enum for the different types of command separators.
 */
