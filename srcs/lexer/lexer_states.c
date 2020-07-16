@@ -6,7 +6,7 @@
 /*   By: bpeeters <bpeeters@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/07 11:08:52 by bpeeters      #+#    #+#                 */
-/*   Updated: 2020/07/15 14:39:43 by bpeeters      ########   odam.nl         */
+/*   Updated: 2020/07/16 09:00:56 by bpeeters      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,22 +45,23 @@ void	single_quote(t_lexer *lex, char *line)
 	}
 }
 
-void	in_token(t_lexer *lex, char *line, t_list **head)
+int		in_token(t_lexer *lex, char *line, t_list **head)
 {
 	if (is_metacharacter(*line))
 	{
-		ft_lstadd_back(head, \
-		ft_lstnew(ft_substr(lex->token_start, 0, lex->token_len)));
+		if (add_new_token(lex, head) == -1)
+			return (-1);
 		lex->token_start = line;
 		lex->token_len = 0;
 		lex->token_active = META;
 	}
 	if (is_space(*line) && lex->quote == NO_QUOTE)
 	{
-		ft_lstadd_back(head, \
-		ft_lstnew(ft_substr(lex->token_start, 0, lex->token_len)));
+		if (add_new_token(lex, head) == -1)
+			return (-1);
 		lex->token_active = INACTIVE;
 	}
+	return (0);
 }
 
 void	out_of_token(t_lexer *lex, char *line)
@@ -79,12 +80,12 @@ void	out_of_token(t_lexer *lex, char *line)
 	}
 }
 
-void	meta_encounter(t_lexer *lex, char *line, t_list **head)
+int		meta_encounter(t_lexer *lex, char *line, t_list **head)
 {
 	if (*line == '>')
-		return ;
-	ft_lstadd_back(head, \
-	ft_lstnew(ft_substr(lex->token_start, 0, lex->token_len)));
+		return (0);
+	if (add_new_token(lex, head) == -1)
+		return (-1);
 	if (is_space(*line))
 		lex->token_active = INACTIVE;
 	else
@@ -94,4 +95,5 @@ void	meta_encounter(t_lexer *lex, char *line, t_list **head)
 		if (!is_metacharacter(*line))
 			lex->token_active = ACTIVE;
 	}
+	return (0);
 }

@@ -6,11 +6,16 @@
 /*   By: bpeeters <bpeeters@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/07 10:00:57 by bpeeters      #+#    #+#                 */
-/*   Updated: 2020/07/15 14:32:44 by bpeeters      ########   odam.nl         */
+/*   Updated: 2020/07/16 14:48:28 by bpeeters      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
+
+void	free_content(void *content)
+{
+	free(content);
+}
 
 int		is_space(int c)
 {

@@ -6,7 +6,7 @@
 /*   By: mpeerdem <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/03/11 14:04:34 by bpeeters      #+#    #+#                 */
-/*   Updated: 2020/07/15 14:32:50 by bpeeters      ########   odam.nl         */
+/*   Updated: 2020/07/16 14:48:44 by bpeeters      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,11 +62,13 @@ typedef struct	s_lexer
 }				t_lexer;
 
 t_list	*lexer(char *line);
+int		add_new_token(t_lexer *lex, t_list **head);
 void	double_quote(t_lexer *lex, char *line);
 void	single_quote(t_lexer *lex, char *line);
-void	in_token(t_lexer *lex, char *line, t_list **head);
+int		in_token(t_lexer *lex, char *line, t_list **head);
 void	out_of_token(t_lexer *lex, char *line);
-void	meta_encounter(t_lexer *lex, char *line, t_list **head);
+int		meta_encounter(t_lexer *lex, char *line, t_list **head);
+void	free_content(void *content);
 int		is_space(int c);
 int		is_metacharacter(int c);
 void	parse(t_list *tokens);
