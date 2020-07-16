@@ -6,7 +6,7 @@
 /*   By: mpeerdem <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/03/11 14:04:34 by bpeeters      #+#    #+#                 */
-/*   Updated: 2020/07/15 14:34:44 by mpeerdem      ########   odam.nl         */
+/*   Updated: 2020/07/16 11:31:36 by mpeerdem      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,6 @@ typedef enum	e_separator
 typedef struct	s_parser
 {
 	t_list		*start;
-	int			length;
-	int			redirects;
 	t_separator	sep;
 	t_separator	prev_sep;
 }				t_parser;
@@ -146,7 +144,7 @@ void			free_var_array(char **array);
 **	utils/command_utils.c
 */
 
-t_command		*prepare_command(t_parser *parser, int length);
+t_list			*prepare_command(int length);
 void			free_command(t_command *command);
 
 /*
@@ -164,6 +162,6 @@ t_redirect		is_redirect(char *token);
 
 void			parse(t_list *tokens);
 int				validate_command(t_parser *parser);
-void			make_command(t_list **table, t_parser *parser);
+void			create_command(t_list **table, t_parser *parser);
 
 #endif

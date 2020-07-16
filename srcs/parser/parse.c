@@ -6,7 +6,7 @@
 /*   By: mpeerdem <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/09 11:02:36 by mpeerdem      #+#    #+#                 */
-/*   Updated: 2020/07/15 14:34:49 by mpeerdem      ########   odam.nl         */
+/*   Updated: 2020/07/16 11:32:03 by mpeerdem      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,6 @@ void		parse(t_list *tokens)
 
 	comm_table = NULL;
 	parser.start = tokens;
-	parser.length = 0;
 	parser.prev_sep = NO_SEPARATOR;
 	while (tokens != NULL)
 	{
@@ -50,16 +49,14 @@ void		parse(t_list *tokens)
 		parser.sep = is_separator(token);
 		if (parser.sep)
 		{
-			make_command(&comm_table, &parser);
+			create_command(&comm_table, &parser);
 			parser.prev_sep = parser.sep;
-			parser.length = -1;
 			parser.start = tokens->next;
 		}
-		parser.length++;
 		tokens = tokens->next;
 	}
-	if (parser.length > 0)
-		make_command(&comm_table, &parser);
+	if (parser.start != NULL)
+		create_command(&comm_table, &parser);
 	
 	//
 	print_table(comm_table);
@@ -102,15 +99,22 @@ int			validate_command(t_parser *parser)
 **	entry in the command table for it.
 */
 
-void		make_command(t_list **table, t_parser *parser)
+void		create_command(t_list **table, t_parser *parser)
 {
-	t_command		*command;
+	t_list			*new;
 	int				length;
 
 	(void)table;
 	length = validate_command(parser);
 	printf("Length? [%i]\n", length);
-	command = prepare_command(parser, length);
-	if (command == NULL)
+	new = prepare_command(length);
+	if (new == NULL)
+	{
 		printf("Iets ging fout lmaoooo\n");
+		return ;
+	}
+	printf("	New = %p\n", new);
+	printf("	New->command = %p\n", (t_command*)new->content);
+	printf("	New->command->vars[0] = %s\n", ((t_command*)new->content)->vars[0]);
+	ft_lstadd_back(table, new);
 }
