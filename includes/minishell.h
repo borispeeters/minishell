@@ -1,19 +1,41 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        ::::::::            */
-/*   minishell.h                                        :+:    :+:            */
-/*                                                     +:+                    */
-/*   By: mpeerdem <marvin@codam.nl>                   +#+                     */
-/*                                                   +#+                      */
-/*   Created: 2020/03/11 14:04:34 by bpeeters      #+#    #+#                 */
-/*   Updated: 2020/07/16 14:48:44 by bpeeters      ########   odam.nl         */
-/*                                                                            */
-/* ************************************************************************** */
-
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
 # include "libft.h"
+
+/*
+**	Enum for the different types of redirect.
+*/
+
+typedef enum	e_redirect
+{
+	NO_REDIRECT,
+	REDIRECT_IN,
+	REDIRECT_OUT_TRUNC,
+	REDIRECT_OUT_APPEND
+}				t_redirect;
+
+/*
+**	Enum for the different types of command separators.
+*/
+
+typedef enum	e_separator
+{
+	NO_SEPARATOR,
+	SEMICOLON,
+	PIPE
+}				t_separator;
+
+/*
+**	Struct for the parser.
+*/
+
+typedef struct	s_parser
+{
+	t_list		*start;
+	t_separator	sep;
+	t_separator	prev_sep;
+}				t_parser;
 
 /*
 **	Enum for the different pipe options.
@@ -34,10 +56,25 @@ typedef enum	e_pipe
 typedef struct	s_command
 {
 	char		**vars;
-	char		*file_in;
-	char		*file_out;
+	t_list		*files_in;
+	t_list		*files_out;
+	t_list		*out_modes;
 	t_pipe		pipe;
 }				t_command;
+
+/*
+**	Enum for different file open modes.
+*/
+
+typedef enum	e_filemode
+{
+	APPEND,
+	TRUNC
+}				t_filemode;
+
+/*
+**	Enum for different token states in the lexer.
+*/
 
 typedef enum	e_token
 {
@@ -46,12 +83,20 @@ typedef enum	e_token
 	META
 }				t_token;
 
+/*
+**	Enum for different quote states in the lexer.
+*/
+
 typedef enum	e_quote
 {
 	NO_QUOTE,
 	SNGL_QUOTE,
 	DBL_QUOTE
 }				t_quote;
+
+/*
+**	Struct to hold important information for the lexer.
+*/
 
 typedef struct	s_lexer
 {
