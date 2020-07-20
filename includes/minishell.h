@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   minishell.h                                        :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: mpeerdem <marvin@codam.nl>                   +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2020/03/11 14:04:34 by bpeeters      #+#    #+#                 */
+/*   Updated: 2020/07/20 08:32:31 by bpeeters      ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
@@ -106,16 +118,53 @@ typedef struct	s_lexer
 	t_token		token_active;
 }				t_lexer;
 
-t_list	*lexer(char *line);
-int		add_new_token(t_lexer *lex, t_list **head);
-void	double_quote(t_lexer *lex, char *line);
-void	single_quote(t_lexer *lex, char *line);
-int		in_token(t_lexer *lex, char *line, t_list **head);
-void	out_of_token(t_lexer *lex, char *line);
-int		meta_encounter(t_lexer *lex, char *line, t_list **head);
-void	free_content(void *content);
-int		is_space(int c);
-int		is_metacharacter(int c);
-void	parse(t_list *tokens);
+/*
+**	lexer/lexer.c
+*/
+
+t_list			*lexer(char *line);
+int				add_new_token(t_lexer *lex, t_list **head);
+
+/*
+**	lexer/lexer_states.c
+*/
+
+void			double_quote(t_lexer *lex, char *line);
+void			single_quote(t_lexer *lex, char *line);
+int				in_token(t_lexer *lex, char *line, t_list **head);
+void			out_of_token(t_lexer *lex, char *line);
+int				meta_encounter(t_lexer *lex, char *line, t_list **head);
+
+/*
+**	utils/array_utils.c
+*/
+
+char			**malloc_var_array(int n);
+void			free_var_array(char **array);
+
+/*
+**	utils/command_utils.c
+*/
+
+t_list			*prepare_command(int length);
+void			free_command(t_command *command);
+
+/*
+**	utils/shell_utils.c
+*/
+
+void			free_content(void *content);
+int				is_space(int c);
+int				is_metacharacter(int c);
+t_separator		is_separator(char *token);
+t_redirect		is_redirect(char *token);
+
+/*
+**	parser/parse.c
+*/
+
+void			parse(t_list *tokens);
+int				validate_command(t_parser *parser);
+void			create_command(t_list **table, t_parser *parser);
 
 #endif
