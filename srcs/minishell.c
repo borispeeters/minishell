@@ -23,8 +23,16 @@ void	signal_handler(int sig)
 	if (sig == SIGINT)
 	{
 		write(1, "\b\b  \n", 5);
-		write(1, "minishell> ", 11);
+		write(1, "minishell-0.1$ ", 15);
 	}
+}
+
+void	free_shell(char **line, t_list **tokens)
+{
+	free(*line);
+	*line = NULL;
+	ft_lstclear(tokens, free_content);
+	*tokens = NULL;
 }
 
 int		main(int argc, char **argv, char **envp)
@@ -32,7 +40,7 @@ int		main(int argc, char **argv, char **envp)
 	char	*line;
 	int		status;
 	t_list	*tokens;
-	char	prompt[] = "minishell> ";
+	char	prompt[] = "minishell-0.1$ ";
 
 	line = NULL;
 	(void)argc;
@@ -46,11 +54,14 @@ int		main(int argc, char **argv, char **envp)
 		write(1, prompt, ft_strlen(prompt));
 		status = get_next_line(0, &line);
 		tokens = lexer(line);
+		if (verify_syntax(tokens) != 0)
+		{
+			free_shell(&line, &tokens);
+			continue ;
+		}
 		// print_list(tokens);
 		// parse(tokens);
-		free(line);
-		line = NULL;
-		ft_lstclear(&tokens, free_content);
+		free_shell(&line, &tokens);
 	}
 	write(1, "exit\n", 5);
 	return (0);
