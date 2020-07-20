@@ -6,13 +6,28 @@
 /*   By: mpeerdem <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/09 11:02:36 by mpeerdem      #+#    #+#                 */
-/*   Updated: 2020/07/14 10:12:29 by mpeerdem      ########   odam.nl         */
+/*   Updated: 2020/07/20 08:36:36 by bpeeters      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "libft.h"
 #include <stdio.h>//
+
+// DEBUG
+void	print_table(t_list *table)
+{
+	t_command	*command;
+
+	printf("\n_____COMMAND TABLE_____\n\n");
+	while (table != NULL)
+	{
+		command = (t_command *)table->content;
+		printf("Element.\n");
+		table = table->next;
+	}
+	printf("\n_____COMMAND TABLE_____\n");
+}
 
 /*
 **	The main parse function, will loop over the list and delegate work to
@@ -21,30 +36,61 @@
 
 void		parse(t_list *tokens)
 {
-	char	*token;
-	t_list	*command_start;
-	int		command_length;
-	int		separator;
-	t_list	*command_table;
+	char			*token;
+	t_parser		parser;
+	t_list			*comm_table;
 
-	command_table = NULL;
-	command_start = tokens;
-	command_length = 0;
+	comm_table = NULL;
+	parser.start = tokens;
+	parser.prev_sep = NO_SEPARATOR;
 	while (tokens != NULL)
 	{
 		token = (char *)tokens->content;
-		separator = is_command_separator(token);
-		if (separator)
+		parser.sep = is_separator(token);
+		if (parser.sep)
 		{
-			make_command(&comm_table, comm_start, comm_length, separator);
-			command_length = -1;
-			command_start = tokens->next;
+			create_command(&comm_table, &parser);
+			parser.prev_sep = parser.sep;
+			parser.start = tokens->next;
 		}
-		command_length++;
 		tokens = tokens->next;
 	}
-	if (command_length > 0)
-		make_command(&command_table, command_start, command_length);
+	if (parser.start != NULL)
+		create_command(&comm_table, &parser);
+	//
+	print_table(comm_table);
+}
+
+/*
+**	This function will check if the format of the command is valid, that mostly
+**	means no double redirects. Will return 0 if invalid, otherwise the length
+**	of the var list.
+*/
+
+int			validate_command(t_parser *parser)
+{
+	t_redirect	prev;
+	t_redirect	curr;
+	int			count;
+	t_list		*node;
+
+	count = 0;
+	prev = NO_REDIRECT;
+	node = parser->start;
+	while (node != NULL && !is_separator((char *)node->content))
+	{
+		count++;
+		prev = curr;
+		curr = is_redirect((char *)node->content);
+		if (curr != NO_REDIRECT)
+			count -= 2;
+		if (prev != NO_REDIRECT && curr != NO_REDIRECT)
+			return (0);
+		node = node->next;
+	}
+	if (curr != NO_REDIRECT)
+		return (0);
+	return (count);
 }
 
 /*
@@ -52,9 +98,24 @@ void		parse(t_list *tokens)
 **	entry in the command table for it.
 */
 
-void		make_command(t_list **table, t_list *start_node, int length,
-				int separator)
+void		create_command(t_list **table, t_parser *parser)
 {
+	t_list			*new;
+	int				length;
+
 	(void)table;
-	printf("Start is: [%s], Length [%i]\n", (char *)start_node->content, length);
+	length = validate_command(parser);
+	printf("Length? [%i]\n", length);
+	new = prepare_command(length);
+	if (new == NULL)
+	{
+		printf("Iets ging fout lmaoooo\n");
+		return ;
+	}
+	printf("	New = %p\n", new);
+	printf("	New->command = %p\n", (t_command*)new->content);
+	printf("	New->command->vars[0] = %s\n", ((t_command*)new->content)->vars[0]);
+	ft_lstadd_back(table, new);
+
+	// if last has no PIPE OUT, execute the list.
 }

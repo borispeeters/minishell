@@ -6,7 +6,7 @@
 /*   By: mpeerdem <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/03/11 14:04:34 by bpeeters      #+#    #+#                 */
-/*   Updated: 2020/07/14 10:13:17 by mpeerdem      ########   odam.nl         */
+/*   Updated: 2020/07/20 08:40:28 by bpeeters      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,40 @@
 # define MINISHELL_H
 
 # include "libft.h"
+
+/*
+**	Enum for the different types of redirect.
+*/
+
+typedef enum	e_redirect
+{
+	NO_REDIRECT,
+	REDIRECT_IN,
+	REDIRECT_OUT_TRUNC,
+	REDIRECT_OUT_APPEND
+}				t_redirect;
+
+/*
+**	Enum for the different types of command separators.
+*/
+
+typedef enum	e_separator
+{
+	NO_SEPARATOR,
+	SEMICOLON,
+	PIPE
+}				t_separator;
+
+/*
+**	Struct for the parser.
+*/
+
+typedef struct	s_parser
+{
+	t_list		*start;
+	t_separator	sep;
+	t_separator	prev_sep;
+}				t_parser;
 
 /*
 **	Enum for the different pipe options.
@@ -50,6 +84,10 @@ typedef enum	e_filemode
 	TRUNC
 }				t_filemode;
 
+/*
+**	Enum for different token states in the lexer.
+*/
+
 typedef enum	e_token
 {
 	INACTIVE,
@@ -57,12 +95,20 @@ typedef enum	e_token
 	META
 }				t_token;
 
+/*
+**	Enum for different quote states in the lexer.
+*/
+
 typedef enum	e_quote
 {
 	NO_QUOTE,
 	SNGL_QUOTE,
 	DBL_QUOTE
 }				t_quote;
+
+/*
+**	Struct to hold important information for the lexer.
+*/
 
 typedef struct	s_lexer
 {
@@ -72,21 +118,53 @@ typedef struct	s_lexer
 	t_token		token_active;
 }				t_lexer;
 
-t_list	*lexer(char *line);
-void	double_quote(t_lexer *lex, char *line);
-void	single_quote(t_lexer *lex, char *line);
-void	in_token(t_lexer *lex, char *line, t_list **head);
-void	out_of_token(t_lexer *lex, char *line);
-void	meta_encounter(t_lexer *lex, char *line, t_list **head);
-int		is_space(int c);
-int		is_metacharacter(int c);
-int		is_command_separator(char *token);
+/*
+**	lexer/lexer.c
+*/
+
+int				add_new_token(t_lexer *lex, t_list **head);
+t_list			*lexer(char *line);
+
+/*
+**	lexer/lexer_states.c
+*/
+
+void			double_quote(t_lexer *lex, char *line);
+void			single_quote(t_lexer *lex, char *line);
+int				in_token(t_lexer *lex, char *line, t_list **head);
+void			out_of_token(t_lexer *lex, char *line);
+int				meta_encounter(t_lexer *lex, char *line, t_list **head);
+
+/*
+**	utils/array_utils.c
+*/
+
+char			**malloc_var_array(int n);
+void			free_var_array(char **array);
+
+/*
+**	utils/command_utils.c
+*/
+
+t_list			*prepare_command(int length);
+void			free_command(t_command *command);
+
+/*
+**	utils/shell_utils.c
+*/
+
+void			free_content(void *content);
+int				is_space(int c);
+int				is_metacharacter(int c);
+t_separator		is_separator(char *token);
+t_redirect		is_redirect(char *token);
 
 /*
 **	parser/parse.c
 */
 
-void	parse(t_list *tokens);
-void	make_command(t_list **table, t_list *start_node, int length);
+void			parse(t_list *tokens);
+int				validate_command(t_parser *parser);
+void			create_command(t_list **table, t_parser *parser);
 
 #endif

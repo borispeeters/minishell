@@ -6,18 +6,24 @@
 /*   By: bpeeters <bpeeters@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/07 10:00:57 by bpeeters      #+#    #+#                 */
-/*   Updated: 2020/07/14 08:59:23 by mpeerdem      ########   odam.nl         */
+/*   Updated: 2020/07/20 08:37:47 by bpeeters      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "minishell.h"
 #include "libft.h"
+
+void	free_content(void *content)
+{
+	free(content);
+}
 
 int		is_space(int c)
 {
 	return (c == ' ' || c == '\t');
 }
 
-int		is_metacharacter(int c)
+int				is_metacharacter(int c)
 {
 	char	metachar[8];
 	int		i;
@@ -34,15 +40,29 @@ int		is_metacharacter(int c)
 }
 
 /*
-**	Small utility function that returns 1 if the token is a semicolon, and
-**	2 if the token is a pipe character.
+**	This function will return an enum for which kind of separator the token is.
 */
 
-int		is_command_separator(char *token)
+t_separator		is_separator(char *token)
 {
 	if (ft_strcmp(token, ";") == 0)
-		return (1);
+		return (SEMICOLON);
 	if (ft_strcmp(token, "|") == 0)
-		return (2);
-	return (0);
+		return (PIPE);
+	return (NO_SEPARATOR);
+}
+
+/*
+**	This function will return an enum for which kind of redirect the token is.
+*/
+
+t_redirect		is_redirect(char *token)
+{
+	if (ft_strcmp(token, "<") == 0)
+		return (REDIRECT_IN);
+	if (ft_strcmp(token, ">") == 0)
+		return (REDIRECT_OUT_TRUNC);
+	if (ft_strcmp(token, ">>") == 0)
+		return (REDIRECT_OUT_APPEND);
+	return (NO_REDIRECT);
 }

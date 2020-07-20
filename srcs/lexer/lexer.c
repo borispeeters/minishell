@@ -6,28 +6,49 @@
 /*   By: bpeeters <bpeeters@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/07 09:59:32 by bpeeters      #+#    #+#                 */
-/*   Updated: 2020/07/07 13:13:26 by bpeeters      ########   odam.nl         */
+/*   Updated: 2020/07/16 14:48:24 by bpeeters      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 #include "minishell.h"
 
-char	*lex_loop(t_lexer *lex, char *line, t_list **head)
+int		add_new_token(t_lexer *lex, t_list **head)
 {
+	char	*token;
+	t_list	*node;
+
+	token = ft_substr(lex->token_start, 0, lex->token_len);
+	if (token == NULL)
+		return (-1);
+	node = ft_lstnew(token);
+	if (node == NULL)
+	{
+		free(token);
+		return (-1);
+	}
+	ft_lstadd_back(head, node);
+	return (0);
+}
+
+int		lex_loop(t_lexer *lex, char *line, t_list **head)
+{
+	int	ret;
+
+	ret = 0;
 	if (*line == '\"' && lex->quote != SNGL_QUOTE)
 		double_quote(lex, line);
 	else if (*line == '\'' && lex->quote != DBL_QUOTE)
 		single_quote(lex, line);
 	if (lex->token_active == ACTIVE && lex->quote == NO_QUOTE)
-		in_token(lex, line, head);
+		ret = in_token(lex, line, head);
 	else if (lex->token_active == INACTIVE)
 		out_of_token(lex, line);
 	else if (lex->token_active == META && lex->quote == NO_QUOTE)
-		meta_encounter(lex, line, head);
+		ret = meta_encounter(lex, line, head);
 	if (lex->token_active >= ACTIVE)
 		++lex->token_len;
-	return (++line);
+	return (ret);
 }
 
 t_list	*lexer(char *line)
@@ -41,9 +62,13 @@ t_list	*lexer(char *line)
 	lex.token_len = 0;
 	lex.token_active = INACTIVE;
 	while (*line)
-		line = lex_loop(&lex, line, &head);
+	{
+		if (lex_loop(&lex, line, &head) == -1)
+			ft_lstclear(&head, free_content);
+		++line;
+	}
 	if (lex.token_active >= ACTIVE)
-		ft_lstadd_back(&head, \
-		ft_lstnew(ft_substr(lex.token_start, 0, lex.token_len)));
+		if (add_new_token(&lex, &head) == -1)
+			ft_lstclear(&head, free_content);
 	return (head);
 }
