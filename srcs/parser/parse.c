@@ -6,7 +6,7 @@
 /*   By: mpeerdem <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/09 11:02:36 by mpeerdem      #+#    #+#                 */
-/*   Updated: 2020/07/20 08:55:37 by mpeerdem      ########   odam.nl         */
+/*   Updated: 2020/07/20 13:54:34 by mpeerdem      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,13 @@ void	print_table(t_list *table)
 	while (table != NULL)
 	{
 		command = (t_command *)table->content;
-		printf("Element.\n");
+		printf("Element.\nVars = ");
+		while (*(command->vars))
+		{
+			printf("[%s]", *(command->vars));
+			command->vars++;
+		}
+		printf("\n");
 		table = table->next;
 	}
 	printf("\n_____COMMAND TABLE_____\n");
@@ -111,20 +117,54 @@ void		create_command(t_list **table, t_parser *parser)
 		printf("Iets ging fout lmaoooo\n");
 		return ;
 	}
-	printf("	New = %p\n", new);
-	printf("	New->command = %p\n", (t_command*)new->content);
-	printf("	New->command->vars[0] = %s\n", ((t_command*)new->content)->vars[0]);
+	parse_command((t_command*)new->content, parser);
 	ft_lstadd_back(table, new);
 
-	// if last has no PIPE OUT, execute the list.
 }
 
 /*
-**	This function will malloc space for the input and output for a command.
+**	This will loop over the tokens and assign the correct values to fields in
+**	the command struct.
 */
 
-void		prepare_io_for_command(t_command *command, t_parser *parser)
+void		parse_command(t_command *command, t_parser *parser)
 {
+	int			vars_parsed;
+	t_redirect	redirect;
+
 	(void)command;
-	(void)parser;
+	vars_parsed = 0;
+	while (parser->start && !is_separator((char *)parser->start->content))
+	{
+		redirect = is_redirect((char*)parser->start->content);
+		if (redirect != NO_REDIRECT)
+		{
+			handle_redirect(command, parser, redirect);
+		}
+		else
+		{
+			*(command->vars + vars_parsed) = parser->start->content;
+			vars_parsed++;
+		}
+		parser->start = parser->start->next;
+	}
+}
+
+/*
+**	This function will handle a redirect, and put the right information in the
+**	struct.
+*/
+
+void		handle_redirect(t_command *command, t_parser *parser,
+				t_redirect redirect)
+{
+	char	*file;
+
+	(void)command;
+	file = (char *)parser->start->next->content;
+	if (redirect == REDIRECT_IN)
+	{
+		printf("Content voor in: %s\n", file);
+	}
+	parser->start = parser->start->next;
 }
