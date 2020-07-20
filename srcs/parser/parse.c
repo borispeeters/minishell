@@ -6,7 +6,7 @@
 /*   By: mpeerdem <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/09 11:02:36 by mpeerdem      #+#    #+#                 */
-/*   Updated: 2020/07/20 13:54:34 by mpeerdem      ########   odam.nl         */
+/*   Updated: 2020/07/20 14:19:12 by mpeerdem      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,12 @@ void	print_table(t_list *table)
 		{
 			printf("[%s]", *(command->vars));
 			command->vars++;
+		}
+		printf("\nFiles = ");
+		while (command->files_in)
+		{
+			printf("[%s]", (char *)command->files_in->content);
+			command->files_in = command->files_in->next;
 		}
 		printf("\n");
 		table = table->next;
@@ -164,7 +170,7 @@ void		handle_redirect(t_command *command, t_parser *parser,
 	file = (char *)parser->start->next->content;
 	if (redirect == REDIRECT_IN)
 	{
-		printf("Content voor in: %s\n", file);
+		ft_lstadd_back(&(command->files_in), ft_lstnew(file));
 	}
 	parser->start = parser->start->next;
 }
