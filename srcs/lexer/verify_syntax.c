@@ -2,7 +2,14 @@
 #include "libft.h"
 #include "minishell.h"
 
-int		verify_syntax(t_list *token)
+static void	write_syntax_error(char const *str)
+{
+	write(2, "minishell: syntax error near unexpected token `", 47);
+	write(2, str, 1);
+	write(2, "'\n", 2);
+}
+
+int			verify_syntax(t_list *token)
 {
 	char	*str;
 	t_token	token_active;
@@ -16,9 +23,7 @@ int		verify_syntax(t_list *token)
 			if ((str[0] == '>' && ft_strcmp(str, ">") && ft_strcmp(str, ">>"))
 				|| token_active == META)
 			{
-				write(2, "minishell: syntax error near unexpected token `", 47);
-				write(2, str, 1);
-				write(2, "'\n", 2);
+				write_syntax_error(str);
 				return (-1);
 			}
 			token_active = META;
