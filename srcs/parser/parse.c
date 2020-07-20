@@ -6,7 +6,7 @@
 /*   By: mpeerdem <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/07/09 11:02:36 by mpeerdem      #+#    #+#                 */
-/*   Updated: 2020/07/16 14:35:28 by mpeerdem      ########   odam.nl         */
+/*   Updated: 2020/07/20 08:55:37 by mpeerdem      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,6 @@ void		create_command(t_list **table, t_parser *parser)
 	t_list			*new;
 	int				length;
 
-	(void)table;
 	length = validate_command(parser);
 	printf("Length? [%i]\n", length);
 	new = prepare_command(length);
@@ -118,4 +117,14 @@ void		create_command(t_list **table, t_parser *parser)
 	ft_lstadd_back(table, new);
 
 	// if last has no PIPE OUT, execute the list.
+}
+
+/*
+**	This function will malloc space for the input and output for a command.
+*/
+
+void		prepare_io_for_command(t_command *command, t_parser *parser)
+{
+	(void)command;
+	(void)parser;
 }

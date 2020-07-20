@@ -6,7 +6,7 @@
 /*   By: mpeerdem <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/03/11 14:04:34 by bpeeters      #+#    #+#                 */
-/*   Updated: 2020/07/16 11:38:09 by mpeerdem      ########   odam.nl         */
+/*   Updated: 2020/07/20 08:54:47 by mpeerdem      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,5 +164,6 @@ t_redirect		is_redirect(char *token);
 void			parse(t_list *tokens);
 int				validate_command(t_parser *parser);
 void			create_command(t_list **table, t_parser *parser);
+void			prepare_io_for_command(t_command *command, t_parser *parser);
 
 #endif
