@@ -110,8 +110,8 @@ typedef struct	s_lexer
 **	lexer/lexer.c
 */
 
-t_list			*lexer(char *line);
 int				add_new_token(t_lexer *lex, t_list **head);
+t_list			*lexer(char *line);
 
 /*
 **	lexer/lexer_states.c
