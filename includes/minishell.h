@@ -1,19 +1,9 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        ::::::::            */
-/*   minishell.h                                        :+:    :+:            */
-/*                                                     +:+                    */
-/*   By: mpeerdem <marvin@codam.nl>                   +#+                     */
-/*                                                   +#+                      */
-/*   Created: 2020/03/11 14:04:34 by bpeeters      #+#    #+#                 */
-/*   Updated: 2020/07/20 13:47:46 by mpeerdem      ########   odam.nl         */
-/*                                                                            */
-/* ************************************************************************** */
-
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
 # include "libft.h"
+
+# include <stdio.h>//
 
 /*
 **	Enum for the different types of redirect.

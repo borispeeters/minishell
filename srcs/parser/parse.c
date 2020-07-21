@@ -1,23 +1,11 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        ::::::::            */
-/*   parse.c                                            :+:    :+:            */
-/*                                                     +:+                    */
-/*   By: mpeerdem <marvin@codam.nl>                   +#+                     */
-/*                                                   +#+                      */
-/*   Created: 2020/07/09 11:02:36 by mpeerdem      #+#    #+#                 */
-/*   Updated: 2020/07/20 14:19:12 by mpeerdem      ########   odam.nl         */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "minishell.h"
 #include "libft.h"
-#include <stdio.h>//
 
 // DEBUG
 void	print_table(t_list *table)
 {
 	t_command	*command;
+	char		*mode;
 
 	printf("\n_____COMMAND TABLE_____\n\n");
 	while (table != NULL)
@@ -26,14 +14,23 @@ void	print_table(t_list *table)
 		printf("Element.\nVars = ");
 		while (*(command->vars))
 		{
-			printf("[%s]", *(command->vars));
+			printf("[%s] ", *(command->vars));
 			command->vars++;
 		}
-		printf("\nFiles = ");
+		printf("\nFiles in = ");
 		while (command->files_in)
 		{
-			printf("[%s]", (char *)command->files_in->content);
+			printf("[%s] ", (char *)command->files_in->content);
 			command->files_in = command->files_in->next;
+		}
+		printf("\nFiles out = ");
+		while (command->files_out)
+		{
+			mode = ((int)command->out_modes->content == APPEND) ?
+				"Append" : "Trunc";
+			printf("[%s][%s] ", (char *)command->files_out->content, mode);
+			command->files_out = command->files_out->next;
+			command->out_modes = command->out_modes->next;
 		}
 		printf("\n");
 		table = table->next;
@@ -164,13 +161,20 @@ void		parse_command(t_command *command, t_parser *parser)
 void		handle_redirect(t_command *command, t_parser *parser,
 				t_redirect redirect)
 {
-	char	*file;
+	char		*file;
+	t_filemode	mode;
 
 	(void)command;
 	file = (char *)parser->start->next->content;
 	if (redirect == REDIRECT_IN)
 	{
 		ft_lstadd_back(&(command->files_in), ft_lstnew(file));
+	}
+	else
+	{
+		mode = (redirect == REDIRECT_OUT_TRUNC) ? TRUNC : APPEND;
+		ft_lstadd_back(&(command->files_out), ft_lstnew(file));
+		ft_lstadd_back(&(command->out_modes), ft_lstnew((void *)mode));
 	}
 	parser->start = parser->start->next;
 }
