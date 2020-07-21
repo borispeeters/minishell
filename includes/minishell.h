@@ -124,6 +124,12 @@ void			out_of_token(t_lexer *lex, char *line);
 int				meta_encounter(t_lexer *lex, char *line, t_list **head);
 
 /*
+**	lexer/verify_syntax.c
+*/
+
+int				verify_syntax(t_list *token);
+
+/*
 **	utils/array_utils.c
 */
 
