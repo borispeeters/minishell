@@ -26,6 +26,10 @@ t_list		*prepare_command(int length)
 		free_command(command);
 		return (NULL);
 	}
+	command->files_in = NULL;
+	command->files_out = NULL;
+	command->out_modes = NULL;
+	command->pipe = PIPE_NONE;
 	return (link);
 }
 

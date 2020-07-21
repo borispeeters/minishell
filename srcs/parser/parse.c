@@ -6,24 +6,25 @@ void	print_table(t_list *table)
 {
 	t_command	*command;
 	char		*mode;
+	char		*pipe;
 
 	printf("\n_____COMMAND TABLE_____\n\n");
 	while (table != NULL)
 	{
 		command = (t_command *)table->content;
-		printf("Element.\nVars = ");
+		printf("Element.\n  Vars = ");
 		while (*(command->vars))
 		{
 			printf("[%s] ", *(command->vars));
 			command->vars++;
 		}
-		printf("\nFiles in = ");
+		printf("\n  Files in = ");
 		while (command->files_in)
 		{
 			printf("[%s] ", (char *)command->files_in->content);
 			command->files_in = command->files_in->next;
 		}
-		printf("\nFiles out = ");
+		printf("\n  Files out = ");
 		while (command->files_out)
 		{
 			mode = ((int)command->out_modes->content == APPEND) ?
@@ -32,7 +33,21 @@ void	print_table(t_list *table)
 			command->files_out = command->files_out->next;
 			command->out_modes = command->out_modes->next;
 		}
-		printf("\n");
+		switch (command->pipe)
+		{
+			case 0:
+				pipe = "NONE";
+				break;
+			case 1:
+				pipe = "IN";
+				break;
+			case 2:
+				pipe = "OUT";
+				break;
+			default:
+				pipe = "BOTH";
+		}
+		printf("\n  Pipe: [%s]\n", pipe);
 		table = table->next;
 	}
 	printf("\n_____COMMAND TABLE_____\n");
@@ -66,7 +81,6 @@ void		parse(t_list *tokens)
 	}
 	if (parser.start != NULL)
 		create_command(&comm_table, &parser);
-	//
 	print_table(comm_table);
 }
 
@@ -113,7 +127,6 @@ void		create_command(t_list **table, t_parser *parser)
 	int				length;
 
 	length = validate_command(parser);
-	printf("Length? [%i]\n", length);
 	new = prepare_command(length);
 	if (new == NULL)
 	{
@@ -135,15 +148,12 @@ void		parse_command(t_command *command, t_parser *parser)
 	int			vars_parsed;
 	t_redirect	redirect;
 
-	(void)command;
 	vars_parsed = 0;
 	while (parser->start && !is_separator((char *)parser->start->content))
 	{
 		redirect = is_redirect((char*)parser->start->content);
 		if (redirect != NO_REDIRECT)
-		{
 			handle_redirect(command, parser, redirect);
-		}
 		else
 		{
 			*(command->vars + vars_parsed) = parser->start->content;
@@ -151,6 +161,10 @@ void		parse_command(t_command *command, t_parser *parser)
 		}
 		parser->start = parser->start->next;
 	}
+	if (parser->sep == PIPE)
+		command->pipe ^= PIPE_OUT;
+	if (parser->prev_sep == PIPE)
+		command->pipe ^= PIPE_IN;
 }
 
 /*
