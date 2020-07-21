@@ -59,8 +59,8 @@ int		main(int argc, char **argv, char **envp)
 			free_shell(&line, &tokens);
 			continue ;
 		}
-		// print_list(tokens);
-		// parse(tokens);
+		print_list(tokens);
+		parse(tokens);
 		free_shell(&line, &tokens);
 	}
 	write(1, "exit\n", 5);

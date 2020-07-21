@@ -6,7 +6,7 @@ void	free_content(void *content)
 	free(content);
 }
 
-int		is_space(int c)
+int				is_space(int c)
 {
 	return (c == ' ' || c == '\t');
 }

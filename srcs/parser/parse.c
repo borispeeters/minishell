@@ -1,17 +1,38 @@
 #include "minishell.h"
 #include "libft.h"
-#include <stdio.h>//
 
 // DEBUG
 void	print_table(t_list *table)
 {
 	t_command	*command;
+	char		*mode;
 
 	printf("\n_____COMMAND TABLE_____\n\n");
 	while (table != NULL)
 	{
 		command = (t_command *)table->content;
-		printf("Element.\n");
+		printf("Element.\nVars = ");
+		while (*(command->vars))
+		{
+			printf("[%s] ", *(command->vars));
+			command->vars++;
+		}
+		printf("\nFiles in = ");
+		while (command->files_in)
+		{
+			printf("[%s] ", (char *)command->files_in->content);
+			command->files_in = command->files_in->next;
+		}
+		printf("\nFiles out = ");
+		while (command->files_out)
+		{
+			mode = ((int)command->out_modes->content == APPEND) ?
+				"Append" : "Trunc";
+			printf("[%s][%s] ", (char *)command->files_out->content, mode);
+			command->files_out = command->files_out->next;
+			command->out_modes = command->out_modes->next;
+		}
+		printf("\n");
 		table = table->next;
 	}
 	printf("\n_____COMMAND TABLE_____\n");
@@ -91,7 +112,6 @@ void		create_command(t_list **table, t_parser *parser)
 	t_list			*new;
 	int				length;
 
-	(void)table;
 	length = validate_command(parser);
 	printf("Length? [%i]\n", length);
 	new = prepare_command(length);
@@ -100,10 +120,61 @@ void		create_command(t_list **table, t_parser *parser)
 		printf("Iets ging fout lmaoooo\n");
 		return ;
 	}
-	printf("	New = %p\n", new);
-	printf("	New->command = %p\n", (t_command*)new->content);
-	printf("	New->command->vars[0] = %s\n", ((t_command*)new->content)->vars[0]);
+	parse_command((t_command*)new->content, parser);
 	ft_lstadd_back(table, new);
 
-	// if last has no PIPE OUT, execute the list.
+}
+
+/*
+**	This will loop over the tokens and assign the correct values to fields in
+**	the command struct.
+*/
+
+void		parse_command(t_command *command, t_parser *parser)
+{
+	int			vars_parsed;
+	t_redirect	redirect;
+
+	(void)command;
+	vars_parsed = 0;
+	while (parser->start && !is_separator((char *)parser->start->content))
+	{
+		redirect = is_redirect((char*)parser->start->content);
+		if (redirect != NO_REDIRECT)
+		{
+			handle_redirect(command, parser, redirect);
+		}
+		else
+		{
+			*(command->vars + vars_parsed) = parser->start->content;
+			vars_parsed++;
+		}
+		parser->start = parser->start->next;
+	}
+}
+
+/*
+**	This function will handle a redirect, and put the right information in the
+**	struct.
+*/
+
+void		handle_redirect(t_command *command, t_parser *parser,
+				t_redirect redirect)
+{
+	char		*file;
+	t_filemode	mode;
+
+	(void)command;
+	file = (char *)parser->start->next->content;
+	if (redirect == REDIRECT_IN)
+	{
+		ft_lstadd_back(&(command->files_in), ft_lstnew(file));
+	}
+	else
+	{
+		mode = (redirect == REDIRECT_OUT_TRUNC) ? TRUNC : APPEND;
+		ft_lstadd_back(&(command->files_out), ft_lstnew(file));
+		ft_lstadd_back(&(command->out_modes), ft_lstnew((void *)mode));
+	}
+	parser->start = parser->start->next;
 }

@@ -3,6 +3,8 @@
 
 # include "libft.h"
 
+# include <stdio.h> //
+
 /*
 **	Enum for the different types of redirect.
 */
@@ -160,5 +162,8 @@ t_redirect		is_redirect(char *token);
 void			parse(t_list *tokens);
 int				validate_command(t_parser *parser);
 void			create_command(t_list **table, t_parser *parser);
+void			parse_command(t_command *command, t_parser *parser);
+void			handle_redirect(t_command *command, t_parser *parser,
+					t_redirect redirect);
 
 #endif
