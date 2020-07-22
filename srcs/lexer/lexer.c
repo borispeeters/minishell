@@ -1,3 +1,4 @@
+#include <unistd.h>
 #include "libft.h"
 #include "minishell.h"
 
@@ -52,11 +53,23 @@ t_list	*lexer(char *line)
 	while (*line)
 	{
 		if (lex_loop(&lex, line, &head) == -1)
+		{
 			ft_lstclear(&head, free_content);
+			return (NULL);
+		}
 		++line;
 	}
 	if (lex.token_active >= ACTIVE)
 		if (add_new_token(&lex, &head) == -1)
+		{
 			ft_lstclear(&head, free_content);
+			return (NULL);
+		}
+	if (lex.quote != NO_QUOTE)
+	{
+		write(1, "minishell: multiline commands are not supported\n", 48);
+		ft_lstclear(&head, free_content);
+		return (NULL);
+	}
 	return (head);
 }

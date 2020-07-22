@@ -108,6 +108,22 @@ typedef struct	s_lexer
 	t_token		token_active;
 }				t_lexer;
 
+typedef struct	s_expansion 
+{
+	t_quote		quote;
+	char		*env_start;
+	int			env_len;
+	char		*env;
+}				t_expansion;
+
+
+/*
+**	env/env.c
+*/
+
+char			**init_env(char **envp);
+char			**free_env(char **env);
+
 /*
 **	lexer/lexer.c
 */
@@ -159,11 +175,23 @@ t_redirect		is_redirect(char *token);
 **	parser/parse.c
 */
 
-void			parse(t_list *tokens);
+t_list			*parse(t_list *tokens);
 int				validate_command(t_parser *parser);
 void			create_command(t_list **table, t_parser *parser);
 void			parse_command(t_command *command, t_parser *parser);
 void			handle_redirect(t_command *command, t_parser *parser,
 					t_redirect redirect);
+
+/*
+**	executor/execute_loop.c
+*/
+
+void			execute_loop(t_list *table, char **env);
+
+/*
+**	expansions/expand_env.c
+*/
+
+void			expand_env(char **str, char **env);
 
 #endif

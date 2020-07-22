@@ -6,8 +6,11 @@ CFLAGS =	-Wall -Werror -Wextra
 SDIR =		srcs
 ODIR =		objs
 _OBJS =		minishell \
+			env/env \
 			parser/parse \
 			lexer/lexer lexer/lexer_states lexer/verify_syntax \
+			executor/execute_loop \
+			expansions/expand_env \
 			utils/shell_utils utils/array_utils utils/command_utils
 OBJS =		$(addsuffix .o, $(addprefix $(ODIR)/, $(_OBJS)))
 LIBFT =		libft.a

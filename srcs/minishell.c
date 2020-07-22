@@ -37,15 +37,17 @@ void	free_shell(char **line, t_list **tokens)
 
 int		main(int argc, char **argv, char **envp)
 {
+	char	**env;
 	char	*line;
 	int		status;
 	t_list	*tokens;
 	char	prompt[] = "minishell-0.1$ ";
+	t_list	*table;
 
+	env = init_env(envp);
 	line = NULL;
 	(void)argc;
 	(void)argv;
-	(void)envp;
 	status = 1;
 	signal(SIGINT, signal_handler);
 	signal(SIGQUIT, signal_handler);
@@ -54,15 +56,23 @@ int		main(int argc, char **argv, char **envp)
 		write(1, prompt, ft_strlen(prompt));
 		status = get_next_line(0, &line);
 		tokens = lexer(line);
+		if (tokens == NULL)
+		{
+			free_shell(&line, &tokens);
+			continue ;
+		}
 		if (verify_syntax(tokens) != 0)
 		{
 			free_shell(&line, &tokens);
 			continue ;
 		}
-		print_list(tokens);
-		parse(tokens);
+		// print_list(tokens);
+		table = parse(tokens);
+		execute_loop(table, env);
 		free_shell(&line, &tokens);
 	}
+	env = free_env(env);
 	write(1, "exit\n", 5);
+	system("leaks minishell");
 	return (0);
 }
