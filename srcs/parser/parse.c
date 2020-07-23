@@ -58,26 +58,26 @@ void	print_table(t_list *table)
 **	other functions.
 */
 
-t_list			*parse(t_list *tokens)
+t_list			*parse(t_list **tokens)
 {
 	char			*token;
 	t_parser		parser;
 	t_list			*comm_table;
 
 	comm_table = NULL;
-	parser.start = tokens;
+	parser.start = *tokens;
 	parser.prev_sep = NO_SEPARATOR;
-	while (tokens != NULL)
+	while (*tokens != NULL)
 	{
-		token = (char *)tokens->content;
+		token = (char *)(*tokens)->content;
 		parser.sep = is_separator(token);
 		if (parser.sep)
 		{
 			create_command(&comm_table, &parser);
 			parser.prev_sep = parser.sep;
-			parser.start = tokens->next;
+			parser.start = (*tokens)->next;
 		}
-		tokens = tokens->next;
+		*tokens = (*tokens)->next;
 	}
 	if (parser.start != NULL)
 		create_command(&comm_table, &parser);

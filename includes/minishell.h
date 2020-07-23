@@ -175,7 +175,7 @@ t_redirect		is_redirect(char *token);
 **	parser/parse.c
 */
 
-t_list			*parse(t_list *tokens);
+t_list			*parse(t_list **tokens);
 int				validate_command(t_parser *parser);
 void			create_command(t_list **table, t_parser *parser);
 void			parse_command(t_command *command, t_parser *parser);
