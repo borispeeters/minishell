@@ -118,13 +118,6 @@ typedef struct	s_expansion
 
 
 /*
-**	env/env.c
-*/
-
-char			**init_env(char **envp);
-char			**free_env(char **env);
-
-/*
 **	lexer/lexer.c
 */
 
@@ -162,6 +155,13 @@ t_list			*prepare_command(int length);
 void			free_command(t_command *command);
 
 /*
+**	utils/env.c
+*/
+
+char			**init_env(char **envp);
+char			**free_env(char **env);
+
+/*
 **	utils/shell_utils.c
 */
 
@@ -181,17 +181,13 @@ void			create_command(t_list **table, t_parser *parser);
 void			parse_command(t_command *command, t_parser *parser);
 void			handle_redirect(t_command *command, t_parser *parser,
 					t_redirect redirect);
+void			expand_env(char **str, char **env);
 
 /*
 **	executor/execute_loop.c
 */
 
-void			execute_loop(t_list *table, char **env);
+void			execute(t_list *table, char **env);
 
-/*
-**	expansions/expand_env.c
-*/
-
-void			expand_env(char **str, char **env);
 
 #endif

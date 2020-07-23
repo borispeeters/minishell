@@ -66,9 +66,12 @@ int		main(int argc, char **argv, char **envp)
 			free_shell(&line, &tokens);
 			continue ;
 		}
-		// print_list(tokens);
-		table = parse(tokens);
-		execute_loop(table, env);
+		print_list(tokens);
+		while (tokens != NULL)
+		{
+			table = parse(&tokens);
+			execute(table, env);
+		}
 		free_shell(&line, &tokens);
 	}
 	env = free_env(env);

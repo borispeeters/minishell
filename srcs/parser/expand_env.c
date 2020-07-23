@@ -54,5 +54,10 @@ void	expand_env(char **str, char **env)
 			++exp.env_len;
 		++(*str);
 	}
+	if (isenv)
+	{
+		isenv = 0;
+		exp.env = ft_substr(exp.env_start, 0, exp.env_len);
+	}
 	printf("env: %s\n", exp.env);
 }
