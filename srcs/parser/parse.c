@@ -58,7 +58,7 @@ void	print_table(t_list *table)
 **	other functions.
 */
 
-void		parse(t_list *tokens)
+t_list			*parse(t_list *tokens)
 {
 	char			*token;
 	t_parser		parser;
@@ -82,6 +82,7 @@ void		parse(t_list *tokens)
 	if (parser.start != NULL)
 		create_command(&comm_table, &parser);
 	print_table(comm_table);
+	return (comm_table);
 }
 
 /*
