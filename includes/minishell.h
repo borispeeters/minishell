@@ -116,6 +116,14 @@ typedef struct	s_expansion
 	char		*env;
 }				t_expansion;
 
+typedef struct	s_path
+{
+	char		*path;
+	char		**path_dirs;
+	char		*abs;
+	char		*tmp;
+}				t_path;
+
 
 /*
 **	lexer/lexer.c
@@ -189,5 +197,10 @@ void			expand_env(char **str, char **env);
 
 void			execute(t_list *table, char **env);
 
+/*
+**	executor/search_path.c
+*/
+
+char			*search_path(char *cmd, char **env);
 
 #endif

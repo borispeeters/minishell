@@ -81,7 +81,7 @@ t_list			*parse(t_list **tokens)
 	}
 	if (parser.start != NULL)
 		create_command(&comm_table, &parser);
-	print_table(comm_table);
+	// print_table(comm_table);
 	return (comm_table);
 }
 

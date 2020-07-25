@@ -66,7 +66,7 @@ int		main(int argc, char **argv, char **envp)
 			free_shell(&line, &tokens);
 			continue ;
 		}
-		print_list(tokens);
+		// print_list(tokens);
 		while (tokens != NULL)
 		{
 			table = parse(&tokens);
@@ -76,6 +76,6 @@ int		main(int argc, char **argv, char **envp)
 	}
 	env = free_env(env);
 	write(1, "exit\n", 5);
-	system("leaks minishell");
+	// system("leaks minishell");
 	return (0);
 }
