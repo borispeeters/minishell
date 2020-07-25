@@ -1,4 +1,3 @@
-#include <fcntl.h>
 #include <sys/wait.h>
 #include <unistd.h>
 #include "libft.h"
@@ -10,6 +9,8 @@ void	execute(t_list *table, char **env)
 	char		**vars;
 	pid_t		pid;
 	char		*cmd;
+	int			in_bak;
+	int			out_bak;
 
 	command = (t_command*)table->content;
 	vars = command->vars;
@@ -17,6 +18,18 @@ void	execute(t_list *table, char **env)
 	if (cmd == NULL)
 	{
 		write(2, "Something went wrong\n", 21);
+		return ;
+	}
+	in_bak = dup(0);
+	out_bak = dup(1);
+	if (output_redir(command) != 0)
+	{
+		write(2, "An error occurred redirecting the output\n", 41);
+		return ;
+	}
+	if (input_redir(command) != 0)
+	{
+		write(2, "An error occurred redirecting the input\n", 40);
 		return ;
 	}
 	pid = fork();
@@ -33,5 +46,7 @@ void	execute(t_list *table, char **env)
 	{
 		write(2, "minishell: failed to fork child process\n", 40);
 	}
+	dup2(in_bak, 0);
+	dup2(out_bak, 1);
 	free(cmd);
 }

@@ -59,7 +59,9 @@ typedef struct	s_command
 {
 	char		**vars;
 	t_list		*files_in;
+	int			fd_in;
 	t_list		*files_out;
+	int			fd_out;
 	t_list		*out_modes;
 	t_pipe		pipe;
 }				t_command;
@@ -202,5 +204,12 @@ void			execute(t_list *table, char **env);
 */
 
 char			*search_path(char *cmd, char **env);
+
+/*
+**	executor/redirections.h
+*/
+
+int				output_redir(t_command *cmd);
+int				input_redir(t_command *cmd);
 
 #endif
