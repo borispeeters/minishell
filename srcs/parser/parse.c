@@ -99,7 +99,7 @@ int			validate_command(t_parser *parser)
 	t_list		*node;
 
 	count = 0;
-	prev = NO_REDIRECT;
+	curr = NO_REDIRECT;
 	node = parser->start;
 	while (node != NULL && !is_separator((char *)node->content))
 	{

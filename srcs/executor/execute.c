@@ -22,16 +22,8 @@ void	execute(t_list *table, char **env)
 	}
 	in_bak = dup(0);
 	out_bak = dup(1);
-	if (output_redir(command) != 0)
-	{
-		write(2, "An error occurred redirecting the output\n", 41);
+	if (output_redir(command) != 0 || input_redir(command) != 0)
 		return ;
-	}
-	if (input_redir(command) != 0)
-	{
-		write(2, "An error occurred redirecting the input\n", 40);
-		return ;
-	}
 	pid = fork();
 	if (pid == 0)
 	{

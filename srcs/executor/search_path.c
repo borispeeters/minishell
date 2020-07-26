@@ -11,8 +11,6 @@ static void	free_path(t_path *path)
 	path->path = NULL;
 	free(path->abs);
 	path->abs = NULL;
-	free(path->tmp);
-	path->tmp = NULL;
 	i = 0;
 	while (path->path_dirs && path->path_dirs[i])
 	{
@@ -24,6 +22,31 @@ static void	free_path(t_path *path)
 	path->path_dirs = NULL;
 }
 
+static char	*make_abs_path(t_path *path, int i, char *cmd)
+{
+	char	*tmp;
+
+	tmp = ft_strjoin(path->path_dirs[i], "/");
+	if (tmp == NULL)
+	{
+		free_path(path);
+		return (NULL);
+	}
+	if (path->abs)
+	{
+		free(path->abs);
+		path->abs = NULL;
+	}
+	path->abs = ft_strjoin(tmp, cmd);
+	free(tmp);
+	if (path->abs == NULL)
+	{
+		free_path(path);
+		return (NULL);
+	}
+	return (path->abs);
+}
+
 static char	*search_path_dirs(t_path *path, char *cmd)
 {
 	struct stat	buf;
@@ -33,14 +56,7 @@ static char	*search_path_dirs(t_path *path, char *cmd)
 	i = 0;
 	while (path->path_dirs[i])
 	{
-		path->tmp = ft_strjoin(path->path_dirs[i], "/");
-		if (path->tmp == NULL)
-		{
-			free_path(path);
-			return (NULL);
-		}
-		path->abs = ft_strjoin(path->tmp, cmd);
-		if (path->abs == NULL)
+		if (make_abs_path(path, i, cmd) == NULL)
 		{
 			free_path(path);
 			return (NULL);
@@ -71,21 +87,15 @@ static char	*found_path(t_path *path, char **env, char *cmd)
 	return (search_path_dirs(path, cmd));
 }
 
-static void	init_path(t_path *path)
-{
-	path->path = NULL;
-	path->path_dirs = NULL;
-	path->abs = NULL;
-	path->tmp = NULL;
-}
-
 char	*search_path(char *cmd, char **env)
 {
 	t_path	path;
 
+	path.path = NULL;
+	path.path_dirs = NULL;
+	path.abs = NULL;
 	while (*env)
 	{
-		init_path(&path);
 		if (ft_strncmp(*env, "PATH=", 5) == 0)
 			return (found_path(&path, env, cmd));
 		++env;

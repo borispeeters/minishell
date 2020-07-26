@@ -98,6 +98,12 @@ typedef enum	e_quote
 	DBL_QUOTE
 }				t_quote;
 
+typedef enum	e_escape
+{
+	NO_ESCAPE,
+	ESCAPE
+}				t_escape;
+
 /*
 **	Struct to hold important information for the lexer.
 */
@@ -108,6 +114,7 @@ typedef struct	s_lexer
 	char		*token_start;
 	int			token_len;
 	t_token		token_active;
+	t_escape	escape;
 }				t_lexer;
 
 typedef struct	s_expansion 
@@ -123,7 +130,6 @@ typedef struct	s_path
 	char		*path;
 	char		**path_dirs;
 	char		*abs;
-	char		*tmp;
 }				t_path;
 
 
@@ -143,6 +149,7 @@ void			single_quote(t_lexer *lex, char *line);
 int				in_token(t_lexer *lex, char *line, t_list **head);
 void			out_of_token(t_lexer *lex, char *line);
 int				meta_encounter(t_lexer *lex, char *line, t_list **head);
+void			escape_char(t_lexer *lex, char *line);
 
 /*
 **	lexer/verify_syntax.c
