@@ -3,7 +3,7 @@
 #include "libft.h"
 #include "minishell.h"
 
-void	execute(t_list *table, char **env)
+void	execute(t_list *table, t_env *env)
 {
 	t_command	*command;
 	char		**vars;
@@ -14,10 +14,10 @@ void	execute(t_list *table, char **env)
 
 	command = (t_command*)table->content;
 	vars = command->vars;
-	cmd = (ft_strchr(vars[0], '/') == NULL) ? search_path(vars[0], env) : ft_strdup(vars[0]);
+	cmd = (ft_strchr(vars[0], '/') == NULL) ? search_path(vars[0], env->vars) : ft_strdup(vars[0]);
 	if (cmd == NULL)
 	{
-		write(2, "Something went wrong\n", 21);
+		write(2, "minishell: command not found\n", 29);
 		return ;
 	}
 	in_bak = dup(0);
@@ -27,7 +27,7 @@ void	execute(t_list *table, char **env)
 	pid = fork();
 	if (pid == 0)
 	{
-		execve(cmd, vars, env);
+		execve(cmd, vars, env->vars);
 		exit(1);
 	}
 	else if (pid > 0)

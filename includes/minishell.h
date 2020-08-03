@@ -132,6 +132,14 @@ typedef struct	s_path
 	char		*abs;
 }				t_path;
 
+typedef struct	s_env
+{
+	char		**vars;
+	int			length;
+	int			block_size;
+	int			block_amount;
+}				t_env;
+
 
 /*
 **	lexer/lexer.c
@@ -175,8 +183,10 @@ void			free_command(t_command *command);
 **	utils/env.c
 */
 
-char			**init_env(char **envp);
-char			**free_env(char **env);
+void			init_env(t_env *env, char **envp);
+void			free_env(t_env *env);
+void			resize_up_env(t_env *env, char *new);
+void			resize_down_env(t_env *env, char *remove);
 
 /*
 **	utils/shell_utils.c
@@ -204,7 +214,7 @@ void			expand_env(char **str, char **env);
 **	executor/execute_loop.c
 */
 
-void			execute(t_list *table, char **env);
+void			execute(t_list *table, t_env *env);
 
 /*
 **	executor/search_path.c

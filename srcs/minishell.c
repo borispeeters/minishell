@@ -35,16 +35,43 @@ void	free_shell(char **line, t_list **tokens)
 	*tokens = NULL;
 }
 
+static void	print_env(t_env *env)
+{
+	int	i;
+
+	i = 0;
+	while (i < env->length)
+	{
+		printf("%s\n", env->vars[i]);
+		++i;
+	}
+}
+
 int		main(int argc, char **argv, char **envp)
 {
-	char	**env;
+	t_env	env;
 	char	*line;
 	int		status;
 	t_list	*tokens;
 	char	prompt[] = "minishell-0.1$ ";
 	t_list	*table;
 
-	env = init_env(envp);
+	init_env(&env, envp);
+	print_env(&env);
+	printf("BLOCK: [%d]\n", env.block_amount);
+	resize_up_env(&env, ft_strdup("TAART=taart"));
+	printf("BLOCK: [%d]\n", env.block_amount);
+	resize_up_env(&env, ft_strdup("CAKE=cake"));
+	printf("BLOCK: [%d]\n", env.block_amount);
+	resize_up_env(&env, ft_strdup("RANJA=ranja"));
+	printf("BLOCK: [%d]\n", env.block_amount);
+	resize_up_env(&env, ft_strdup("CITROEN=citroen"));
+	printf("BLOCK: [%d]\n", env.block_amount);
+	resize_up_env(&env, ft_strdup("SPERZIEBONEN=sperziebonen"));
+	printf("BLOCK: [%d]\n", env.block_amount);
+	resize_up_env(&env, ft_strdup("POEP=poep"));
+	printf("BLOCK: [%d]\n", env.block_amount);
+	print_env(&env);
 	line = NULL;
 	(void)argc;
 	(void)argv;
@@ -56,25 +83,18 @@ int		main(int argc, char **argv, char **envp)
 		write(1, prompt, ft_strlen(prompt));
 		status = get_next_line(0, &line);
 		tokens = lexer(line);
-		if (tokens == NULL)
+		if (tokens != NULL && verify_syntax(tokens) == 0)
 		{
-			free_shell(&line, &tokens);
-			continue ;
-		}
-		if (verify_syntax(tokens) != 0)
-		{
-			free_shell(&line, &tokens);
-			continue ;
-		}
-		// print_list(tokens);
-		while (tokens != NULL)
-		{
-			table = parse(&tokens);
-			execute(table, env);
+			// print_list(tokens);
+			while (tokens != NULL)
+			{
+				table = parse(&tokens);
+				execute(table, &env);
+			}
 		}
 		free_shell(&line, &tokens);
 	}
-	env = free_env(env);
+	free_env(&env);
 	write(1, "exit\n", 5);
 	// system("leaks minishell");
 	return (0);
