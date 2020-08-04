@@ -186,7 +186,7 @@ void			free_command(t_command *command);
 void			init_env(t_env *env, char **envp);
 void			free_env(t_env *env);
 void			resize_up_env(t_env *env, char *new);
-void			resize_down_env(t_env *env, char *remove);
+void			resize_down_env(t_env *env, int remove);
 
 /*
 **	utils/shell_utils.c

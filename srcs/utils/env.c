@@ -4,9 +4,9 @@
 
 void	init_env(t_env *env, char **envp)
 {
-	int	 i;
+	int	i;
 
-	env->block_size = 5;
+	env->block_size = 8;
 	env->block_amount = 0;
 	env->length = 0;
 	i = 0;
@@ -14,7 +14,7 @@ void	init_env(t_env *env, char **envp)
 		++env->length;
 	while (env->block_amount * env->block_size < env->length)
 		++env->block_amount;
-	env->vars = malloc(sizeof(*env->vars) * (env->block_amount * env->block_size));
+	env->vars = malloc(sizeof(*env->vars) * (env->block_amount * env->block_size + 1));
 	while (i < env->length)
 	{
 		env->vars[i] = ft_strdup(envp[i]);
@@ -25,6 +25,7 @@ void	init_env(t_env *env, char **envp)
 		env->vars[i] = NULL;
 		++i;
 	}
+	env->vars[i] = NULL;
 }
 
 void	free_env(t_env *env)
@@ -34,13 +35,12 @@ void	free_env(t_env *env)
 	i = 0;
 	while (i < env->length)
 	{
-		// printf("%s\n", env->vars[i]);
 		free(env->vars[i]);
 		env->vars[i] = NULL;
 		++i;
 	}
-	// free(env->vars);
-	// env->vars = NULL;
+	free(env->vars);
+	env->vars = NULL;
 }
 
 void	resize_up_env(t_env *env, char *new)
@@ -51,10 +51,10 @@ void	resize_up_env(t_env *env, char *new)
 
 	prev_len = env->length;
 	++env->length;
-	if (env->length > (env->block_amount + 1) * env->block_size)
+	if (env->length > env->block_amount * env->block_size)
 	{
 		++env->block_amount;
-		tmp = malloc(sizeof(*tmp) * (env->block_amount * env->block_size));
+		tmp = malloc(sizeof(*tmp) * (env->block_amount * env->block_size + 1));
 		i = 0;
 		while (i < prev_len)
 		{
@@ -64,32 +64,28 @@ void	resize_up_env(t_env *env, char *new)
 		while (i < env->block_amount * env->block_size)
 		{
 			tmp[i] = NULL;
-			printf("TMP: %s\n", tmp[i]);
 			++i;
 		}
+		tmp[i] = NULL;
 		free(env->vars);
 		env->vars = tmp;
 	}
-	printf("NEW: %s\n", env->vars[prev_len]);
 	env->vars[prev_len] = new; // ft_strdup(new); ???
 }
 
-void	resize_down_env(t_env *env, char *remove)
+void	resize_down_env(t_env *env, int remove)
 {
 	char	**tmp;
 	int		i;
 
-	i = 0;
+	i = remove;
 	--env->length;
-	while (i <= env->length)
+	while (i < env->length)
 	{
-		if (ft_strcmp(env->vars[i], remove) == 0)
-		{
-			free(env->vars[i]);
-			env->vars[i] = env->vars[env->length];
-		}
+		env->vars[i] = env->vars[i + 1];
 		++i;
 	}
+	env->vars[env->length] = NULL;
 	if (env->length < (env->block_amount - 1) * env->block_size)
 	{
 		--env->block_amount;
@@ -100,6 +96,7 @@ void	resize_down_env(t_env *env, char *remove)
 			tmp[i] = env->vars[i];
 			++i;
 		}
+		tmp[i] = NULL;
 		free(env->vars);
 		env->vars = tmp;
 	}

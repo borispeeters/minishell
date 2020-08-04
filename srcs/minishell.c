@@ -35,17 +35,30 @@ void	free_shell(char **line, t_list **tokens)
 	*tokens = NULL;
 }
 
-static void	print_env(t_env *env)
+static void	lol(int argc, char **argv)
 {
 	int	i;
 
-	i = 0;
-	while (i < env->length)
+	while (0)
 	{
-		printf("%s\n", env->vars[i]);
+		write(1, argv[i], ft_strlen(argv[i]));
 		++i;
 	}
+	if (0)
+		argc += 42;
 }
+
+// static void	print_env(t_env *env)
+// {
+// 	int	i;
+
+// 	i = 0;
+// 	while (i < env->length)
+// 	{
+// 		printf("%s\n", env->vars[i]);
+// 		++i;
+// 	}
+// }
 
 int		main(int argc, char **argv, char **envp)
 {
@@ -56,25 +69,10 @@ int		main(int argc, char **argv, char **envp)
 	char	prompt[] = "minishell-0.1$ ";
 	t_list	*table;
 
+	lol(argc, argv);
 	init_env(&env, envp);
-	print_env(&env);
-	printf("BLOCK: [%d]\n", env.block_amount);
-	resize_up_env(&env, ft_strdup("TAART=taart"));
-	printf("BLOCK: [%d]\n", env.block_amount);
-	resize_up_env(&env, ft_strdup("CAKE=cake"));
-	printf("BLOCK: [%d]\n", env.block_amount);
-	resize_up_env(&env, ft_strdup("RANJA=ranja"));
-	printf("BLOCK: [%d]\n", env.block_amount);
-	resize_up_env(&env, ft_strdup("CITROEN=citroen"));
-	printf("BLOCK: [%d]\n", env.block_amount);
-	resize_up_env(&env, ft_strdup("SPERZIEBONEN=sperziebonen"));
-	printf("BLOCK: [%d]\n", env.block_amount);
-	resize_up_env(&env, ft_strdup("POEP=poep"));
-	printf("BLOCK: [%d]\n", env.block_amount);
-	print_env(&env);
+	// print_env(&env);
 	line = NULL;
-	(void)argc;
-	(void)argv;
 	status = 1;
 	signal(SIGINT, signal_handler);
 	signal(SIGQUIT, signal_handler);
