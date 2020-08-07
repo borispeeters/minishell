@@ -21,23 +21,26 @@ void	str_replace(char **str, char *s1, char *s2)
 	int		length;
 	int		count;
 	char	*tmp;
-	char	*replace;
+	char	*segment_begin;
+	char	*segment_end;
 
 	count = count_occurrences(*str, s1);
-	printf("count: %d\n", count);
+	// printf("count: %d\n", count);
 	length = ft_strlen(*str);
-	printf("pre-length: %d\n", length);
+	// printf("pre-length: %d\n", length);
 	length += count * (ft_strlen(s2) - ft_strlen(s1));
-	printf("post-length: %d\n", length);
+	// printf("post-length: %d\n", length);
 	tmp = malloc(sizeof(*tmp) * (length + 1));
-	replace = ft_strnstr(*str, s1, ft_strlen(*str));
-	while (replace)
+	segment_begin = *str;
+	segment_end = ft_strnstr(*str, s1, ft_strlen(*str));
+	while (1)
 	{
-		ft_strlcpy(tmp, *str, replace - *str + 1);
+		ft_strlcpy(tmp, segment_begin, segment_end - segment_begin + 1);
 		printf("after strlcpy: [%s]\n", tmp);
-		// ft_strlcat(tmp, s2);
-		replace += ft_strlen(s1);
-		replace = ft_strnstr(replace, s1, ft_strlen(*str));
+		ft_strlcat(tmp, s2, ft_strlen(tmp) + ft_strlen(s2) + 1);
+		printf("after strlcat: [%s]\n", tmp);
+		segment_begin += ft_strlen(s1);
+		segment_begin = ft_strnstr(segment_begin, s1, ft_strlen(*str));
 	}
 }
 

@@ -81,9 +81,9 @@ int		main(int argc, char **argv, char **envp)
 		write(1, prompt, ft_strlen(prompt));
 		status = get_next_line(0, &line);
 		tokens = lexer(line);
+		// print_list(tokens);
 		if (tokens != NULL && verify_syntax(tokens) == 0)
 		{
-			// print_list(tokens);
 			while (tokens != NULL)
 			{
 				table = parse(&tokens);
