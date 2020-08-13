@@ -108,14 +108,13 @@ typedef struct	s_lexer
 	t_token		token_active;
 }				t_lexer;
 
-typedef struct	s_expansion 
+typedef struct	s_expansion
 {
 	t_quote		quote;
 	char		*env_start;
 	int			env_len;
 	char		*env;
 }				t_expansion;
-
 
 /*
 **	lexer/lexer.c
@@ -188,6 +187,5 @@ void			expand_env(char **str, char **env);
 */
 
 void			execute(t_list *table, char **env);
-
 
 #endif
