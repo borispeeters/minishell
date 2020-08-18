@@ -20,24 +20,38 @@ int		add_new_token(t_lexer *lex, t_list **head)
 	return (0);
 }
 
-int		lex_loop(t_lexer *lex, char *line, t_list **head)
+static int	lex_loop(t_lexer *lex, char *line, t_list **head)
 {
 	int	ret;
 
 	ret = 0;
+	if (*line == '\\')
+		escape_char(lex, line);
 	if (*line == '\"' && lex->quote != SNGL_QUOTE)
 		double_quote(lex, line);
 	else if (*line == '\'' && lex->quote != DBL_QUOTE)
 		single_quote(lex, line);
-	if (lex->token_active == ACTIVE && lex->quote == NO_QUOTE)
+	else if (lex->token_active == ACTIVE && lex->quote == NO_QUOTE)
 		ret = in_token(lex, line, head);
 	else if (lex->token_active == INACTIVE)
 		out_of_token(lex, line);
 	else if (lex->token_active == META && lex->quote == NO_QUOTE)
 		ret = meta_encounter(lex, line, head);
+	if (lex->escape == ESCAPE && *line != '\\')
+		lex->escape = NO_ESCAPE;
 	if (lex->token_active >= ACTIVE)
 		++lex->token_len;
 	return (ret);
+}
+
+static void	init_lexer(t_list **head, t_lexer *lex)
+{
+	*head = NULL;
+	lex->quote = NO_QUOTE;
+	lex->token_start = NULL;
+	lex->token_len = 0;
+	lex->token_active = INACTIVE;
+	lex->escape = NO_ESCAPE;
 }
 
 t_list	*lexer(char *line)
@@ -45,14 +59,10 @@ t_list	*lexer(char *line)
 	t_list	*head;
 	t_lexer	lex;
 
-	head = NULL;
-	lex.quote = NO_QUOTE;
-	lex.token_start = NULL;
-	lex.token_len = 0;
-	lex.token_active = INACTIVE;
+	init_lexer(&head, &lex);
 	while (*line)
 	{
-		if (lex_loop(&lex, line, &head) == -1)
+		if (lex_loop(&lex, line, &head) != 0)
 		{
 			ft_lstclear(&head, free_content);
 			return (NULL);
@@ -60,16 +70,14 @@ t_list	*lexer(char *line)
 		++line;
 	}
 	if (lex.token_active >= ACTIVE)
+	{
 		if (add_new_token(&lex, &head) == -1)
-		{
 			ft_lstclear(&head, free_content);
-			return (NULL);
-		}
+	}
 	if (lex.quote != NO_QUOTE)
 	{
 		write(1, "minishell: multiline commands are not supported\n", 48);
 		ft_lstclear(&head, free_content);
-		return (NULL);
 	}
 	return (head);
 }

@@ -81,7 +81,7 @@ t_list			*parse(t_list **tokens)
 	}
 	if (parser.start != NULL)
 		create_command(&comm_table, &parser);
-	print_table(comm_table);
+	// print_table(comm_table);
 	return (comm_table);
 }
 
@@ -99,7 +99,7 @@ int			validate_command(t_parser *parser)
 	t_list		*node;
 
 	count = 0;
-	prev = NO_REDIRECT;
+	curr = NO_REDIRECT;
 	node = parser->start;
 	while (node != NULL && !is_separator((char *)node->content))
 	{

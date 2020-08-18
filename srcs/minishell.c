@@ -35,19 +35,44 @@ void	free_shell(char **line, t_list **tokens)
 	*tokens = NULL;
 }
 
+static void	lol(int argc, char **argv)
+{
+	int	i;
+
+	while (0)
+	{
+		write(1, argv[i], ft_strlen(argv[i]));
+		++i;
+	}
+	if (0)
+		argc += 42;
+}
+
+// static void	print_env(t_env *env)
+// {
+// 	int	i;
+
+// 	i = 0;
+// 	while (i < env->length)
+// 	{
+// 		printf("%s\n", env->vars[i]);
+// 		++i;
+// 	}
+// }
+
 int		main(int argc, char **argv, char **envp)
 {
-	char	**env;
+	t_env	env;
 	char	*line;
 	int		status;
 	t_list	*tokens;
 	char	prompt[] = "minishell-0.1$ ";
 	t_list	*table;
 
-	env = init_env(envp);
+	lol(argc, argv);
+	init_env(&env, envp);
+	// print_env(&env);
 	line = NULL;
-	(void)argc;
-	(void)argv;
 	status = 1;
 	signal(SIGINT, signal_handler);
 	signal(SIGQUIT, signal_handler);
@@ -56,26 +81,22 @@ int		main(int argc, char **argv, char **envp)
 		write(1, prompt, ft_strlen(prompt));
 		status = get_next_line(0, &line);
 		tokens = lexer(line);
-		if (tokens == NULL)
+		// print_list(tokens);
+		if (tokens != NULL && verify_syntax(tokens) == 0)
 		{
-			free_shell(&line, &tokens);
-			continue ;
-		}
-		if (verify_syntax(tokens) != 0)
-		{
-			free_shell(&line, &tokens);
-			continue ;
-		}
-		print_list(tokens);
-		while (tokens != NULL)
-		{
-			table = parse(&tokens);
-			execute(table, env);
+			while (tokens != NULL)
+			{
+				table = parse(&tokens);
+				expand_env((t_command*)table->content, &env);
+				break ;
+				// printf("HALLO %s\n", ((t_command*)table->content)->vars[0]);
+				execute(table, &env);
+			}
 		}
 		free_shell(&line, &tokens);
 	}
-	env = free_env(env);
+	free_env(&env);
 	write(1, "exit\n", 5);
-	system("leaks minishell");
+	// system("leaks minishell");
 	return (0);
 }
