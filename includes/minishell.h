@@ -120,6 +120,7 @@ typedef struct	s_lexer
 typedef struct	s_expansion 
 {
 	t_quote		quote;
+	t_escape	escape;
 	char		*env_start;
 	int			env_len;
 	char		*env;
