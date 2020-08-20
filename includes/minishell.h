@@ -121,9 +121,6 @@ typedef struct	s_expansion
 {
 	t_quote		quote;
 	t_escape	escape;
-	char		*env_start;
-	int			env_len;
-	char		*env;
 }				t_expansion;
 
 typedef struct	s_path

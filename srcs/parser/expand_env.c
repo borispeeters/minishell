@@ -19,6 +19,11 @@ void	str_replace(char **str, int index, int len, char *replace)
 	*str = tmp;
 }
 
+int		is_env(int c)
+{
+	return (ft_isalnum(c) || c == '_');
+}
+
 int		env_len(char *env)
 {
 	int	len;
@@ -39,20 +44,62 @@ int		env_len(char *env)
 char	*get_env_value(t_env *env, char *key)
 {
 	int	i;
+	int	len;
 
 	i = 0;
-	// printf("key: [%s]\n", key);
 	while (env->vars[i])
 	{
-		// printf("env->vars[i]: [%s]\n", env->vars[i]);
 		if (ft_strncmp(key, env->vars[i], ft_strlen(key)) == 0)
 		{
-			// printf("KAAASSS!!!\n");
-			return (ft_strdup(env->vars[i] + ft_strlen(key) + 1));
+			len = ft_strlen(key);
+			free(key);
+			return (ft_strdup(env->vars[i] + len + 1));
 		}
 		++i;
 	}
+	free(key);
 	return (ft_strdup(""));
+}
+
+void	exp_escape_char(t_expansion *exp)
+{
+	if (exp->quote != SNGL_QUOTE)
+	{
+		if (exp->escape == NO_ESCAPE)
+			exp->escape = ESCAPE;
+		else if (exp->escape == ESCAPE)
+			exp->escape = NO_ESCAPE;
+	}
+}
+
+void	exp_double_quote(t_expansion *exp)
+{
+	if (exp->quote == DBL_QUOTE)
+		exp->quote = NO_QUOTE;
+	else if (exp->quote == NO_QUOTE)
+		exp->quote = DBL_QUOTE;
+}
+
+void	exp_single_quote(t_expansion *exp)
+{
+	if (exp->quote == SNGL_QUOTE)
+		exp->quote = NO_QUOTE;
+	else if (exp->quote == NO_QUOTE)
+		exp->quote = SNGL_QUOTE;
+}
+
+void	found_env(t_env *env, char **vars, int i)
+{
+	int		len;
+	char	*value;
+
+	len = env_len(*vars + i);
+	printf("env_len: %d\n", len);
+	value = get_env_value(env, ft_substr(*vars, i + 1, len - 1));
+	printf("value: [%s]\n", value);
+	str_replace(vars, i, len, value);
+	i += ft_strlen(value);
+	free(value);
 }
 
 void	expand_env(t_command *cmd, t_env *env)
@@ -60,62 +107,31 @@ void	expand_env(t_command *cmd, t_env *env)
 	t_expansion	exp;
 	char		**vars;
 	int			i;
-	int			len;
-	char		*value;
-	// char		*s = ft_strdup("hey $HOME $HOME");
 	
-	(void)env;
 	vars = cmd->vars;
-	// printf("pre-s: [%s]\n", s);
-	// str_replace(&s, 10, 5, "/users/bpeeters");
-	// printf("post-s: [%s]\n", s);
-	// exit(0);
 	while (*vars != NULL)
 	{
 		exp.quote = NO_QUOTE;
 		exp.escape = NO_ESCAPE;
-		exp.env = NULL;
 		i = 0;
 		while ((*vars)[i])
 		{
-			printf("%c\n", (*vars)[i]);
 			if ((*vars)[i] == '\\')
-			{
-				if (exp.quote != SNGL_QUOTE)
-				{
-					if (exp.escape == NO_ESCAPE)
-						exp.escape = ESCAPE;
-					else if (exp.escape == ESCAPE)
-						exp.escape = NO_ESCAPE;
-				}
-			}
+				exp_escape_char(&exp);
 			if ((*vars)[i] == '\"')
-			{
-				if (exp.quote == DBL_QUOTE)
-					exp.quote = NO_QUOTE;
-				else if (exp.quote == NO_QUOTE)
-					exp.quote = DBL_QUOTE;
-			}
+				exp_double_quote(&exp);
 			if ((*vars)[i] == '\'')
+				exp_single_quote(&exp);
+			if ((*vars)[i] == '$' && exp.quote != SNGL_QUOTE && exp.escape != ESCAPE && is_env((*vars)[i + 1]))
 			{
-				if (exp.quote == SNGL_QUOTE)
-					exp.quote = NO_QUOTE;
-				else if (exp.quote == NO_QUOTE)
-					exp.quote = SNGL_QUOTE;
-			}
-			if ((*vars)[i] == '$' && exp.quote != SNGL_QUOTE && exp.escape != ESCAPE)
-			{
-				len = env_len(&((*vars)[i]));
-				// // printf("env_len: %d\n", len);
-				value = get_env_value(env, ft_substr(*vars, i + 1, len)) + 1;
-				// printf("value: [%s]\n", value);
-				str_replace(&(*vars), i, len, value);
-				i += len + 1;
+				found_env(env, vars, i);
 				continue ;
 			}
+			if (exp.escape == ESCAPE && (*vars)[i] != '\\')
+				exp.escape = NO_ESCAPE;
 			++i;
 		}
-		printf("*vars: [%s]\n", *vars);
+		// printf("*vars: [%s]\n", *vars);
 		++vars;
 	}
 }
