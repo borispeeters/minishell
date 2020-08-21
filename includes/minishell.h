@@ -267,4 +267,16 @@ int				qr_escape(t_expansion *exp, char **vars, int i);
 
 void			found_env(t_env *env, char **vars, int i);
 
+/*
+**	builtins/builtin_exit.c
+*/
+
+void			builtin_exit(t_shell *shell);
+
+/*
+**	builtins/builtin_env.c
+*/
+
+void			builtin_env(t_env *env);
+
 #endif

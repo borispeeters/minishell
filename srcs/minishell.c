@@ -48,18 +48,6 @@ void	free_shell(char **line, t_list **tokens)
 	*tokens = NULL;
 }
 
-// static void	print_env(t_env *env)
-// {
-// 	int	i;
-
-// 	i = 0;
-// 	while (i < env->length)
-// 	{
-// 		printf("%s\n", env->vars[i]);
-// 		++i;
-// 	}
-// }
-
 int		main(int argc, char **argv, char **envp)
 {
 	t_env	env;
@@ -74,7 +62,6 @@ int		main(int argc, char **argv, char **envp)
 		return (1);
 	}
 	init_env(&env, envp);
-	// print_env(&env);
 	line = NULL;
 	shell.status = 1;
 	shell.exit_status = 0;
@@ -99,6 +86,7 @@ int		main(int argc, char **argv, char **envp)
 			}
 		}
 		free_shell(&line, &tokens);
+		builtin_env(&env);
 	}
 	free_env(&env);
 	write(1, "exit\n", 5);
