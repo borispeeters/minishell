@@ -3,6 +3,19 @@
 #include "libft.h"
 #include "minishell.h"
 
+void	write_prompt(char *path)
+{
+	char	*name;
+
+	name = ft_strrchr(path, '/');
+	if (name != NULL)
+		name += 1;
+	else
+		name = path;
+	write(1, name, ft_strlen(name));
+	write(1, "-0.1$ ", 6);
+}
+
 void	print_list(t_list *node)
 {
 	write(1, "_____START TOKENS________\n\n", 27);
@@ -35,19 +48,6 @@ void	free_shell(char **line, t_list **tokens)
 	*tokens = NULL;
 }
 
-static void	lol(int argc, char **argv)
-{
-	int	i;
-
-	while (0)
-	{
-		write(1, argv[i], ft_strlen(argv[i]));
-		++i;
-	}
-	if (0)
-		argc += 42;
-}
-
 // static void	print_env(t_env *env)
 // {
 // 	int	i;
@@ -64,22 +64,26 @@ int		main(int argc, char **argv, char **envp)
 {
 	t_env	env;
 	char	*line;
-	int		status;
 	t_list	*tokens;
-	char	prompt[] = "minishell-0.1$ ";
 	t_list	*table;
+	t_shell	shell;
 
-	lol(argc, argv);
+	if (argc > 1)
+	{
+		write(2, "Scripting is not supported\n", 27);
+		return (1);
+	}
 	init_env(&env, envp);
 	// print_env(&env);
 	line = NULL;
-	status = 1;
+	shell.status = 1;
+	shell.exit_status = 0;
 	signal(SIGINT, signal_handler);
 	signal(SIGQUIT, signal_handler);
-	while (status)
+	while (shell.status)
 	{
-		write(1, prompt, ft_strlen(prompt));
-		status = get_next_line(0, &line);
+		write_prompt(argv[0]);
+		shell.status = get_next_line(0, &line);
 		tokens = lexer(line);
 		// print_list(tokens);
 		if (tokens != NULL && verify_syntax(tokens) == 0)
@@ -89,7 +93,7 @@ int		main(int argc, char **argv, char **envp)
 				table = parse(&tokens);
 				expand_env((t_command*)table->content, &env);
 				quote_removal((t_command*)table->content);
-				break ;
+				// break ;
 				// printf("HALLO %s\n", ((t_command*)table->content)->vars[0]);
 				execute(table, &env);
 			}

@@ -5,6 +5,12 @@
 
 # include <stdio.h> //
 
+typedef struct	s_shell
+{
+	int			status;
+	int			exit_status;
+}				t_shell;
+
 /*
 **	Enum for the different types of redirect.
 */

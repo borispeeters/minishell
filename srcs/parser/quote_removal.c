@@ -33,7 +33,6 @@ void		quote_removal(t_command *cmd)
 		exp.quote = NO_QUOTE;
 		exp.escape = NO_ESCAPE;
 		qr_str_loop(&exp, vars);
-		printf("*vars: [%s]\n", *vars);
 		++vars;
 	}
 }
