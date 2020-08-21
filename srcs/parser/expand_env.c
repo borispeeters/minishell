@@ -1,4 +1,3 @@
-#include "libft.h"
 #include "minishell.h"
 
 static void	exp_str_loop(t_env *env, t_expansion *exp, char **vars)
@@ -39,7 +38,6 @@ void		expand_env(t_command *cmd, t_env *env)
 		exp.escape = NO_ESCAPE;
 		i = 0;
 		exp_str_loop(env, &exp, vars);
-		// printf("*vars: [%s]\n", *vars);
 		++vars;
 	}
 }

@@ -1,3 +1,4 @@
+#include "libft.h"
 #include "minishell.h"
 
 static int	double_quoted_backslash(int c)
