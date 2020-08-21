@@ -206,7 +206,18 @@ void			create_command(t_list **table, t_parser *parser);
 void			parse_command(t_command *command, t_parser *parser);
 void			handle_redirect(t_command *command, t_parser *parser,
 					t_redirect redirect);
+
+/*
+**	parser/expand_env.c
+*/
+
 void			expand_env(t_command *cmd, t_env *env);
+
+/*
+**	parser/quote_removal.c
+*/
+
+void			quote_removal(t_command *cmd);
 
 /*
 **	executor/execute_loop.c
@@ -226,5 +237,14 @@ char			*search_path(char *cmd, char **env);
 
 int				output_redir(t_command *cmd);
 int				input_redir(t_command *cmd);
+
+/*
+**	utils/expansion_utils.c
+*/
+
+int				is_env(int c);
+void			exp_escape_char(t_expansion *exp);
+void			exp_double_quote(t_expansion *exp);
+void			exp_single_quote(t_expansion *exp);
 
 #endif

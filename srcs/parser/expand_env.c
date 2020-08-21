@@ -19,11 +19,6 @@ void	str_replace(char **str, int index, int len, char *replace)
 	*str = tmp;
 }
 
-int		is_env(int c)
-{
-	return (ft_isalnum(c) || c == '_');
-}
-
 int		env_len(char *env)
 {
 	int	len;
@@ -61,42 +56,15 @@ char	*get_env_value(t_env *env, char *key)
 	return (ft_strdup(""));
 }
 
-void	exp_escape_char(t_expansion *exp)
-{
-	if (exp->quote != SNGL_QUOTE)
-	{
-		if (exp->escape == NO_ESCAPE)
-			exp->escape = ESCAPE;
-		else if (exp->escape == ESCAPE)
-			exp->escape = NO_ESCAPE;
-	}
-}
-
-void	exp_double_quote(t_expansion *exp)
-{
-	if (exp->quote == DBL_QUOTE)
-		exp->quote = NO_QUOTE;
-	else if (exp->quote == NO_QUOTE)
-		exp->quote = DBL_QUOTE;
-}
-
-void	exp_single_quote(t_expansion *exp)
-{
-	if (exp->quote == SNGL_QUOTE)
-		exp->quote = NO_QUOTE;
-	else if (exp->quote == NO_QUOTE)
-		exp->quote = SNGL_QUOTE;
-}
-
 void	found_env(t_env *env, char **vars, int i)
 {
 	int		len;
 	char	*value;
 
 	len = env_len(*vars + i);
-	printf("env_len: %d\n", len);
+	// printf("env_len: %d\n", len);
 	value = get_env_value(env, ft_substr(*vars, i + 1, len - 1));
-	printf("value: [%s]\n", value);
+	// printf("value: [%s]\n", value);
 	str_replace(vars, i, len, value);
 	i += ft_strlen(value);
 	free(value);

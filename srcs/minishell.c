@@ -88,6 +88,7 @@ int		main(int argc, char **argv, char **envp)
 			{
 				table = parse(&tokens);
 				expand_env((t_command*)table->content, &env);
+				quote_removal((t_command*)table->content);
 				break ;
 				// printf("HALLO %s\n", ((t_command*)table->content)->vars[0]);
 				execute(table, &env);
