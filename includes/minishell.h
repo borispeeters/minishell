@@ -247,4 +247,18 @@ void			exp_escape_char(t_expansion *exp);
 void			exp_double_quote(t_expansion *exp);
 void			exp_single_quote(t_expansion *exp);
 
+/*
+**	parser/quote_removal_states.c
+*/
+
+int				qr_single_quote(t_expansion *exp, char **vars, int i);
+int				qr_double_quote(t_expansion *exp, char **vars, int i);
+int				qr_escape(t_expansion *exp, char **vars, int i);
+
+/*
+**	parser/replace_env.c
+*/
+
+void			found_env(t_env *env, char **vars, int i);
+
 #endif

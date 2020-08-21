@@ -31,6 +31,6 @@ void	exp_single_quote(t_expansion *exp)
 {
 	if (exp->quote == SNGL_QUOTE)
 		exp->quote = NO_QUOTE;
-	else if (exp->quote == NO_QUOTE)
+	else if (exp->quote == NO_QUOTE && exp->escape != ESCAPE)
 		exp->quote = SNGL_QUOTE;
 }
