@@ -10,7 +10,7 @@ _OBJS =		minishell \
 			lexer/lexer lexer/lexer_states lexer/verify_syntax \
 			executor/execute executor/search_path executor/redirections \
 			utils/shell_utils utils/array_utils utils/command_utils utils/env utils/expansion_utils \
-			builtins/builtin_exit builtins/builtin_env
+			builtins/builtin_exit builtins/builtin_env builtins/builtin_pwd builtins/builtin_cd
 OBJS =		$(addsuffix .o, $(addprefix $(ODIR)/, $(_OBJS)))
 LIBFT =		libft.a
 LIBFTMAP =	libft

@@ -7,8 +7,8 @@
 
 typedef struct	s_shell
 {
-	int			status;
-	int			exit_status;
+	int				status;
+	unsigned char	exit_status;
 }				t_shell;
 
 /*
@@ -271,12 +271,24 @@ void			found_env(t_env *env, char **vars, int i);
 **	builtins/builtin_exit.c
 */
 
-void			builtin_exit(t_shell *shell);
+void			builtin_exit(t_shell *shell, char **vars);
 
 /*
 **	builtins/builtin_env.c
 */
 
 void			builtin_env(t_env *env);
+
+/*
+**	builtins/builtin_pwd.c
+*/
+
+void			builtin_pwd(t_shell *shell);
+
+/*
+**	builtins/builtin_cd.c
+*/
+
+void			builtin_cd(t_shell *shell, char **vars);
 
 #endif

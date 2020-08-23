@@ -75,7 +75,7 @@ int		main(int argc, char **argv, char **envp)
 		// print_list(tokens);
 		if (tokens != NULL && verify_syntax(tokens) == 0)
 		{
-			while (tokens != NULL)
+			while (shell.status && tokens != NULL)
 			{
 				table = parse(&tokens);
 				expand_env((t_command*)table->content, &env);
@@ -85,11 +85,24 @@ int		main(int argc, char **argv, char **envp)
 				execute(table, &env);
 			}
 		}
+		char	*tmp[4];
+		tmp[0] = "cd";
+		tmp[1] = "";
+		tmp[2] = NULL;
+		tmp[3] = NULL;
+		// builtin_exit(&shell, tmp);
+		// builtin_pwd();
+		builtin_pwd(&shell);
+		printf("exit status: %d\n", shell.exit_status);
+		builtin_cd(&shell, tmp);
+		printf("exit status: %d\n", shell.exit_status);
+		builtin_pwd(&shell);
+		printf("exit status: %d\n", shell.exit_status);
 		free_shell(&line, &tokens);
-		builtin_env(&env);
 	}
 	free_env(&env);
 	write(1, "exit\n", 5);
+	printf("exit status: %d\n", shell.exit_status);
 	// system("leaks minishell");
-	return (0);
+	return (shell.exit_status);
 }
