@@ -3,15 +3,15 @@
 #include "libft.h"
 #include "minishell.h"
 
-void	write_prompt(char *path)
+void	write_prompt(t_shell *shell)
 {
 	char	*name;
 
-	name = ft_strrchr(path, '/');
+	name = ft_strrchr(shell->name, '/');
 	if (name != NULL)
 		name += 1;
 	else
-		name = path;
+		name = shell->name;
 	write(1, name, ft_strlen(name));
 	write(1, "-0.1$ ", 6);
 }
@@ -38,6 +38,10 @@ void	signal_handler(int sig)
 		write(1, "\b\b  \n", 5);
 		write(1, "minishell-0.1$ ", 15);
 	}
+	if (sig == SIGQUIT)
+	{
+		write(1, "\b\b  \b\b", 6);
+	}
 }
 
 void	free_shell(char **line, t_list **tokens)
@@ -61,15 +65,15 @@ int		main(int argc, char **argv, char **envp)
 		write(2, "Scripting is not supported\n", 27);
 		return (1);
 	}
+	shell.name = argv[0];
 	init_env(&env, envp);
 	line = NULL;
 	shell.status = 1;
-	shell.exit_status = 0;
 	signal(SIGINT, signal_handler);
 	signal(SIGQUIT, signal_handler);
 	while (shell.status)
 	{
-		write_prompt(argv[0]);
+		write_prompt(&shell);
 		shell.status = get_next_line(0, &line);
 		tokens = lexer(line);
 		// print_list(tokens);
@@ -77,6 +81,7 @@ int		main(int argc, char **argv, char **envp)
 		{
 			while (shell.status && tokens != NULL)
 			{
+				shell.exit_status = 0;
 				table = parse(&tokens);
 				expand_env((t_command*)table->content, &env);
 				quote_removal((t_command*)table->content);
@@ -92,12 +97,12 @@ int		main(int argc, char **argv, char **envp)
 		tmp[3] = NULL;
 		// builtin_exit(&shell, tmp);
 		// builtin_pwd();
-		builtin_pwd(&shell);
-		printf("exit status: %d\n", shell.exit_status);
-		builtin_cd(&shell, tmp);
-		printf("exit status: %d\n", shell.exit_status);
-		builtin_pwd(&shell);
-		printf("exit status: %d\n", shell.exit_status);
+		// builtin_pwd(&shell);
+		// printf("exit status: %d\n", shell.exit_status);
+		// builtin_cd(&shell, tmp);
+		// printf("exit status: %d\n", shell.exit_status);
+		// builtin_pwd(&shell);
+		// printf("exit status: %d\n", shell.exit_status);
 		free_shell(&line, &tokens);
 	}
 	free_env(&env);

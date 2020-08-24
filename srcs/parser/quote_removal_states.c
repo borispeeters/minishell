@@ -17,7 +17,7 @@ static void	remove_character(char **str, int i)
 	*str = tmp;
 }
 
-int		qr_single_quote(t_expansion *exp, char **vars, int i)
+int			qr_single_quote(t_expansion *exp, char **vars, int i)
 {
 	exp_single_quote(exp);
 	if (exp->quote != DBL_QUOTE && exp->escape != ESCAPE)
@@ -28,7 +28,7 @@ int		qr_single_quote(t_expansion *exp, char **vars, int i)
 	return (0);
 }
 
-int		qr_double_quote(t_expansion *exp, char **vars, int i)
+int			qr_double_quote(t_expansion *exp, char **vars, int i)
 {
 	exp_double_quote(exp);
 	if (exp->quote != SNGL_QUOTE && exp->escape != ESCAPE)
@@ -39,7 +39,7 @@ int		qr_double_quote(t_expansion *exp, char **vars, int i)
 	return (0);
 }
 
-int		qr_escape(t_expansion *exp, char **vars, int i)
+int			qr_escape(t_expansion *exp, char **vars, int i)
 {
 	exp_escape_char(exp);
 	if (exp->escape == ESCAPE)

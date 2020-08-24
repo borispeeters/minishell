@@ -30,7 +30,7 @@ void		expand_env(t_command *cmd, t_env *env)
 	t_expansion	exp;
 	char		**vars;
 	int			i;
-	
+
 	vars = cmd->vars;
 	while (*vars != NULL)
 	{

@@ -2,7 +2,7 @@
 #include "libft.h"
 #include "minishell.h"
 
-int		add_new_token(t_lexer *lex, t_list **head)
+int			add_new_token(t_lexer *lex, t_list **head)
 {
 	char	*token;
 	t_list	*node;
@@ -54,7 +54,7 @@ static void	init_lexer(t_list **head, t_lexer *lex)
 	lex->escape = NO_ESCAPE;
 }
 
-t_list	*lexer(char *line)
+t_list		*lexer(char *line)
 {
 	t_list	*head;
 	t_lexer	lex;

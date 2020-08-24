@@ -3,6 +3,19 @@
 #include <unistd.h>
 #include "minishell.h"
 
+void	check_dir(char *name)
+{
+	struct stat	buf;
+
+	stat(name, &buf);
+	if (S_ISDIR(buf.st_mode))
+	{
+		write(2, "minishell: ", 11);
+		write(2, (char*)cmd->files_out->content, ft_strlen((char*)cmd->files_out->content));
+		write(2, ": Is a directory\n", 17);
+	}
+}
+
 int		output_redir(t_command *cmd)
 {
 	struct stat	buf;
@@ -37,8 +50,6 @@ int		output_redir(t_command *cmd)
 		cmd->files_out = cmd->files_out->next;
 		cmd->out_modes = cmd->out_modes->next;
 	}
-	if (dup2(cmd->fd_out, 1) == -1)
-		return (-1);
 	return (0);
 }
 
@@ -66,7 +77,5 @@ int		input_redir(t_command *cmd)
 			return (-1);
 		cmd->files_in = cmd->files_in->next;
 	}
-	if (dup2(cmd->fd_in, 0) == -1)
-		return (-1);
 	return (0);
 }

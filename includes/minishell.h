@@ -9,6 +9,7 @@ typedef struct	s_shell
 {
 	int				status;
 	unsigned char	exit_status;
+	char			*name;
 }				t_shell;
 
 /*

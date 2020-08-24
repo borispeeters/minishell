@@ -4,10 +4,14 @@
 #include "libft.h"
 #include "minishell.h"
 
-void	builtin_cd(t_shell *shell, char **vars)
+void	builtin_cd(t_shell *shell, t_env *env, char **vars)
 {
 	char	*err_msg;
+	char	*prev_dir;
+	char	*cur_dir;
 
+	prev_dir = NULL;
+	prev_dir = getcwd(prev_dir, 1);
 	if (vars[1] && chdir(vars[1]) != 0)
 	{
 		write(2, "minishell: cd: ", 15);
@@ -26,5 +30,6 @@ void	builtin_cd(t_shell *shell, char **vars)
 			shell->exit_status = 1;
 		}
 	}
-	
+	cur_dir = NULL;
+	cur_dir = getcwd(cur_dir, 1);
 }
