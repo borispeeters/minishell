@@ -10,7 +10,6 @@ void	builtin_exit(t_shell *shell, char **vars)
 		shell->exit_status = 1;
 		return ;
 	}
-	shell->exit_status = 0;
 	if (vars[1])
 		shell->exit_status = ft_atoi(vars[1]);
 	shell->status = 0;

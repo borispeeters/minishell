@@ -48,21 +48,20 @@ static void	free_pair(char **pair)
 static char	*get_env_value(t_env *env, char *key)
 {
 	int		i;
-	int		len;
 	char	**pair;
+	char	*value;
 
 	i = 0;
 	while (env->vars[i])
 	{
 		pair = ft_split(env->vars[i], '=');
-		len = (ft_strlen(pair[0]) > ft_strlen(key))
-			? ft_strlen(pair[0]) : ft_strlen(key);
-		if (ft_strncmp(key, pair[0], len) == 0)
+		if (ft_strcmp(key, pair[0]) == 0)
 		{
 			free(key);
 			free(pair[0]);
+			value = pair[1];
 			free(pair);
-			return (pair[1]);
+			return (value);
 		}
 		free_pair(pair);
 		++i;
