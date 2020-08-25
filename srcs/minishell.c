@@ -87,9 +87,10 @@ int		main(int argc, char **argv, char **envp)
 			while (tokens != NULL)
 			{
 				table = parse(&tokens);
-				expand_env((t_command*)table->content, &env);
-				break ;
+				//expand_env((t_command*)table->content, &env);
+				//break ;
 				// printf("HALLO %s\n", ((t_command*)table->content)->vars[0]);
+
 				execute(table, &env);
 			}
 		}

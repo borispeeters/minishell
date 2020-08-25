@@ -2,6 +2,7 @@
 # define MINISHELL_H
 
 # include "libft.h"
+# include <unistd.h>
 
 # include <stdio.h> //
 
@@ -52,7 +53,7 @@ typedef enum	e_pipe
 }				t_pipe;
 
 /*
-**	Struct to hold all necessary information to be able to execute commands.
+**	Struct to hold all necessary information about commands to be executed.
 */
 
 typedef struct	s_command
@@ -65,6 +66,19 @@ typedef struct	s_command
 	t_list		*out_modes;
 	t_pipe		pipe;
 }				t_command;
+
+/*
+**	Struct to hold all information necessary for the executor.
+*/
+
+typedef struct	s_executor
+{
+	pid_t		pid;
+	char		**vars;
+	char		*command;
+	int			fd[2];
+	int			in;
+}				t_executor;
 
 /*
 **	Enum for different file open modes.
@@ -98,6 +112,10 @@ typedef enum	e_quote
 	DBL_QUOTE
 }				t_quote;
 
+/*
+**	Enum for escapes.
+*/
+
 typedef enum	e_escape
 {
 	NO_ESCAPE,
@@ -117,6 +135,10 @@ typedef struct	s_lexer
 	t_escape	escape;
 }				t_lexer;
 
+/*
+**	Struct to hold information about the expansion process.
+*/
+
 typedef struct	s_expansion
 {
 	t_quote		quote;
@@ -125,12 +147,20 @@ typedef struct	s_expansion
 	char		*env;
 }				t_expansion;
 
+/*
+**	Struct to hold information about finding paths for executables.
+*/
+
 typedef struct	s_path
 {
 	char		*path;
 	char		**path_dirs;
 	char		*abs;
 }				t_path;
+
+/*
+**	Struct to hold information about environment variables.
+*/
 
 typedef struct	s_env
 {
@@ -186,6 +216,13 @@ void			init_env(t_env *env, char **envp);
 void			free_env(t_env *env);
 void			resize_up_env(t_env *env, char *new);
 void			resize_down_env(t_env *env, int remove);
+
+/*
+**	utils/error_utils.c
+*/
+
+void			shell_error(char *message);
+void			shell_error_param(char *message, char *param);
 
 /*
 **	utils/shell_utils.c

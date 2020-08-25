@@ -7,11 +7,13 @@ void	print_table(t_list *table)
 	t_command	*command;
 	char		*mode;
 	char		*pipe;
+	t_list		*tmp_table;
 
+	tmp_table = table;
 	printf("\n_____COMMAND TABLE_____\n\n");
-	while (table != NULL)
+	while (tmp_table != NULL)
 	{
-		command = (t_command *)table->content;
+		command = (t_command *)tmp_table->content;
 		printf("Element.\n  Vars = ");
 		while (*(command->vars))
 		{
@@ -48,7 +50,7 @@ void	print_table(t_list *table)
 				pipe = "BOTH";
 		}
 		printf("\n  Pipe: [%s]\n", pipe);
-		table = table->next;
+		tmp_table = tmp_table->next;
 	}
 	printf("\n_____COMMAND TABLE_____\n");
 }
@@ -77,11 +79,16 @@ t_list			*parse(t_list **tokens)
 			parser.prev_sep = parser.sep;
 			parser.start = (*tokens)->next;
 		}
+		if (parser.sep == SEMICOLON)
+		{
+			*tokens = (*tokens)->next;
+			return (comm_table);
+		}
 		*tokens = (*tokens)->next;
 	}
 	if (parser.start != NULL)
 		create_command(&comm_table, &parser);
-	// print_table(comm_table);
+	//print_table(comm_table);
 	return (comm_table);
 }
 
