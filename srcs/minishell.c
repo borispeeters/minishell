@@ -83,14 +83,9 @@ int		main(int argc, char **argv, char **envp)
 			{
 				shell.exit_status = 0;
 				table = parse(&tokens);
-<<<<<<< HEAD
-				//expand_env((t_command*)table->content, &env);
-				//break ;
-=======
 				expand_env((t_command*)table->content, &env);
 				quote_removal((t_command*)table->content);
 				// break ;
->>>>>>> boris
 				// printf("HALLO %s\n", ((t_command*)table->content)->vars[0]);
 
 				execute(table, &env);
