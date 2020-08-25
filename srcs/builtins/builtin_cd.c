@@ -10,18 +10,6 @@ static void	cd_error(t_shell *shell, char *err_msg, char *param)
 	shell->exit_status = 1;
 }
 
-static void	update_pwd(t_env *env, char *old_pwd, char *pwd)
-{
-	int	i;
-
-	i = get_env_index(env, "OLDPWD");
-	set_env(env, old_pwd, i);
-	free(old_pwd);
-	i = get_env_index(env, "PWD");
-	set_env(env, pwd, i);
-	free(pwd);
-}
-
 void		builtin_cd(t_shell *shell, t_env *env, char **vars)
 {
 	char	*prev_dir;
@@ -43,5 +31,8 @@ void		builtin_cd(t_shell *shell, t_env *env, char **vars)
 	}
 	cur_dir = NULL;
 	cur_dir = getcwd(cur_dir, 1);
-	update_pwd(env, prev_dir, cur_dir);	
+	set_env(env, "OLDPWD", prev_dir);
+	free(prev_dir);
+	set_env(env, "PWD", cur_dir);
+	free(cur_dir);
 }

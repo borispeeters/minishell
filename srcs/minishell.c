@@ -82,6 +82,8 @@ int		main(int argc, char **argv, char **envp)
 		// builtin_pwd(&shell);
 		// builtin_cd(&shell, &env, tmp);
 		// builtin_pwd(&shell);
+		// printf("OLDPWD: [%s]\n", get_env(&env, "OLDPWD"));
+		// printf("PWD: [%s]\n", get_env(&env, "PWD"));
 		free_shell(&line, &tokens);
 	}
 	free_env(&env);
