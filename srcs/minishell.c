@@ -90,19 +90,6 @@ int		main(int argc, char **argv, char **envp)
 				execute(table, &env);
 			}
 		}
-		char	*tmp[4];
-		tmp[0] = "cd";
-		tmp[1] = "";
-		tmp[2] = NULL;
-		tmp[3] = NULL;
-		// builtin_exit(&shell, tmp);
-		// builtin_pwd();
-		// builtin_pwd(&shell);
-		// printf("exit status: %d\n", shell.exit_status);
-		// builtin_cd(&shell, tmp);
-		// printf("exit status: %d\n", shell.exit_status);
-		// builtin_pwd(&shell);
-		// printf("exit status: %d\n", shell.exit_status);
 		free_shell(&line, &tokens);
 	}
 	free_env(&env);
