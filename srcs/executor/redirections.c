@@ -18,24 +18,22 @@ static void	check_dir(char *name)
 
 int			output_redir(t_command *cmd)
 {
-	cmd->fd_out = 1;
+	int		oflag;
+	char	*file;
+
 	while (cmd->files_out)
 	{
+		file = (char*)cmd->files_out->content;
 		if (cmd->fd_out != 1)
 			close(cmd->fd_out);
-		check_dir((char*)cmd->files_out->content);
+		check_dir(file);
 		if ((t_filemode)cmd->out_modes->content == APPEND)
-		{
-			cmd->fd_out = open((char*)cmd->files_out->content, O_CREAT | O_APPEND | O_WRONLY, 0644);
-			if (cmd->fd_out == -1)
-				return (-1);
-		}
+			oflag = O_APPEND;
 		else if ((t_filemode)cmd->out_modes->content == TRUNC)
-		{
-			cmd->fd_out = open((char*)cmd->files_out->content, O_CREAT | O_TRUNC | O_WRONLY, 0644);
-			if (cmd->fd_out == -1)
-				return (-1);
-		}
+			oflag = O_TRUNC;
+		cmd->fd_out = open(file, O_CREAT | oflag | O_WRONLY, 0644);
+		if (cmd->fd_out == -1)
+			return (-1);
 		cmd->files_out = cmd->files_out->next;
 		cmd->out_modes = cmd->out_modes->next;
 	}
@@ -57,13 +55,15 @@ static void	check_file_dir(char *name)
 
 int			input_redir(t_command *cmd)
 {
-	cmd->fd_in = 0;
+	char	*file;
+
 	while (cmd->files_in)
 	{
+		file = (char*)cmd->files_in->content;
 		if (cmd->fd_in != 0)
 			close(cmd->fd_in);
-		check_file_dir((char*)cmd->files_in->content);
-		cmd->fd_in = open((char*)cmd->files_in->content, O_RDONLY, 0644);
+		check_file_dir(file);
+		cmd->fd_in = open(file, O_RDONLY, 0644);
 		if (cmd->fd_in == -1)
 			return (-1);
 		cmd->files_in = cmd->files_in->next;

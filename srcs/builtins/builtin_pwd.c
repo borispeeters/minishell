@@ -12,10 +12,10 @@ void	builtin_pwd(t_shell *shell)
 	if (buf == NULL)
 	{
 		write(2, "minishell: pwd: malloc failed\n", 30);
+		shell->exit_status = 1;
 		return ;
 	}
 	write(1, buf, ft_strlen(buf));
 	write(1, "\n", 1);
 	free(buf);
-	shell->exit_status = 0;
 }

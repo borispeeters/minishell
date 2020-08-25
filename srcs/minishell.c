@@ -3,19 +3,6 @@
 #include "libft.h"
 #include "minishell.h"
 
-void	write_prompt(t_shell *shell)
-{
-	char	*name;
-
-	name = ft_strrchr(shell->name, '/');
-	if (name != NULL)
-		name += 1;
-	else
-		name = shell->name;
-	write(1, name, ft_strlen(name));
-	write(1, "-0.1$ ", 6);
-}
-
 void	print_list(t_list *node)
 {
 	write(1, "_____START TOKENS________\n\n", 27);
@@ -65,7 +52,7 @@ int		main(int argc, char **argv, char **envp)
 		write(2, "Scripting is not supported\n", 27);
 		return (1);
 	}
-	shell.name = argv[0];
+	(void)argv;
 	init_env(&env, envp);
 	line = NULL;
 	shell.status = 1;
@@ -73,7 +60,8 @@ int		main(int argc, char **argv, char **envp)
 	signal(SIGQUIT, signal_handler);
 	while (shell.status)
 	{
-		write_prompt(&shell);
+		write(1, "minishell-0.1$ ", 15);
+		shell.exit_status = 0;
 		shell.status = get_next_line(0, &line);
 		tokens = lexer(line);
 		// print_list(tokens);
@@ -81,16 +69,20 @@ int		main(int argc, char **argv, char **envp)
 		{
 			while (shell.status && tokens != NULL)
 			{
-				shell.exit_status = 0;
 				table = parse(&tokens);
 				expand_env((t_command*)table->content, &env);
 				quote_removal((t_command*)table->content);
-				// break ;
-				// printf("HALLO %s\n", ((t_command*)table->content)->vars[0]);
-
 				execute(table, &env);
 			}
 		}
+		char	*tmp[4];
+		tmp[0] = "cd";
+		tmp[1] = "..";
+		tmp[2] = "lol";
+		tmp[3] = NULL;
+		// builtin_pwd(&shell);
+		// builtin_cd(&shell, &env, tmp);
+		// builtin_pwd(&shell);
 		free_shell(&line, &tokens);
 	}
 	free_env(&env);

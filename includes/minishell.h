@@ -10,7 +10,6 @@ typedef struct	s_shell
 {
 	int				status;
 	unsigned char	exit_status;
-	char			*name;
 }				t_shell;
 
 /*
@@ -308,7 +307,9 @@ void			found_env(t_env *env, char **vars, int i);
 **	utils/get_env.c
 */
 
-int				get_env(t_env *env, char *var);
+char			*get_env(t_env *env, char *var);
+int				get_env_index(t_env *env, char *var);
+void			set_env(t_env *env, char *value, int i);
 void			free_pair(char **pair);
 
 /*
@@ -334,5 +335,11 @@ void			builtin_pwd(t_shell *shell);
 */
 
 void			builtin_cd(t_shell *shell, t_env *env, char **vars);
+
+/*
+**	builtins/builtin_echo.c
+*/
+
+void			builtin_echo(t_shell *shell, char **vars);
 
 #endif
