@@ -26,12 +26,15 @@ void	single_quote(t_lexer *lex, char *line)
 		lex->quote = NO_QUOTE;
 	else if (lex->quote == NO_QUOTE)
 	{
-		lex->quote = SNGL_QUOTE;
-		if (lex->token_active == INACTIVE)
+		if (lex->escape != ESCAPE)
 		{
-			lex->token_active = ACTIVE;
-			lex->token_start = line;
-			lex->token_len = 0;
+			lex->quote = SNGL_QUOTE;
+			if (lex->token_active == INACTIVE)
+			{
+				lex->token_active = ACTIVE;
+				lex->token_start = line;
+				lex->token_len = 0;
+			}
 		}
 	}
 }

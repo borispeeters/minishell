@@ -6,7 +6,7 @@
 /*   By: mpeerdem <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2019/12/16 10:41:58 by mpeerdem      #+#    #+#                 */
-/*   Updated: 2020/01/30 16:34:21 by mpeerdem      ########   odam.nl         */
+/*   Updated: 2020/08/25 08:49:33 by bpeeters      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,17 +50,20 @@ int			get_next_line(int fd, char **line)
 int			read_line(int fd, char **line, char *buffer)
 {
 	int		read_return;
+	int		tmp;
 
 	read_return = 1;
+	tmp = 0;
 	if (*buffer == 0)
 		read_return = read(fd, buffer, BUFFER_SIZE);
 	while (gnl_strchr(buffer, '\n') == -1 && read_return > 0)
 	{
+		write(0, "  \b\b", 4);
 		gnl_strjoin(line, buffer);
 		if (line == NULL)
 			return (-1);
 		shift_buffer(buffer, 0);
-		read_return = read(fd, buffer, BUFFER_SIZE);
+		read(fd, buffer, BUFFER_SIZE);
 	}
 	gnl_strjoin(line, buffer);
 	if (line == NULL)

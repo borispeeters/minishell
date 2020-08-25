@@ -6,6 +6,13 @@
 
 # include <stdio.h> //
 
+typedef struct	s_shell
+{
+	int				status;
+	unsigned char	exit_status;
+	char			*name;
+}				t_shell;
+
 /*
 **	Enum for the different types of redirect.
 */
@@ -142,9 +149,7 @@ typedef struct	s_lexer
 typedef struct	s_expansion
 {
 	t_quote		quote;
-	char		*env_start;
-	int			env_len;
-	char		*env;
+	t_escape	escape;
 }				t_expansion;
 
 /*
@@ -244,7 +249,18 @@ void			create_command(t_list **table, t_parser *parser);
 void			parse_command(t_command *command, t_parser *parser);
 void			handle_redirect(t_command *command, t_parser *parser,
 					t_redirect redirect);
+
+/*
+**	parser/expand_env.c
+*/
+
 void			expand_env(t_command *cmd, t_env *env);
+
+/*
+**	parser/quote_removal.c
+*/
+
+void			quote_removal(t_command *cmd);
 
 /*
 **	executor/execute_loop.c
@@ -264,5 +280,59 @@ char			*search_path(char *cmd, char **env);
 
 int				output_redir(t_command *cmd);
 int				input_redir(t_command *cmd);
+
+/*
+**	utils/expansion_utils.c
+*/
+
+int				is_env(int c);
+void			exp_escape_char(t_expansion *exp);
+void			exp_double_quote(t_expansion *exp);
+void			exp_single_quote(t_expansion *exp);
+
+/*
+**	parser/quote_removal_states.c
+*/
+
+int				qr_single_quote(t_expansion *exp, char **vars, int i);
+int				qr_double_quote(t_expansion *exp, char **vars, int i);
+int				qr_escape(t_expansion *exp, char **vars, int i);
+
+/*
+**	parser/replace_env.c
+*/
+
+void			found_env(t_env *env, char **vars, int i);
+
+/*
+**	utils/get_env.c
+*/
+
+int				get_env(t_env *env, char *var);
+void			free_pair(char **pair);
+
+/*
+**	builtins/builtin_exit.c
+*/
+
+void			builtin_exit(t_shell *shell, char **vars);
+
+/*
+**	builtins/builtin_env.c
+*/
+
+void			builtin_env(t_env *env);
+
+/*
+**	builtins/builtin_pwd.c
+*/
+
+void			builtin_pwd(t_shell *shell);
+
+/*
+**	builtins/builtin_cd.c
+*/
+
+void			builtin_cd(t_shell *shell, t_env *env, char **vars);
 
 #endif

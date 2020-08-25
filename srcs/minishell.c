@@ -3,6 +3,19 @@
 #include "libft.h"
 #include "minishell.h"
 
+void	write_prompt(t_shell *shell)
+{
+	char	*name;
+
+	name = ft_strrchr(shell->name, '/');
+	if (name != NULL)
+		name += 1;
+	else
+		name = shell->name;
+	write(1, name, ft_strlen(name));
+	write(1, "-0.1$ ", 6);
+}
+
 void	print_list(t_list *node)
 {
 	write(1, "_____START TOKENS________\n\n", 27);
@@ -25,6 +38,10 @@ void	signal_handler(int sig)
 		write(1, "\b\b  \n", 5);
 		write(1, "minishell-0.1$ ", 15);
 	}
+	if (sig == SIGQUIT)
+	{
+		write(1, "\b\b  \b\b", 6);
+	}
 }
 
 void	free_shell(char **line, t_list **tokens)
@@ -35,60 +52,45 @@ void	free_shell(char **line, t_list **tokens)
 	*tokens = NULL;
 }
 
-static void	lol(int argc, char **argv)
-{
-	int	i;
-
-	while (0)
-	{
-		write(1, argv[i], ft_strlen(argv[i]));
-		++i;
-	}
-	if (0)
-		argc += 42;
-}
-
-// static void	print_env(t_env *env)
-// {
-// 	int	i;
-
-// 	i = 0;
-// 	while (i < env->length)
-// 	{
-// 		printf("%s\n", env->vars[i]);
-// 		++i;
-// 	}
-// }
-
 int		main(int argc, char **argv, char **envp)
 {
 	t_env	env;
 	char	*line;
-	int		status;
 	t_list	*tokens;
-	char	prompt[] = "minishell-0.1$ ";
 	t_list	*table;
+	t_shell	shell;
 
-	lol(argc, argv);
+	if (argc > 1)
+	{
+		write(2, "Scripting is not supported\n", 27);
+		return (1);
+	}
+	shell.name = argv[0];
 	init_env(&env, envp);
-	// print_env(&env);
 	line = NULL;
-	status = 1;
+	shell.status = 1;
 	signal(SIGINT, signal_handler);
 	signal(SIGQUIT, signal_handler);
-	while (status)
+	while (shell.status)
 	{
-		write(1, prompt, ft_strlen(prompt));
-		status = get_next_line(0, &line);
+		write_prompt(&shell);
+		shell.status = get_next_line(0, &line);
 		tokens = lexer(line);
 		// print_list(tokens);
 		if (tokens != NULL && verify_syntax(tokens) == 0)
 		{
-			while (tokens != NULL)
+			while (shell.status && tokens != NULL)
 			{
+				shell.exit_status = 0;
 				table = parse(&tokens);
+<<<<<<< HEAD
 				//expand_env((t_command*)table->content, &env);
 				//break ;
+=======
+				expand_env((t_command*)table->content, &env);
+				quote_removal((t_command*)table->content);
+				// break ;
+>>>>>>> boris
 				// printf("HALLO %s\n", ((t_command*)table->content)->vars[0]);
 
 				execute(table, &env);
@@ -98,6 +100,7 @@ int		main(int argc, char **argv, char **envp)
 	}
 	free_env(&env);
 	write(1, "exit\n", 5);
+	printf("exit status: %d\n", shell.exit_status);
 	// system("leaks minishell");
-	return (0);
+	return (shell.exit_status);
 }
