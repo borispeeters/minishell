@@ -277,8 +277,8 @@ char			*search_path(char *cmd, char **env);
 **	executor/redirections.h
 */
 
-int				output_redir(t_command *cmd);
-int				input_redir(t_command *cmd);
+int				output_redir(t_command *cmd, t_executor *exec);
+int				input_redir(t_command *cmd, t_executor *exec);
 
 /*
 **	utils/expansion_utils.c
