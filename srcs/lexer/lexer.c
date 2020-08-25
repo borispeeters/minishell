@@ -76,7 +76,7 @@ t_list		*lexer(char *line)
 	}
 	if (lex.quote != NO_QUOTE)
 	{
-		write(1, "minishell: multiline commands are not supported\n", 48);
+		shell_error("multiline commnds are not supported");
 		ft_lstclear(&head, free_content);
 	}
 	return (head);

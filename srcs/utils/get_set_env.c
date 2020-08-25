@@ -56,7 +56,7 @@ void		set_env(t_env *env, char *value, int i)
 	char	*tmp;
 
 	if (env->vars[i] == NULL)
-		resize_up_env(env, value);
+		return ;
 	free(env->vars[i]);
 	pair = ft_split(env->vars[i], '=');
 	tmp = ft_strjoin(pair[0], "=");

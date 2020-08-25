@@ -9,11 +9,7 @@ static void	check_dir(char *name)
 
 	stat(name, &buf);
 	if (S_ISDIR(buf.st_mode))
-	{
-		write(2, "minishell: ", 11);
-		write(2, name, ft_strlen(name));
-		write(2, ": Is a directory\n", 17);
-	}
+		shell_error_param("Is a directory", name);
 }
 
 int			output_redir(t_command *cmd)
@@ -46,11 +42,7 @@ static void	check_file_dir(char *name)
 
 	stat(name, &buf);
 	if (!S_ISREG(buf.st_mode) && !S_ISDIR(buf.st_mode))
-	{
-		write(2, "minishell: ", 11);
-		write(2, name, ft_strlen(name));
-		write(2, ": No such file or directory\n", 28);
-	}
+		shell_error_param("No such file or directory", name);
 }
 
 int			input_redir(t_command *cmd)

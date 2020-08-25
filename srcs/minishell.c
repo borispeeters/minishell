@@ -19,7 +19,6 @@ void	print_list(t_list *node)
 
 void	signal_handler(int sig)
 {
-	signal(sig, signal_handler);
 	if (sig == SIGINT)
 	{
 		write(1, "\b\b  \n", 5);
@@ -49,17 +48,17 @@ int		main(int argc, char **argv, char **envp)
 
 	if (argc > 1)
 	{
-		write(2, "Scripting is not supported\n", 27);
+		shell_error("Scripting is not supported");
 		return (1);
 	}
 	(void)argv;
 	init_env(&env, envp);
 	line = NULL;
 	shell.status = 1;
-	signal(SIGINT, signal_handler);
-	signal(SIGQUIT, signal_handler);
 	while (shell.status)
 	{
+		signal(SIGINT, signal_handler);
+		signal(SIGQUIT, signal_handler);
 		write(1, "minishell-0.1$ ", 15);
 		shell.exit_status = 0;
 		shell.status = get_next_line(0, &line);
