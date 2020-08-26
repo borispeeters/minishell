@@ -15,7 +15,7 @@ static void	qr_str_loop(t_expansion *exp, char **vars)
 			tbc += qr_double_quote(exp, vars, i);
 		if ((*vars)[i] == '\'')
 			tbc += qr_single_quote(exp, vars, i);
-		if (exp->escape == ESCAPE && (*vars)[i] != '\\')
+		if (exp->escape == ESCAPE && (*vars)[i] != '\\' && tbc == 0)
 			exp->escape = NO_ESCAPE;
 		if (tbc == 0)
 			++i;

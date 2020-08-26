@@ -277,8 +277,8 @@ char			*search_path(char *cmd, char **env);
 **	executor/redirections.h
 */
 
-int				output_redir(t_command *cmd);
-int				input_redir(t_command *cmd);
+int				output_redir(t_command *cmd, t_executor *exec);
+int				input_redir(t_command *cmd, t_executor *exec);
 
 /*
 **	utils/expansion_utils.c
@@ -307,9 +307,9 @@ void			found_env(t_env *env, char **vars, int i);
 **	utils/get_env.c
 */
 
-char			*get_env(t_env *env, char *var);
-int				get_env_index(t_env *env, char *var);
-void			set_env(t_env *env, char *value, int i);
+char			*get_env(t_env *env, char *key);
+int				get_env_index(t_env *env, char *key);
+void			set_env(t_env *env, char *key, char *value);
 void			free_pair(char **pair);
 
 /*
