@@ -70,19 +70,15 @@ static int		find_command(t_list *table, t_executor *exec, t_env *env)
 void		execute(t_list *table, t_env *env)
 {
 	t_executor	exec;
-	t_command	*cmd;
 
 	exec.in = 0;
 	exec.fd[1] = 1;
 	while (table)
 	{
-		cmd = (t_command*)table->content;
 		if (!find_command(table, &exec, env))
 			return ;
 		if (table->next)
 			pipe(exec.fd);
-		if (input_redir(cmd, &exec) != 0 || output_redir(cmd, &exec) != 0)
-			return ;
 		// builtin?
 		exec.pid = fork();
 		if (exec.pid < 0)
