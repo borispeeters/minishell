@@ -1,7 +1,8 @@
+#include <stdlib.h>
 #include "libft.h"
 #include "minishell.h"
 
-static void	str_replace(char **str, int index, int len, char *replace)
+void		str_replace(char **str, int index, int len, char *replace)
 {
 	char	*tmp;
 	int		new_len;
@@ -32,14 +33,23 @@ static int	env_len(char *env)
 	return (len);
 }
 
-void	found_env(t_env *env, char **vars, int i)
+int			found_env(t_env *env, char **vars, int i)
 {
 	int		len;
 	char	*value;
+	char	*key;
 
 	len = env_len(*vars + i);
-	value = get_env(env, ft_substr(*vars, i + 1, len - 1));
+	key = ft_substr(*vars, i + 1, len - 1);
+	if (key == NULL)
+	{
+		shell_error("Malloc failed");
+		exit(1);
+	}
+	value = get_env(env, key);
+	free(key);
 	str_replace(vars, i, len, value);
-	i += ft_strlen(value);
+	len = ft_strlen(value);
 	free(value);
+	return (len);
 }

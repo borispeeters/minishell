@@ -60,7 +60,7 @@ int		main(int argc, char **argv, char **envp)
 		signal(SIGINT, signal_handler);
 		signal(SIGQUIT, signal_handler);
 		write(1, "minishell-0.1$ ", 15);
-		shell.exit_status = 0;
+		shell.exit_status = 15;
 		shell.status = get_next_line(0, &line);
 		tokens = lexer(line);
 		// print_list(tokens);
@@ -69,7 +69,7 @@ int		main(int argc, char **argv, char **envp)
 			while (shell.status && tokens != NULL)
 			{
 				table = parse(&tokens);
-				expand_env((t_command*)table->content, &env);
+				expand_env(&shell, (t_command*)table->content, &env);
 				quote_removal((t_command*)table->content);
 				execute(table, &env);
 			}

@@ -253,7 +253,7 @@ void			handle_redirect(t_command *command, t_parser *parser,
 **	parser/expand_env.c
 */
 
-void			expand_env(t_command *cmd, t_env *env);
+void			expand_env(t_shell *shell, t_command *cmd, t_env *env);
 
 /*
 **	parser/quote_removal.c
@@ -301,7 +301,8 @@ int				qr_escape(t_expansion *exp, char **vars, int i);
 **	parser/replace_env.c
 */
 
-void			found_env(t_env *env, char **vars, int i);
+int				found_env(t_env *env, char **vars, int i);
+void			str_replace(char **str, int index, int len, char *replace);
 
 /*
 **	utils/get_env.c
