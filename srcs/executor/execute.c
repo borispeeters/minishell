@@ -44,6 +44,10 @@ void	execute_old(t_list *table, t_env *env)
 	free(cmd);
 }*/
 
+/*
+**	This function will 
+*/
+
 static char		*get_path_from_arg(char *arg, t_env *env)
 {
 	if (ft_strchr(arg, '/') == NULL)
@@ -92,6 +96,11 @@ void		execute(t_list *table, t_env *env)
 			{
 				dup2(exec.fd[1], 1);
 				close(exec.fd[1]);
+			}
+			if (output_redir((t_command*)table->content) != 0 || input_redir((t_command*)table->content) != 0)
+			{
+				printf("SAAAUUUS\n");
+				return ;
 			}
 			execve(exec.command, exec.vars, env->vars);
 		}

@@ -10,9 +10,7 @@ static void	check_dir(char *name)
 	stat(name, &buf);
 	if (S_ISDIR(buf.st_mode))
 	{
-		write(2, "minishell: ", 11);
-		write(2, name, ft_strlen(name));
-		write(2, ": Is a directory\n", 17);
+		shell_error_param("Is a directory", name);
 	}
 }
 
@@ -26,19 +24,22 @@ int			output_redir(t_command *cmd)
 		check_dir((char*)cmd->files_out->content);
 		if ((t_filemode)cmd->out_modes->content == APPEND)
 		{
-			cmd->fd_out = open((char*)cmd->files_out->content, O_CREAT | O_APPEND | O_WRONLY, 0644);
+			cmd->fd_out = open((char*)cmd->files_out->content,
+								O_CREAT | O_APPEND | O_WRONLY, 0644);
 			if (cmd->fd_out == -1)
 				return (-1);
 		}
 		else if ((t_filemode)cmd->out_modes->content == TRUNC)
 		{
-			cmd->fd_out = open((char*)cmd->files_out->content, O_CREAT | O_TRUNC | O_WRONLY, 0644);
+			cmd->fd_out = open((char*)cmd->files_out->content,
+								O_CREAT | O_TRUNC | O_WRONLY, 0644);
 			if (cmd->fd_out == -1)
 				return (-1);
 		}
 		cmd->files_out = cmd->files_out->next;
 		cmd->out_modes = cmd->out_modes->next;
 	}
+	dup2(cmd->fd_out, 1);
 	return (0);
 }
 
