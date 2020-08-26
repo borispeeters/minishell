@@ -9,33 +9,28 @@ static void	check_dir(char *name)
 
 	stat(name, &buf);
 	if (S_ISDIR(buf.st_mode))
-	{
 		shell_error_param("Is a directory", name);
-	}
 }
 
 int			output_redir(t_command *cmd)
 {
+	int		oflag;
+	char	*file;
+
 	cmd->fd_out = 1;
 	while (cmd->files_out)
 	{
+		file = (char*)cmd->files_out->content;
 		if (cmd->fd_out != 1)
 			close(cmd->fd_out);
-		check_dir((char*)cmd->files_out->content);
+		check_dir(file);
 		if ((t_filemode)cmd->out_modes->content == APPEND)
-		{
-			cmd->fd_out = open((char*)cmd->files_out->content,
-								O_CREAT | O_APPEND | O_WRONLY, 0644);
-			if (cmd->fd_out == -1)
-				return (-1);
-		}
+			oflag = O_APPEND;
 		else if ((t_filemode)cmd->out_modes->content == TRUNC)
-		{
-			cmd->fd_out = open((char*)cmd->files_out->content,
-								O_CREAT | O_TRUNC | O_WRONLY, 0644);
-			if (cmd->fd_out == -1)
-				return (-1);
-		}
+			oflag = O_TRUNC;
+		cmd->fd_out = open(file, O_CREAT | oflag | O_WRONLY, 0644);
+		if (cmd->fd_out == -1)
+			return (-1);
 		cmd->files_out = cmd->files_out->next;
 		cmd->out_modes = cmd->out_modes->next;
 	}
@@ -49,22 +44,20 @@ static void	check_file_dir(char *name)
 
 	stat(name, &buf);
 	if (!S_ISREG(buf.st_mode) && !S_ISDIR(buf.st_mode))
-	{
-		write(2, "minishell: ", 11);
-		write(2, name, ft_strlen(name));
-		write(2, ": No such file or directory\n", 28);
-	}
+		shell_error_param("No such file or directory", name);
 }
 
 int			input_redir(t_command *cmd)
 {
-	cmd->fd_in = 0;
+	char	*file;
+
 	while (cmd->files_in)
 	{
+		file = (char*)cmd->files_in->content;
 		if (cmd->fd_in != 0)
 			close(cmd->fd_in);
-		check_file_dir((char*)cmd->files_in->content);
-		cmd->fd_in = open((char*)cmd->files_in->content, O_RDONLY, 0644);
+		check_file_dir(file);
+		cmd->fd_in = open(file, O_RDONLY, 0644);
 		if (cmd->fd_in == -1)
 			return (-1);
 		cmd->files_in = cmd->files_in->next;

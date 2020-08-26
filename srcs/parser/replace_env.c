@@ -32,29 +32,13 @@ static int	env_len(char *env)
 	return (len);
 }
 
-static char	*get_env_value(t_env *env, char *key)
-{
-	int		i;
-	char	**pair;
-	char	*value;
-
-	value = NULL;
-	i = get_env(env, key);
-	if (env->vars[i] == NULL)
-		return (ft_strdup(""));
-	pair = ft_split(env->vars[i], '=');
-	value = (pair[1]) ? ft_strdup(pair[1]) : ft_strdup("");
-	free_pair(pair);
-	return (value);
-}
-
 void	found_env(t_env *env, char **vars, int i)
 {
 	int		len;
 	char	*value;
 
 	len = env_len(*vars + i);
-	value = get_env_value(env, ft_substr(*vars, i + 1, len - 1));
+	value = get_env(env, ft_substr(*vars, i + 1, len - 1));
 	str_replace(vars, i, len, value);
 	i += ft_strlen(value);
 	free(value);

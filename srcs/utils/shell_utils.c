@@ -1,17 +1,17 @@
 #include "minishell.h"
 #include "libft.h"
 
-void	free_content(void *content)
+void		free_content(void *content)
 {
 	free(content);
 }
 
-int				is_space(int c)
+int			is_space(int c)
 {
 	return (c == ' ' || c == '\t');
 }
 
-int				is_metacharacter(int c)
+int			is_metacharacter(int c)
 {
 	char	metachar[8];
 	int		i;
@@ -31,7 +31,7 @@ int				is_metacharacter(int c)
 **	This function will return an enum for which kind of separator the token is.
 */
 
-t_separator		is_separator(char *token)
+t_separator	is_separator(char *token)
 {
 	if (ft_strcmp(token, ";") == 0)
 		return (SEMICOLON);
@@ -44,7 +44,7 @@ t_separator		is_separator(char *token)
 **	This function will return an enum for which kind of redirect the token is.
 */
 
-t_redirect		is_redirect(char *token)
+t_redirect	is_redirect(char *token)
 {
 	if (ft_strcmp(token, "<") == 0)
 		return (REDIRECT_IN);
