@@ -65,12 +65,14 @@ t_list			*parse(t_list **tokens)
 	char			*token;
 	t_parser		parser;
 	t_list			*comm_table;
+	// t_list			*tmp;
 
 	comm_table = NULL;
 	parser.start = *tokens;
 	parser.prev_sep = NO_SEPARATOR;
 	while (*tokens != NULL)
 	{
+		printf("BLIPBLAPBLOOP\n");
 		token = (char *)(*tokens)->content;
 		parser.sep = is_separator(token);
 		if (parser.sep)
@@ -81,14 +83,21 @@ t_list			*parse(t_list **tokens)
 		}
 		if (parser.sep == SEMICOLON)
 		{
+			// tmp = *tokens;
 			*tokens = (*tokens)->next;
+			// free(tmp);
 			return (comm_table);
 		}
+		// tmp = *tokens;
+		// printf("TMP MODAFUKA: %p\n", tmp);
 		*tokens = (*tokens)->next;
+		// free(tmp);
+		printf("saus op je BROEK!!\n");
 	}
 	if (parser.start != NULL)
 		create_command(&comm_table, &parser);
 	//print_table(comm_table);
+	printf("We zijn klaar FLIPFLOP\n");
 	return (comm_table);
 }
 
@@ -134,6 +143,7 @@ void		create_command(t_list **table, t_parser *parser)
 	t_list			*new;
 	int				length;
 
+	printf("WE ZIJN IN CREATE CMD\n");
 	length = validate_command(parser);
 	new = prepare_command(length);
 	if (new == NULL)
@@ -143,7 +153,7 @@ void		create_command(t_list **table, t_parser *parser)
 	}
 	parse_command((t_command*)new->content, parser);
 	ft_lstadd_back(table, new);
-
+	printf("FIGUURZAAG %p\n", parser->start);
 }
 
 /*
@@ -155,6 +165,7 @@ void		parse_command(t_command *command, t_parser *parser)
 {
 	int			vars_parsed;
 	t_redirect	redirect;
+	t_list		*tmp;
 
 	vars_parsed = 0;
 	while (parser->start && !is_separator((char *)parser->start->content))
@@ -167,7 +178,9 @@ void		parse_command(t_command *command, t_parser *parser)
 			*(command->vars + vars_parsed) = parser->start->content;
 			vars_parsed++;
 		}
+		tmp = parser->start;
 		parser->start = parser->start->next;
+		free(tmp);
 	}
 	if (parser->sep == PIPE)
 		command->pipe ^= PIPE_OUT;

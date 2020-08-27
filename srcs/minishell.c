@@ -35,7 +35,24 @@ void	free_shell(char **line, t_list **tokens)
 	free(*line);
 	*line = NULL;
 	ft_lstclear(tokens, free_content);
-	*tokens = NULL;
+}
+
+void	free_command_table(t_list **table)
+{
+	t_list		*node;
+	t_command	*cmd;
+
+	node = *table;
+	while (node)
+	{
+		cmd = node->content;
+		ft_lstclear(&cmd->files_in, free_content);
+		ft_lstclear(&cmd->files_out, free_content);
+		ft_lstclear(&cmd->out_modes, free_content);
+		free_var_array(cmd->vars);
+		node = node->next;
+	}
+	ft_lstclear(table, free_content);
 }
 
 int		main(int argc, char **argv, char **envp)
@@ -60,9 +77,10 @@ int		main(int argc, char **argv, char **envp)
 		signal(SIGINT, signal_handler);
 		signal(SIGQUIT, signal_handler);
 		write(1, "minishell-0.1$ ", 15);
-		shell.exit_status = 15;
+		shell.exit_status = 42;
 		shell.status = get_next_line(0, &line);
 		tokens = lexer(line);
+		printf("%p\n", tokens);
 		// print_list(tokens);
 		if (tokens != NULL && verify_syntax(tokens) == 0)
 		{
@@ -72,6 +90,7 @@ int		main(int argc, char **argv, char **envp)
 				expand_env(&shell, (t_command*)table->content, &env);
 				quote_removal((t_command*)table->content);
 				execute(table, &env);
+				free_command_table(&table);
 			}
 		}
 		char	*tmp[4];
@@ -84,6 +103,7 @@ int		main(int argc, char **argv, char **envp)
 		// builtin_pwd(&shell);
 		// printf("OLDPWD: [%s]\n", get_env(&env, "OLDPWD"));
 		// printf("PWD: [%s]\n", get_env(&env, "PWD"));
+		printf("%p\n", tokens);
 		free_shell(&line, &tokens);
 	}
 	free_env(&env);

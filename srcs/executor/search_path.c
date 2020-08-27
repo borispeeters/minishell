@@ -70,6 +70,7 @@ static char	*search_path_dirs(t_path *path, char *cmd)
 		}
 		++i;
 	}
+	free_path(path);
 	return (NULL);
 }
 
