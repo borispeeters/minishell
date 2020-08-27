@@ -80,7 +80,6 @@ int		main(int argc, char **argv, char **envp)
 		shell.exit_status = 42;
 		shell.status = get_next_line(0, &line);
 		tokens = lexer(line);
-		printf("%p\n", tokens);
 		// print_list(tokens);
 		if (tokens != NULL && verify_syntax(tokens) == 0)
 		{
@@ -103,7 +102,6 @@ int		main(int argc, char **argv, char **envp)
 		// builtin_pwd(&shell);
 		// printf("OLDPWD: [%s]\n", get_env(&env, "OLDPWD"));
 		// printf("PWD: [%s]\n", get_env(&env, "PWD"));
-		printf("%p\n", tokens);
 		free_shell(&line, &tokens);
 	}
 	free_env(&env);

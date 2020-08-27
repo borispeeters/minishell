@@ -1,7 +1,12 @@
-$? / RETURN VALUE
 EXEC LOOP
 
 BUILTINS:
 - EXPORT
 - UNSET
 - ENV
+
+CMD LEAK
+; | LEAK
+IETS GING FOUT LAMOOOOOO
+redirect zonder command ^^^
+boris in syntax shit ; zonder command

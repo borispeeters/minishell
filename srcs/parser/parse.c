@@ -1,60 +1,6 @@
 #include "minishell.h"
 #include "libft.h"
 
-// DEBUG
-void	print_table(t_list *table)
-{
-	t_command	*command;
-	char		*mode;
-	char		*pipe;
-	t_list		*tmp_table;
-
-	tmp_table = table;
-	printf("\n_____COMMAND TABLE_____\n\n");
-	while (tmp_table != NULL)
-	{
-		command = (t_command *)tmp_table->content;
-		printf("Element.\n  Vars = ");
-		while (*(command->vars))
-		{
-			printf("[%s] ", *(command->vars));
-			command->vars++;
-		}
-		printf("\n  Files in = ");
-		while (command->files_in)
-		{
-			printf("[%s] ", (char *)command->files_in->content);
-			command->files_in = command->files_in->next;
-		}
-		printf("\n  Files out = ");
-		while (command->files_out)
-		{
-			mode = ((int)command->out_modes->content == APPEND) ?
-				"Append" : "Trunc";
-			printf("[%s][%s] ", (char *)command->files_out->content, mode);
-			command->files_out = command->files_out->next;
-			command->out_modes = command->out_modes->next;
-		}
-		switch (command->pipe)
-		{
-			case 0:
-				pipe = "NONE";
-				break;
-			case 1:
-				pipe = "IN";
-				break;
-			case 2:
-				pipe = "OUT";
-				break;
-			default:
-				pipe = "BOTH";
-		}
-		printf("\n  Pipe: [%s]\n", pipe);
-		tmp_table = tmp_table->next;
-	}
-	printf("\n_____COMMAND TABLE_____\n");
-}
-
 /*
 **	The main parse function, will loop over the list and delegate work to
 **	other functions.
@@ -65,14 +11,12 @@ t_list			*parse(t_list **tokens)
 	char			*token;
 	t_parser		parser;
 	t_list			*comm_table;
-	// t_list			*tmp;
 
 	comm_table = NULL;
 	parser.start = *tokens;
 	parser.prev_sep = NO_SEPARATOR;
 	while (*tokens != NULL)
 	{
-		printf("BLIPBLAPBLOOP\n");
 		token = (char *)(*tokens)->content;
 		parser.sep = is_separator(token);
 		if (parser.sep)
@@ -83,21 +27,13 @@ t_list			*parse(t_list **tokens)
 		}
 		if (parser.sep == SEMICOLON)
 		{
-			// tmp = *tokens;
 			*tokens = (*tokens)->next;
-			// free(tmp);
 			return (comm_table);
 		}
-		// tmp = *tokens;
-		// printf("TMP MODAFUKA: %p\n", tmp);
 		*tokens = (*tokens)->next;
-		// free(tmp);
-		printf("saus op je BROEK!!\n");
 	}
 	if (parser.start != NULL)
 		create_command(&comm_table, &parser);
-	//print_table(comm_table);
-	printf("We zijn klaar FLIPFLOP\n");
 	return (comm_table);
 }
 
@@ -143,7 +79,6 @@ void		create_command(t_list **table, t_parser *parser)
 	t_list			*new;
 	int				length;
 
-	printf("WE ZIJN IN CREATE CMD\n");
 	length = validate_command(parser);
 	new = prepare_command(length);
 	if (new == NULL)
@@ -153,7 +88,6 @@ void		create_command(t_list **table, t_parser *parser)
 	}
 	parse_command((t_command*)new->content, parser);
 	ft_lstadd_back(table, new);
-	printf("FIGUURZAAG %p\n", parser->start);
 }
 
 /*
