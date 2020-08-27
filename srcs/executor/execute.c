@@ -4,48 +4,8 @@
 #include "minishell.h"
 
 /*
-void	execute_old(t_list *table, t_env *env)
-{
-	t_command	*command;
-	char		**vars;
-	pid_t		pid;
-	char		*cmd;
-	int			in_bak;
-	int			out_bak;
-
-	command = (t_command*)table->content;
-	vars = command->vars;
-	cmd = (ft_strchr(vars[0], '/') == NULL) ? search_path(vars[0], env->vars) : ft_strdup(vars[0]);
-	if (cmd == NULL)
-	{
-		write(2, "minishell: command not found\n", 29);
-		return ;
-	}
-	in_bak = dup(0);
-	out_bak = dup(1);
-	if (output_redir(command) != 0 || input_redir(command) != 0)
-		return ;
-	pid = fork();
-	if (pid == 0)
-	{
-		execve(cmd, vars, env->vars);
-		exit(1);
-	}
-	else if (pid > 0)
-	{
-		wait(NULL);
-	}
-	else if (pid < 0)
-	{
-		write(2, "minishell: failed to fork child process\n", 40);
-	}
-	dup2(in_bak, 0);
-	dup2(out_bak, 1);
-	free(cmd);
-}*/
-
-/*
-**	This function will 
+**	Quick utility function that either calls the search_path function if no
+**	is found, and otherwise copies the command.
 */
 
 static char		*get_path_from_arg(char *arg, t_env *env)
@@ -54,6 +14,11 @@ static char		*get_path_from_arg(char *arg, t_env *env)
 		return (search_path(arg, env->vars));
 	return (ft_strdup(arg));
 }
+
+/*
+**	This helper function will find the correct command, and return 1 if it
+**	worked. If it failed, it will print an error and return 0.
+*/
 
 static int		find_command(t_list *table, t_executor *exec, t_env *env)
 {
@@ -66,6 +31,11 @@ static int		find_command(t_list *table, t_executor *exec, t_env *env)
 	}
 	return (1);
 }
+
+/*
+**	Main execute loop. Will loop through the command table and will handle
+**	pipes and redirects if necessary, then execute the command.
+*/
 
 void		execute(t_list *table, t_env *env)
 {
@@ -98,7 +68,8 @@ void		execute(t_list *table, t_env *env)
 				dup2(exec.fd[1], 1);
 				close(exec.fd[1]);
 			}
-			if (output_redir((t_command*)table->content) != 0 || input_redir((t_command*)table->content) != 0)
+			if (output_redir((t_command*)table->content) ||
+					input_redir((t_command*)table->content))
 			{
 				printf("SAAAUUUS\n");
 				return ;

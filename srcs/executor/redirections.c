@@ -16,23 +16,27 @@ int			output_redir(t_command *cmd)
 {
 	int		oflag;
 	char	*file;
+	t_list	*tmp_files_out;
+	t_list	*tmp_out_modes;
 
 	cmd->fd_out = 1;
-	while (cmd->files_out)
+	tmp_files_out = cmd->files_out;
+	tmp_out_modes = cmd->out_modes;
+	while (tmp_files_out)
 	{
-		file = (char*)cmd->files_out->content;
+		file = (char*)tmp_files_out->content;
 		if (cmd->fd_out != 1)
 			close(cmd->fd_out);
 		check_dir(file);
-		if ((t_filemode)cmd->out_modes->content == APPEND)
+		if (*((t_filemode*)tmp_out_modes->content) == APPEND)
 			oflag = O_APPEND;
-		else if ((t_filemode)cmd->out_modes->content == TRUNC)
+		else if (*((t_filemode*)tmp_out_modes->content) == TRUNC)
 			oflag = O_TRUNC;
 		cmd->fd_out = open(file, O_CREAT | oflag | O_WRONLY, 0644);
 		if (cmd->fd_out == -1)
 			return (-1);
-		cmd->files_out = cmd->files_out->next;
-		cmd->out_modes = cmd->out_modes->next;
+		tmp_files_out = tmp_files_out->next;
+		tmp_out_modes = tmp_out_modes->next;
 	}
 	dup2(cmd->fd_out, 1);
 	return (0);
