@@ -131,9 +131,8 @@ void		handle_redirect(t_command *command, t_parser *parser,
 				t_redirect redirect)
 {
 	char		*file;
-	t_filemode	mode;
+	t_filemode	*mode;
 
-	(void)command;
 	file = (char *)parser->start->next->content;
 	if (redirect == REDIRECT_IN)
 	{
@@ -141,9 +140,10 @@ void		handle_redirect(t_command *command, t_parser *parser,
 	}
 	else
 	{
-		mode = (redirect == REDIRECT_OUT_TRUNC) ? TRUNC : APPEND;
+		mode = malloc(sizeof(t_filemode));
+		*mode = (redirect == REDIRECT_OUT_TRUNC) ? TRUNC : APPEND;
 		ft_lstadd_back(&(command->files_out), ft_lstnew(file));
-		ft_lstadd_back(&(command->out_modes), ft_lstnew((void *)mode));
+		ft_lstadd_back(&(command->out_modes), ft_lstnew(mode));
 	}
 	parser->start = parser->start->next;
 }
