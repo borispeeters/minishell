@@ -2,6 +2,10 @@
 #include "libft.h"
 #include "minishell.h"
 
+/*
+**	This function will replace a subsection of str with replace.
+*/
+
 void		str_replace(char **str, int index, int len, char *replace)
 {
 	char	*tmp;
@@ -15,6 +19,11 @@ void		str_replace(char **str, int index, int len, char *replace)
 	free(*str);
 	*str = tmp;
 }
+
+/*
+**	This function will return the length of an environment variable
+**	before it is expanded.
+*/
 
 static int	env_len(char *env)
 {
@@ -32,6 +41,10 @@ static int	env_len(char *env)
 	}
 	return (len);
 }
+
+/*
+**	This function will replace an environment variable when it is found.
+*/
 
 int			found_env(t_env *env, char **vars, int i)
 {

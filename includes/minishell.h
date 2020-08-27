@@ -178,18 +178,24 @@ typedef struct	s_env
 **	lexer/lexer.c
 */
 
-int				add_new_token(t_lexer *lex, t_list **head);
+void			add_new_token(t_lexer *lex, t_list **head);
 t_list			*lexer(char *line);
 
 /*
 **	lexer/lexer_states.c
 */
 
+
+void			in_token(t_lexer *lex, char *line, t_list **head);
+void			out_of_token(t_lexer *lex, char *line);
+void			meta_encounter(t_lexer *lex, char *line, t_list **head);
+
+/*
+**	lexer/lexer_special.c
+*/
+
 void			double_quote(t_lexer *lex, char *line);
 void			single_quote(t_lexer *lex, char *line);
-int				in_token(t_lexer *lex, char *line, t_list **head);
-void			out_of_token(t_lexer *lex, char *line);
-int				meta_encounter(t_lexer *lex, char *line, t_list **head);
 void			escape_char(t_lexer *lex, char *line);
 
 /*
@@ -210,7 +216,6 @@ void			free_var_array(char **array);
 */
 
 t_list			*prepare_command(int length);
-void			free_command(t_command *command);
 
 /*
 **	utils/env.c
@@ -225,8 +230,10 @@ void			resize_down_env(t_env *env, int remove);
 **	utils/error_utils.c
 */
 
-void			shell_error(char *message);
-void			shell_error_param(char *message, char *param);
+void			shell_error(char const *message);
+void			shell_error_param(char const *message, char const *param);
+void			shell_error_malloc();
+void			shell_error_syntax(char const *str);
 
 /*
 **	utils/shell_utils.c
@@ -311,7 +318,6 @@ void			str_replace(char **str, int index, int len, char *replace);
 char			*get_env(t_env *env, char *key);
 int				get_env_index(t_env *env, char *key);
 void			set_env(t_env *env, char *key, char *value);
-void			free_pair(char **pair);
 
 /*
 **	builtins/builtin_exit.c

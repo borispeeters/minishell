@@ -1,10 +1,20 @@
 #include "libft.h"
 #include "minishell.h"
 
+/*
+**	This function will return non-zero if c is a character
+**	that when followed by a backslash will remove the backslash
+**	in double quotes, zero otherwise.
+*/
+
 static int	double_quoted_backslash(int c)
 {
 	return (c == '\"' || c == '\\' || c == '$' || c == '\n');
 }
+
+/*
+**	This function will remove a single character from a string.
+*/
 
 static void	remove_character(char **str, int i)
 {
@@ -17,6 +27,10 @@ static void	remove_character(char **str, int i)
 	*str = tmp;
 }
 
+/*
+**	This function will remove a single quote if necessary.
+*/
+
 int			qr_single_quote(t_expansion *exp, char **vars, int i)
 {
 	exp_single_quote(exp);
@@ -28,6 +42,10 @@ int			qr_single_quote(t_expansion *exp, char **vars, int i)
 	return (0);
 }
 
+/*
+**	This function will remove a double quote if necessary.
+*/
+
 int			qr_double_quote(t_expansion *exp, char **vars, int i)
 {
 	exp_double_quote(exp);
@@ -38,6 +56,10 @@ int			qr_double_quote(t_expansion *exp, char **vars, int i)
 	}
 	return (0);
 }
+
+/*
+**	This function will remove an escape character if necessary.
+*/
 
 int			qr_escape(t_expansion *exp, char **vars, int i)
 {

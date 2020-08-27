@@ -2,12 +2,10 @@
 #include "libft.h"
 #include "minishell.h"
 
-static void	write_syntax_error(char const *str)
-{
-	write(2, "minishell: syntax error near unexpected token `", 47);
-	write(2, str, 1);
-	write(2, "'\n", 2);
-}
+/*
+**	This function will verify that the syntax is correct.
+**	If it isn't it will print an error message.
+*/
 
 int			verify_syntax(t_list *token)
 {
@@ -23,8 +21,8 @@ int			verify_syntax(t_list *token)
 			if ((str[0] == '>' && ft_strcmp(str, ">") && ft_strcmp(str, ">>"))
 				|| token_active == META)
 			{
-				write_syntax_error(str);
-				return (-1);
+				shell_error_syntax(str);
+				return (1);
 			}
 			token_active = META;
 		}

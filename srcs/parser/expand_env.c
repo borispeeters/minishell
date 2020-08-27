@@ -1,5 +1,9 @@
 #include "minishell.h"
 
+/*
+**	This function will replace $? by the current exit status of the shell.
+*/
+
 static int	replace_exit_status(t_shell *shell, char **vars, int i)
 {
 	char	*nbr;
@@ -16,6 +20,11 @@ static int	replace_exit_status(t_shell *shell, char **vars, int i)
 	free(nbr);
 	return (len);
 }
+
+/*
+**	This function will loop through the command arguments
+**	and delegate work to the helper functions.
+*/
 
 static void	exp_str_loop(t_shell *shell, t_env *env, t_expansion *exp, char **vars)
 {
@@ -45,6 +54,10 @@ static void	exp_str_loop(t_shell *shell, t_env *env, t_expansion *exp, char **va
 		++i;
 	}
 }
+
+/*
+**	The main function for the expander.
+*/
 
 void		expand_env(t_shell *shell, t_command *cmd, t_env *env)
 {

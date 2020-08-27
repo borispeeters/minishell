@@ -1,15 +1,30 @@
 #include "minishell.h"
 #include "libft.h"
 
+/*
+**	A simple function that frees the given parameter
+**	that can be used as a function pointer.
+*/
+
 void		free_content(void *content)
 {
 	free(content);
 }
 
+/*
+**	This function will return non-zero if c is a whitespace character,
+**	zero otherwise.
+*/
+
 int			is_space(int c)
 {
 	return (c == ' ' || c == '\t');
 }
+
+/*
+**	This function will return non-zero if c is a metacharacter,
+**	zero otherwise.
+*/
 
 int			is_metacharacter(int c)
 {

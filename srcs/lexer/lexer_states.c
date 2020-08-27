@@ -1,65 +1,34 @@
 #include "libft.h"
 #include "minishell.h"
 
-void	double_quote(t_lexer *lex, char *line)
-{
-	if (lex->escape != ESCAPE)
-	{
-		if (lex->quote == DBL_QUOTE)
-			lex->quote = NO_QUOTE;
-		else if (lex->quote == NO_QUOTE)
-		{
-			lex->quote = DBL_QUOTE;
-			if (lex->token_active == INACTIVE)
-			{
-				lex->token_active = ACTIVE;
-				lex->token_start = line;
-				lex->token_len = 0;
-			}
-		}
-	}
-}
+/*
+**	This function is called when a non-special character is encountered
+**	and the token state is active.
+*/
 
-void	single_quote(t_lexer *lex, char *line)
-{
-	if (lex->quote == SNGL_QUOTE)
-		lex->quote = NO_QUOTE;
-	else if (lex->quote == NO_QUOTE)
-	{
-		if (lex->escape != ESCAPE)
-		{
-			lex->quote = SNGL_QUOTE;
-			if (lex->token_active == INACTIVE)
-			{
-				lex->token_active = ACTIVE;
-				lex->token_start = line;
-				lex->token_len = 0;
-			}
-		}
-	}
-}
-
-int		in_token(t_lexer *lex, char *line, t_list **head)
+void	in_token(t_lexer *lex, char *line, t_list **head)
 {
 	if (lex->escape != ESCAPE)
 	{
 		if (is_metacharacter(*line))
 		{
-			if (add_new_token(lex, head) == -1)
-				return (-1);
+			add_new_token(lex, head);
 			lex->token_start = line;
 			lex->token_len = 0;
 			lex->token_active = META;
 		}
 		if (is_space(*line) && lex->quote == NO_QUOTE)
 		{
-			if (add_new_token(lex, head) == -1)
-				return (-1);
+			add_new_token(lex, head);
 			lex->token_active = INACTIVE;
 		}
 	}
-	return (0);
 }
+
+/*
+**	This function is called when a non-special character is encountered
+**	and the token state is inactive.
+*/
 
 void	out_of_token(t_lexer *lex, char *line)
 {
@@ -73,12 +42,15 @@ void	out_of_token(t_lexer *lex, char *line)
 	}
 }
 
-int		meta_encounter(t_lexer *lex, char *line, t_list **head)
+/*
+**	This function is called when a metacharacter is encountered.
+*/
+
+void	meta_encounter(t_lexer *lex, char *line, t_list **head)
 {
 	if (*line == '>')
-		return (0);
-	if (add_new_token(lex, head) == -1)
-		return (-1);
+		return ;
+	add_new_token(lex, head);
 	if (is_space(*line))
 		lex->token_active = INACTIVE;
 	else
@@ -87,27 +59,5 @@ int		meta_encounter(t_lexer *lex, char *line, t_list **head)
 		lex->token_len = 0;
 		if (!is_metacharacter(*line))
 			lex->token_active = ACTIVE;
-	}
-	return (0);
-}
-
-void	escape_char(t_lexer *lex, char *line)
-{
-	if (lex->quote != SNGL_QUOTE)
-	{
-		if (lex->escape == NO_ESCAPE)
-		{
-			lex->escape = ESCAPE;
-			if (lex->token_active == INACTIVE)
-			{
-				lex->token_start = line;
-				lex->token_len = 0;
-				lex->token_active = ACTIVE;
-			}
-		}
-		else if (lex->escape == ESCAPE)
-		{
-			lex->escape = NO_ESCAPE;
-		}
 	}
 }

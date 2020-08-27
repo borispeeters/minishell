@@ -22,7 +22,7 @@ static void	free_path(t_path *path)
 	path->path_dirs = NULL;
 }
 
-static char	*make_abs_path(t_path *path, int i, char *cmd)
+static void	make_abs_path(t_path *path, int i, char *cmd)
 {
 	char	*tmp;
 
@@ -30,7 +30,7 @@ static char	*make_abs_path(t_path *path, int i, char *cmd)
 	if (tmp == NULL)
 	{
 		free_path(path);
-		return (NULL);
+		shell_error_malloc();
 	}
 	if (path->abs)
 	{
@@ -42,9 +42,8 @@ static char	*make_abs_path(t_path *path, int i, char *cmd)
 	if (path->abs == NULL)
 	{
 		free_path(path);
-		return (NULL);
+		shell_error_malloc();
 	}
-	return (path->abs);
 }
 
 static char	*search_path_dirs(t_path *path, char *cmd)
@@ -56,11 +55,7 @@ static char	*search_path_dirs(t_path *path, char *cmd)
 	i = 0;
 	while (path->path_dirs[i])
 	{
-		if (make_abs_path(path, i, cmd) == NULL)
-		{
-			free_path(path);
-			return (NULL);
-		}
+		make_abs_path(path, i, cmd);
 		stat(path->abs, &buf);
 		if (S_ISREG(buf.st_mode))
 		{
@@ -83,7 +78,7 @@ static char	*found_path(t_path *path, char **env, char *cmd)
 	if (path->path_dirs == NULL)
 	{
 		free_path(path);
-		return (NULL);
+		shell_error_malloc();
 	}
 	return (search_path_dirs(path, cmd));
 }

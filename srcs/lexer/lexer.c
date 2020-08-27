@@ -2,29 +2,34 @@
 #include "libft.h"
 #include "minishell.h"
 
-int			add_new_token(t_lexer *lex, t_list **head)
+/*
+**	This function will add a token to the end of the list.
+*/
+
+void		add_new_token(t_lexer *lex, t_list **head)
 {
 	char	*token;
 	t_list	*node;
 
 	token = ft_substr(lex->token_start, 0, lex->token_len);
 	if (token == NULL)
-		return (-1);
+		shell_error_malloc();
 	node = ft_lstnew(token);
 	if (node == NULL)
 	{
 		free(token);
-		return (-1);
+		shell_error_malloc();
 	}
 	ft_lstadd_back(head, node);
-	return (0);
 }
 
-static int	lex_loop(t_lexer *lex, char *line, t_list **head)
-{
-	int	ret;
+/*
+**	This function will loop through the input line
+**	and call the appropriate functions.
+*/
 
-	ret = 0;
+static void	lex_loop(t_lexer *lex, char *line, t_list **head)
+{
 	if (*line == '\\')
 		escape_char(lex, line);
 	if (*line == '\"' && lex->quote != SNGL_QUOTE)
@@ -32,17 +37,20 @@ static int	lex_loop(t_lexer *lex, char *line, t_list **head)
 	else if (*line == '\'' && lex->quote != DBL_QUOTE)
 		single_quote(lex, line);
 	else if (lex->token_active == ACTIVE && lex->quote == NO_QUOTE)
-		ret = in_token(lex, line, head);
+		in_token(lex, line, head);
 	else if (lex->token_active == INACTIVE)
 		out_of_token(lex, line);
 	else if (lex->token_active == META && lex->quote == NO_QUOTE)
-		ret = meta_encounter(lex, line, head);
+		meta_encounter(lex, line, head);
 	if (lex->escape == ESCAPE && *line != '\\')
 		lex->escape = NO_ESCAPE;
 	if (lex->token_active >= ACTIVE)
 		++lex->token_len;
-	return (ret);
 }
+
+/*
+**	This function initiates some values for the lexer.
+*/
 
 static void	init_lexer(t_list **head, t_lexer *lex)
 {
@@ -54,6 +62,10 @@ static void	init_lexer(t_list **head, t_lexer *lex)
 	lex->escape = NO_ESCAPE;
 }
 
+/*
+**	The main lexer function. 
+*/
+
 t_list		*lexer(char *line)
 {
 	t_list	*head;
@@ -62,21 +74,14 @@ t_list		*lexer(char *line)
 	init_lexer(&head, &lex);
 	while (*line)
 	{
-		if (lex_loop(&lex, line, &head) != 0)
-		{
-			ft_lstclear(&head, free_content);
-			return (NULL);
-		}
+		lex_loop(&lex, line, &head);
 		++line;
 	}
 	if (lex.token_active >= ACTIVE)
-	{
-		if (add_new_token(&lex, &head) == -1)
-			ft_lstclear(&head, free_content);
-	}
+		add_new_token(&lex, &head);
 	if (lex.quote != NO_QUOTE)
 	{
-		shell_error("multiline commnds are not supported");
+		shell_error("multiline commands are not supported");
 		ft_lstclear(&head, free_content);
 	}
 	return (head);

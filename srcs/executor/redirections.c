@@ -3,6 +3,10 @@
 #include <unistd.h>
 #include "minishell.h"
 
+/*
+**	This function will print an error if name is a directory.
+*/
+
 static void	check_dir(char *name)
 {
 	struct stat	buf;
@@ -11,6 +15,11 @@ static void	check_dir(char *name)
 	if (S_ISDIR(buf.st_mode))
 		shell_error_param("Is a directory", name);
 }
+
+/*
+**	This function will redirect the output from the standard output
+**	to an output file.
+*/
 
 int			output_redir(t_command *cmd)
 {
@@ -34,13 +43,17 @@ int			output_redir(t_command *cmd)
 			oflag = O_TRUNC;
 		cmd->fd_out = open(file, O_CREAT | oflag | O_WRONLY, 0644);
 		if (cmd->fd_out == -1)
-			return (-1);
+			return (1);
 		tmp_files_out = tmp_files_out->next;
 		tmp_out_modes = tmp_out_modes->next;
 	}
 	dup2(cmd->fd_out, 1);
 	return (0);
 }
+
+/*
+**	This function will print an error if name is not a valid file or directory.
+*/
 
 static void	check_file_dir(char *name)
 {
@@ -50,6 +63,11 @@ static void	check_file_dir(char *name)
 	if (!S_ISREG(buf.st_mode) && !S_ISDIR(buf.st_mode))
 		shell_error_param("No such file or directory", name);
 }
+
+/*
+**	This function will redirect the input from the standard input
+**	to an input file.
+*/
 
 int			input_redir(t_command *cmd)
 {
@@ -64,9 +82,10 @@ int			input_redir(t_command *cmd)
 		check_file_dir(file);
 		cmd->fd_in = open(file, O_RDONLY, 0644);
 		if (cmd->fd_in == -1)
-			return (-1);
+			return (1);
 		cmd->files_in = cmd->files_in->next;
 	}
-	dup2(cmd->fd_in, 0);
+	if (cmd->fd_in != 0)
+		dup2(cmd->fd_in, 0);
 	return (0);
 }

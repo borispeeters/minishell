@@ -2,18 +2,10 @@
 #include "libft.h"
 #include "minishell.h"
 
-void		free_pair(char **pair)
-{
-	int	i;
-
-	i = 0;
-	while (pair[i])
-	{
-		free(pair[i]);
-		++i;
-	}
-	free(pair);
-}
+/*
+**	This function will return the index of the environment variable
+**	in the environment list.
+*/
 
 int			get_env_index(t_env *env, char *key)
 {
@@ -24,16 +16,23 @@ int			get_env_index(t_env *env, char *key)
 	while (env->vars[i])
 	{
 		pair = ft_split(env->vars[i], '=');
+		if (pair == NULL)
+			shell_error_malloc();
 		if (ft_strcmp(pair[0], key) == 0)
 		{
-			free_pair(pair);
+			free_var_array(pair);
 			break ;
 		}
-		free_pair(pair);
+		free_var_array(pair);
 		++i;
 	}
 	return (i);
 }
+
+/*
+**	This function will return a string
+**	containing the key of a key-value pair located on the heap.
+*/
 
 char		*get_env(t_env *env, char *key)
 {
@@ -45,10 +44,19 @@ char		*get_env(t_env *env, char *key)
 	if (env->vars[i] == NULL)
 		return (ft_strdup(""));
 	pair = ft_split(env->vars[i], '=');
+	if (pair == NULL)
+		shell_error_malloc();
 	value = (pair[1]) ? ft_strdup(pair[1]) : ft_strdup("");
-	free_pair(pair);
+	if (value == NULL)
+		shell_error_malloc();
+	free_var_array(pair);
 	return (value);
 }
+
+/*
+**	This function will put a new environment variable
+**	in the environment list.
+*/
 
 void		set_env(t_env *env, char *key, char *value)
 {
@@ -61,7 +69,13 @@ void		set_env(t_env *env, char *key, char *value)
 		resize_up_env(env, key);
 	pair = ft_split(env->vars[i], '=');
 	free(env->vars[i]);
+	if (pair == NULL)
+		shell_error_malloc();
 	tmp = ft_strjoin(pair[0], "=");
+	if (tmp == NULL)
+		shell_error_malloc();
 	env->vars[i] = ft_strjoin(tmp, value);
 	free(tmp);
+	if (env->vars[i] == NULL)
+		shell_error_malloc();
 }

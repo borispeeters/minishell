@@ -1,5 +1,10 @@
 #include "minishell.h"
 
+/*
+**	This function will loop through the command arguments
+**	and delegate work to other functions.
+*/
+
 static void	qr_str_loop(t_expansion *exp, char **vars)
 {
 	int i;
@@ -21,6 +26,10 @@ static void	qr_str_loop(t_expansion *exp, char **vars)
 			++i;
 	}
 }
+
+/*
+**	The main function for the removal of quotes and the backslash character.
+*/
 
 void		quote_removal(t_command *cmd)
 {

@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include "minishell.h"
 
 /*
 **	This function will malloc a 2-dimensional char array with n elements,
@@ -14,7 +15,7 @@ char		**malloc_var_array(int n)
 		return (NULL);
 	array = malloc(sizeof(char *) * (n + 1));
 	if (array == NULL)
-		return (NULL);
+		shell_error_malloc();
 	i = 0;
 	while (i < n)
 	{
