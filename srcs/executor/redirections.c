@@ -5,10 +5,22 @@
 #include <errno.h>
 #include "minishell.h"
 
-static void try_to_open(int *fd, char *file, int oflag, mode_t mode)
+static void	try_to_open(int *fd, char *file, int oflag, mode_t mode)
 {
 	// kijk of oflag O_RDONLY is, zo ja check of file nniet een dir is want mag nie
 	// want dan kunnen we deze ook callen bij input_redir en kunnen die andere 2 functies weg
+	struct stat buf;
+
+	if ((oflag & O_ACCMODE) == O_RDONLY)
+	{
+		stat(file, &buf);
+		if (S_ISDIR(buf.st_mode))
+		{
+			shell_error_param("Is a directory", "stdin");
+			*fd = -1;
+			return ;
+		}
+	}
 	*fd = open(file, oflag, mode);
 	if (*fd == -1)
 	{
