@@ -8,6 +8,7 @@
 static void try_to_open(int *fd, char *file, int oflag, mode_t mode)
 {
 	// kijk of oflag O_RDONLY is, zo ja check of file nniet een dir is want mag nie
+	// want dan kunnen we deze ook callen bij input_redir en kunnen die andere 2 functies weg
 	*fd = open(file, oflag, mode);
 	if (*fd == -1)
 	{
