@@ -1,7 +1,20 @@
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <string.h> // maybe verwijder? is voor strerror
+#include <errno.h>
 #include "minishell.h"
+
+static void try_to_open(int *fd, char *file, int oflag, mode_t mode)
+{
+	// kijk of oflag O_RDONLY is, zo ja check of file nniet een dir is want mag nie
+	*fd = open(file, oflag, mode);
+	if (*fd == -1)
+	{
+		printf("Vlaaaaa\n");
+		shell_error_param(strerror(errno), file);
+	}
+}
 
 static void	check_dir(char *name)
 {
@@ -32,13 +45,13 @@ int			output_redir(t_command *cmd)
 			oflag = O_APPEND;
 		else if (*((t_filemode*)tmp_out_modes->content) == TRUNC)
 			oflag = O_TRUNC;
-		cmd->fd_out = open(file, O_CREAT | oflag | O_WRONLY, 0644);
+		try_to_open(&cmd->fd_out, file, O_CREAT | oflag | O_WRONLY, 0644);
+		//cmd->fd_out = open(file, O_CREAT | oflag | O_WRONLY, 0644);
 		if (cmd->fd_out == -1)
 			return (-1);
 		tmp_files_out = tmp_files_out->next;
 		tmp_out_modes = tmp_out_modes->next;
 	}
-	dup2(cmd->fd_out, 1);
 	return (0);
 }
 
