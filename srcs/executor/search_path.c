@@ -3,6 +3,10 @@
 #include "libft.h"
 #include "minishell.h"
 
+/*
+**	A utility function to free memory used for PATH traversal.
+*/
+
 static void	free_path(t_path *path)
 {
 	int	i;
@@ -21,6 +25,10 @@ static void	free_path(t_path *path)
 	free(path->path_dirs);
 	path->path_dirs = NULL;
 }
+
+/*
+**	This function will create an absolute path from a command.
+*/
 
 static void	make_abs_path(t_path *path, int i, char *cmd)
 {
@@ -46,6 +54,12 @@ static void	make_abs_path(t_path *path, int i, char *cmd)
 	}
 }
 
+/*
+**	This function will search for an existing executable
+**	in the directories in the PATH environment variable,
+**	going from left to right.
+*/
+
 static char	*search_path_dirs(t_path *path, char *cmd)
 {
 	struct stat	buf;
@@ -69,6 +83,11 @@ static char	*search_path_dirs(t_path *path, char *cmd)
 	return (NULL);
 }
 
+/*
+**	This function will get all the individual paths
+**	in the PATH environment variable.
+*/
+
 static char	*found_path(t_path *path, char **env, char *cmd)
 {
 	path->path = ft_substr(*env, 5, ft_strlen(*env) - 5);
@@ -82,6 +101,11 @@ static char	*found_path(t_path *path, char **env, char *cmd)
 	}
 	return (search_path_dirs(path, cmd));
 }
+
+/*
+**	This function will search for the PATH environment variable
+**	and if it can't be found return the original command.
+*/
 
 char	*search_path(char *cmd, char **env)
 {

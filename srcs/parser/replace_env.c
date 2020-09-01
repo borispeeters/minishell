@@ -55,12 +55,11 @@ int			found_env(t_env *env, char **vars, int i)
 	len = env_len(*vars + i);
 	key = ft_substr(*vars, i + 1, len - 1);
 	if (key == NULL)
-	{
-		shell_error("Malloc failed");
-		exit(1);
-	}
+		shell_error_malloc();
 	value = get_env(env, key);
 	free(key);
+	if (value == NULL)
+		shell_error_malloc();
 	str_replace(vars, i, len, value);
 	len = ft_strlen(value);
 	free(value);

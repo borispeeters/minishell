@@ -9,10 +9,7 @@ void	builtin_env(t_env *env)
 	while (i < env->length)
 	{
 		if (ft_strchr(env->vars[i], '='))
-		{
-			write(1, env->vars[i], ft_strlen(env->vars[i]));
-			write(1, "\n", 1);
-		}
+			ft_putendl_fd(env->vars[i], STDOUT_FILENO);
 		++i;
 	}
 }

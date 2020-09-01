@@ -77,7 +77,6 @@ int		main(int argc, char **argv, char **envp)
 		signal(SIGINT, signal_handler);
 		signal(SIGQUIT, signal_handler);
 		write(1, "minishell-0.1$ ", 15);
-		shell.exit_status = 42;
 		shell.status = get_next_line(0, &line);
 		tokens = lexer(line);
 		// print_list(tokens);
@@ -88,20 +87,28 @@ int		main(int argc, char **argv, char **envp)
 				table = parse(&tokens);
 				expand_env(&shell, (t_command*)table->content, &env);
 				quote_removal((t_command*)table->content);
+				shell.exit_status = 42;
 				execute(table, &env);
 				free_command_table(&table);
 			}
 		}
-		char	*tmp[4];
-		tmp[0] = "cd";
-		tmp[1] = "..";
-		tmp[2] = "lol";
-		tmp[3] = NULL;
-		// builtin_pwd(&shell);
-		// builtin_cd(&shell, &env, tmp);
-		// builtin_pwd(&shell);
-		// printf("OLDPWD: [%s]\n", get_env(&env, "OLDPWD"));
-		// printf("PWD: [%s]\n", get_env(&env, "PWD"));
+		char	*tmp[2];
+		tmp[0] = "export";
+		tmp[1] = NULL;
+		char	*exp[4];
+		exp[0] = "export";
+		exp[1] = "zumba=leuk";
+		exp[2] = "_test_=ok=dan";
+		exp[3] = NULL;
+		char	*uns[4];
+		uns[0] = "unset";
+		uns[1] = "zumba";
+		uns[2] = NULL;
+		uns[3] = NULL;
+		builtin_export(&env, exp);
+		builtin_export(&env, tmp);
+		builtin_unset(&env, uns);
+		builtin_export(&env, tmp);
 		free_shell(&line, &tokens);
 	}
 	free_env(&env);

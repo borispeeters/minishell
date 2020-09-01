@@ -6,7 +6,7 @@ void	builtin_exit(t_shell *shell, char **vars)
 {
 	if (vars[2] != NULL)
 	{
-		write(2, "minishell: exit: too many arguments", 35);
+		shell_error_param("too many arguments", "exit");
 		shell->exit_status = 1;
 		return ;
 	}

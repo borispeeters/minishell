@@ -17,7 +17,7 @@ char		**malloc_var_array(int n)
 	if (array == NULL)
 		shell_error_malloc();
 	i = 0;
-	while (i < n)
+	while (i <= n)
 	{
 		*(array + i) = NULL;
 		i++;

@@ -230,10 +230,11 @@ void			resize_down_env(t_env *env, int remove);
 **	utils/error_utils.c
 */
 
-void			shell_error(char const *message);
-void			shell_error_param(char const *message, char const *param);
+void			shell_error(char *message);
+void			shell_error_param(char *message, char *param);
 void			shell_error_malloc();
-void			shell_error_syntax(char const *str);
+void			shell_error_syntax(char *s);
+void			shell_error_env(char *s, char *param);
 
 /*
 **	utils/shell_utils.c
@@ -312,12 +313,24 @@ int				found_env(t_env *env, char **vars, int i);
 void			str_replace(char **str, int index, int len, char *replace);
 
 /*
-**	utils/get_env.c
+**	utils/get_set_env.c
 */
 
 char			*get_env(t_env *env, char *key);
 int				get_env_index(t_env *env, char *key);
 void			set_env(t_env *env, char *key, char *value);
+
+/*
+**	utils/env_split.c
+*/
+
+char			**env_split(char const *s);
+
+/*
+**	utils/valid_key.c
+*/
+
+int				valid_key(char *key);
 
 /*
 **	builtins/builtin_exit.c
@@ -348,5 +361,17 @@ void			builtin_cd(t_shell *shell, t_env *env, char **vars);
 */
 
 void			builtin_echo(t_shell *shell, char **vars);
+
+/*
+**	builtins/builtin_export.c
+*/
+
+void			builtin_export(t_env *env, char **vars);
+
+/*
+**	builtins/builtin_unset.c
+*/
+
+void			builtin_unset(t_env *env, char **vars);
 
 #endif

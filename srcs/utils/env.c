@@ -3,6 +3,25 @@
 #include "minishell.h"
 
 /*
+**	This function will free the environment list on exit of the shell.
+*/
+
+void	free_env(t_env *env)
+{
+	int i;
+
+	i = 0;
+	while (i < env->length)
+	{
+		free(env->vars[i]);
+		env->vars[i] = NULL;
+		++i;
+	}
+	free(env->vars);
+	env->vars = NULL;
+}
+
+/*
 **	This function will initiate the environent list on the heap
 **	at startup of the shell.
 */
@@ -26,7 +45,11 @@ void	init_env(t_env *env, char **envp)
 	{
 		env->vars[i] = ft_strdup(envp[i]);
 		if (env->vars[i] == NULL)
+		{
+			env->length = i;
+			free_env(env);
 			shell_error_malloc();
+		}
 		++i;
 	}
 	while (i < env->block_amount * env->block_size)
@@ -35,25 +58,6 @@ void	init_env(t_env *env, char **envp)
 		++i;
 	}
 	env->vars[i] = NULL;
-}
-
-/*
-**	This function will free the environment list on exit of the shell.
-*/
-
-void	free_env(t_env *env)
-{
-	int i;
-
-	i = 0;
-	while (i < env->length)
-	{
-		free(env->vars[i]);
-		env->vars[i] = NULL;
-		++i;
-	}
-	free(env->vars);
-	env->vars = NULL;
 }
 
 /*
@@ -90,7 +94,7 @@ void	resize_up_env(t_env *env, char *new)
 		free(env->vars);
 		env->vars = tmp;
 	}
-	env->vars[prev_len] = new;
+	env->vars[prev_len] = ft_strdup(new);
 }
 
 /*

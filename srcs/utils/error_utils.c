@@ -6,7 +6,7 @@
 **	This function will print an error to the error stream.
 */
 
-void		shell_error(char const *message)
+void		shell_error(char *message)
 {
 	write(STDERR_FILENO, "minishell: ", 11);
 	write(STDERR_FILENO, message, ft_strlen(message));
@@ -18,13 +18,12 @@ void		shell_error(char const *message)
 **	to the error stream.
 */
 
-void		shell_error_param(char const *message, char const *param)
+void		shell_error_param(char *message, char *param)
 {
-	write(STDERR_FILENO, "minishell: ", 11);
-	write(STDERR_FILENO, param, ft_strlen(param));
-	write(STDERR_FILENO, ": ", 2);
-	write(STDERR_FILENO, message, ft_strlen(message));
-	write(STDERR_FILENO, "\n", 1);
+	ft_putstr_fd("minishell: ", STDERR_FILENO);
+	ft_putstr_fd(param, STDERR_FILENO);
+	ft_putstr_fd(": ", STDERR_FILENO);
+	ft_putendl_fd(message, STDERR_FILENO);
 }
 
 /*
@@ -42,10 +41,23 @@ void		shell_error_malloc()
 **	This function will print a syntax error to the error stream.
 */
 
-void		shell_error_syntax(char const *str)
+void		shell_error_syntax(char *s)
 {
-	write(STDERR_FILENO, "minishell: ", 11);
-	write(STDERR_FILENO, "syntax error near unexpected token `", 36);
-	write(STDERR_FILENO, str, 1);
-	write(STDERR_FILENO, "'\n", 2);
+	ft_putstr_fd("minishell: ", STDERR_FILENO);
+	ft_putstr_fd("syntax error near unexpected token `", STDERR_FILENO);
+	ft_putstr_fd("minishell: ", STDERR_FILENO);
+	write(STDERR_FILENO, s, 1);
+	ft_putendl_fd("\'", STDERR_FILENO);
+}
+
+void		shell_error_env(char *s, char *param)
+{
+	char	*tmp;
+	char	*msg;
+
+	tmp = ft_strjoin("`", s);
+	msg = ft_strjoin(tmp, "\': not a valid identifier");
+	shell_error_param(msg, param);
+	free(tmp);
+	free(msg);
 }
