@@ -7,15 +7,11 @@ void	builtin_pwd(t_shell *shell)
 {
 	char	*buf;
 
+	(void)shell;
 	buf = NULL;
 	buf = getcwd(buf, 1);
 	if (buf == NULL)
-	{
-		write(2, "minishell: pwd: malloc failed\n", 30);
-		shell->exit_status = 1;
-		return ;
-	}
-	write(1, buf, ft_strlen(buf));
-	write(1, "\n", 1);
+		shell_error_malloc();
+	ft_putendl_fd(buf, STDOUT_FILENO);
 	free(buf);
 }

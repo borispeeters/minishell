@@ -234,6 +234,11 @@ void			shell_error(char *message);
 void			shell_error_param(char *message, char *param);
 void			shell_error_malloc();
 void			shell_error_syntax(char *s);
+
+/*
+**	utils/env_error_utils.c
+*/
+
 void			shell_error_env(char *s, char *param);
 
 /*

@@ -50,14 +50,3 @@ void		shell_error_syntax(char *s)
 	ft_putendl_fd("\'", STDERR_FILENO);
 }
 
-void		shell_error_env(char *s, char *param)
-{
-	char	*tmp;
-	char	*msg;
-
-	tmp = ft_strjoin("`", s);
-	msg = ft_strjoin(tmp, "\': not a valid identifier");
-	shell_error_param(msg, param);
-	free(tmp);
-	free(msg);
-}
