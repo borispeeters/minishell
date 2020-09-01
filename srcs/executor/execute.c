@@ -75,7 +75,6 @@ void		execute(t_list *table, t_env *env)
 				printf("SAAAUUUS\n");
 				return ;
 			}
-			dup2(((t_command*)table->content)->fd_out, 1);
 			execve(exec.command, exec.vars, env->vars);
 		}
 		wait(NULL);
