@@ -238,6 +238,12 @@ void			shell_error_builtin_param(char *message, char *builtin,
 					char *param);
 
 /*
+**	utils/env_error_utils.c
+*/
+
+void			shell_error_env(char *s, char *param);
+
+/*
 **	utils/shell_utils.c
 */
 

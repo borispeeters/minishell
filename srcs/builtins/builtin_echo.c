@@ -1,3 +1,4 @@
+#include <unistd.h>
 #include "libft.h"
 #include "minishell.h"
 
@@ -16,11 +17,11 @@ void	builtin_echo(t_shell *shell, char **vars)
 	}
 	while (vars[i])
 	{
-		write(1, vars[i], ft_strlen(vars[i]));
+		ft_putstr_fd(vars[i], STDOUT_FILENO);
 		++i;
 		if (vars[i])
-			write(1, " ", 1);
+			ft_putchar_fd(' ', STDOUT_FILENO);
 	}
 	if (print_newline)
-		write(1, "\n", 1);
+		ft_putchar_fd('\n', STDOUT_FILENO);
 }
