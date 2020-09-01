@@ -59,5 +59,5 @@ void		shell_error_builtin_param(char *message, char *builtin, char *param)
 	ft_putstr_fd(": ", STDERR_FILENO);
 	ft_putstr_fd(param, STDERR_FILENO);
 	ft_putstr_fd(": ", STDERR_FILENO);
-	ft_putendl(message, STDERR_FILENO);
+	ft_putendl_fd(message, STDERR_FILENO);
 }
