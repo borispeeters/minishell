@@ -53,6 +53,7 @@ void		execute(t_list *table, t_env *env)
 		exec.pid = fork();
 		if (exec.pid < 0)
 		{
+			free(exec.command);
 			shell_error("fork failed");
 			return ;
 		}
@@ -77,6 +78,7 @@ void		execute(t_list *table, t_env *env)
 			execve(exec.command, exec.vars, env->vars);
 		}
 		wait(NULL);
+		free(exec.command);
 		if (table->next)
 		{
 			close(exec.fd[1]);

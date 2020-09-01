@@ -11,6 +11,7 @@ t_list			*parse(t_list **tokens)
 	char			*token;
 	t_parser		parser;
 	t_list			*comm_table;
+	t_list			*tmp;
 
 	comm_table = NULL;
 	parser.start = *tokens;
@@ -22,8 +23,11 @@ t_list			*parse(t_list **tokens)
 		if (parser.sep)
 		{
 			create_command(&comm_table, &parser);
+			tmp = parser.start;
 			parser.prev_sep = parser.sep;
 			parser.start = (*tokens)->next;
+			free(tmp->content);
+			free(tmp);
 		}
 		if (parser.sep == SEMICOLON)
 		{
