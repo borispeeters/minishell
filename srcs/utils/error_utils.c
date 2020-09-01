@@ -8,9 +8,8 @@
 
 void		shell_error(char *message)
 {
-	write(STDERR_FILENO, "minishell: ", 11);
-	write(STDERR_FILENO, message, ft_strlen(message));
-	write(STDERR_FILENO, "\n", 1);
+	ft_putstr_fd("minishell: ", STDERR_FILENO);
+	ft_putendl_fd(message, STDERR_FILENO);
 }
 
 /*
@@ -27,11 +26,11 @@ void		shell_error_param(char *message, char *param)
 }
 
 /*
-**	This function will inform the user that malloc failed 
+**	This function will inform the user that malloc failed
 **	and then exit the shell.
 */
 
-void		shell_error_malloc()
+void		shell_error_malloc(void)
 {
 	shell_error("malloc failed");
 	exit(EXIT_FAILURE);
@@ -41,23 +40,24 @@ void		shell_error_malloc()
 **	This function will print a syntax error to the error stream.
 */
 
-void		shell_error_syntax(char *s)
+void		shell_error_syntax(char *token)
 {
 	ft_putstr_fd("minishell: ", STDERR_FILENO);
 	ft_putstr_fd("syntax error near unexpected token `", STDERR_FILENO);
-	ft_putstr_fd("minishell: ", STDERR_FILENO);
-	write(STDERR_FILENO, s, 1);
+	ft_putchar_fd(*token, STDERR_FILENO);
 	ft_putendl_fd("\'", STDERR_FILENO);
 }
 
-void		shell_error_env(char *s, char *param)
-{
-	char	*tmp;
-	char	*msg;
+/*
+**	This function will print 2 parameters and then the error message.
+*/
 
-	tmp = ft_strjoin("`", s);
-	msg = ft_strjoin(tmp, "\': not a valid identifier");
-	shell_error_param(msg, param);
-	free(tmp);
-	free(msg);
+void		shell_error_builtin_param(char *message, char *builtin, char *param)
+{
+	ft_putstr_fd("minishell: ",  STDERR_FILENO);
+	ft_putstr_fd(builtin, STDERR_FILENO);
+	ft_putstr_fd(": ", STDERR_FILENO);
+	ft_putstr_fd(param, STDERR_FILENO);
+	ft_putstr_fd(": ", STDERR_FILENO);
+	ft_putendl(message, STDERR_FILENO);
 }

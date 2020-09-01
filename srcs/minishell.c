@@ -92,23 +92,6 @@ int		main(int argc, char **argv, char **envp)
 				free_command_table(&table);
 			}
 		}
-		char	*tmp[2];
-		tmp[0] = "export";
-		tmp[1] = NULL;
-		char	*exp[4];
-		exp[0] = "export";
-		exp[1] = "zumba=leuk";
-		exp[2] = "_test_=ok=dan";
-		exp[3] = NULL;
-		char	*uns[4];
-		uns[0] = "unset";
-		uns[1] = "zumba";
-		uns[2] = NULL;
-		uns[3] = NULL;
-		builtin_export(&env, exp);
-		builtin_export(&env, tmp);
-		builtin_unset(&env, uns);
-		builtin_export(&env, tmp);
 		free_shell(&line, &tokens);
 	}
 	free_env(&env);

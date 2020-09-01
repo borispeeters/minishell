@@ -2,6 +2,8 @@
 #include <unistd.h>
 #include "libft.h"
 #include "minishell.h"
+#include <string.h>
+#include <errno.h>
 
 /*
 **	Quick utility function that either calls the search_path function if no
@@ -76,6 +78,8 @@ void		execute(t_list *table, t_env *env)
 				return ;
 			}
 			execve(exec.command, exec.vars, env->vars);
+			shell_error_param(strerror(errno), exec.command);
+			exit(1); // FIX LOLLL
 		}
 		wait(NULL);
 		free(exec.command);

@@ -234,7 +234,8 @@ void			shell_error(char *message);
 void			shell_error_param(char *message, char *param);
 void			shell_error_malloc();
 void			shell_error_syntax(char *s);
-void			shell_error_env(char *s, char *param);
+void			shell_error_builtin_param(char *message, char *builtin,
+					char *param);
 
 /*
 **	utils/shell_utils.c
