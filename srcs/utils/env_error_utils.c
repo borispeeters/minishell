@@ -9,17 +9,9 @@
 
 void		shell_error_env(char *s, char *param)
 {
-	char	*tmp;
-	char	*msg;
-
-	tmp = ft_strjoin("`", s);
-	if (tmp == NULL)
-		shell_error_malloc();
-	msg = ft_strjoin(tmp, "\': not a valid identifier");
-	if (msg != NULL)
-	{
-		shell_error_param(msg, param);
-		free(msg);
-	}
-	free(tmp);
+	ft_putstr_fd("minishell: ", STDERR_FILENO);
+	ft_putstr_fd(param, STDERR_FILENO);
+	ft_putstr_fd(": `", STDERR_FILENO);
+	ft_putstr_fd(s, STDERR_FILENO);
+	ft_putendl_fd("\': not a valid identifier");
 }
