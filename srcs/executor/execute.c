@@ -38,7 +38,8 @@ static int		find_command(t_executor *exec, t_env *env)
 	return (0);
 }
 
-void		exec_binary(t_shell *shell, t_env *env, t_command *cmd, t_executor *exec)
+void			exec_binary(t_shell *shell, t_env *env, t_command *cmd,
+					t_executor *exec)
 {
 	(void)shell;
 	exec->vars = cmd->vars;
@@ -53,8 +54,6 @@ void		exec_binary(t_shell *shell, t_env *env, t_command *cmd, t_executor *exec)
 	}
 	if (exec->pid == 0)
 	{
-		close(exec->in);
-		close(exec->fd[1]);
 		execve(exec->command, exec->vars, env->vars);
 		shell_error_param(strerror(errno), exec->command);
 		exit(127); // FIX LOLLL
@@ -64,7 +63,7 @@ void		exec_binary(t_shell *shell, t_env *env, t_command *cmd, t_executor *exec)
 		free(exec->command);
 }
 
-int			is_builtin(t_shell *shell, t_command *cmd)
+int				is_builtin(t_shell *shell, t_command *cmd)
 {
 	int	i;
 
@@ -78,13 +77,14 @@ int			is_builtin(t_shell *shell, t_command *cmd)
 	return (0);
 }
 
-void		exec_builtin(t_shell *shell, t_env *env, t_command *cmd, t_builtin builtin)
+void			exec_builtin(t_shell *shell, t_env *env, t_command *cmd,
+					t_builtin builtin)
 {
 	builtin(shell, env, cmd);
 }
 
-
-int			exec_command(t_shell *shell, t_env *env, t_command *cmd, t_executor *exec)
+int				exec_command(t_shell *shell, t_env *env, t_command *cmd,
+					t_executor *exec)
 {
 	int	i;
 
@@ -103,17 +103,18 @@ int			exec_command(t_shell *shell, t_env *env, t_command *cmd, t_executor *exec)
 	return (1);
 }
 
-void		handle_pipes(t_executor *exec, t_list *table)
+void			handle_pipes(t_executor *exec, t_list *table)
 {
 	if (table->next)
-	{
 		pipe(exec->fd);
-		if (exec->in != 0)
-		{
-			dup2(exec->in, 0);
-			close(exec->in);
-		}
-		dup2(exec->fd[1], 1);
+	if (exec->in != STDIN_FILENO)
+	{
+		dup2(exec->in, STDIN_FILENO);
+		close(exec->in);
+	}
+	if (exec->fd[1] != 1)
+	{
+		dup2(exec->fd[1], STDOUT_FILENO);
 		close(exec->fd[1]);
 	}
 }
@@ -123,30 +124,33 @@ void		handle_pipes(t_executor *exec, t_list *table)
 **	pipes and redirects if necessary, then execute the command.
 */
 
-void		execute_loop(t_shell *shell, t_list *table, t_env *env)
+void			execute_loop(t_shell *shell, t_list *table, t_env *env)
 {
 	t_executor	exec;
 	int			bak[2];
+	t_command	*command;
 
-	exec.in = 0;
-	exec.fd[1] = 1;
+	exec.in = STDIN_FILENO;
+	exec.fd[1] = STDOUT_FILENO;
 	while (table)
 	{
 		exec.command = NULL;
-		bak[0] = dup(0);
-		bak[1] = dup(1);
+		command = table->content;
+		bak[0] = dup(STDIN_FILENO);
+		bak[1] = dup(STDOUT_FILENO);
 		handle_pipes(&exec, table);
-		if (output_redir((t_command*)table->content) ||
-				input_redir((t_command*)table->content))
+		if (output_redir(command) || input_redir(command))
 		{
 			printf("SAAAUUUS\n");
 			return ;
 		}
-		exec_command(shell, env, (t_command*)table->content, &exec);
+		exec_command(shell, env, command, &exec);
 		if (table->next)
 			exec.in = exec.fd[0];
-		dup2(bak[0], 0);
-		dup2(bak[1], 1);
+		dup2(bak[0], STDIN_FILENO);
+		dup2(bak[1], STDOUT_FILENO);
+		close(bak[0]);
+		close(bak[1]);
 		table = table->next;
 	}
 }
