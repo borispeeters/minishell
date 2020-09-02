@@ -1,17 +1,15 @@
 #include <unistd.h>
 #include "minishell.h"
 
-void	builtin_env(t_shell *shell, t_env *env, t_command *cmd)
+void	builtin_env(t_shell *shell)
 {
 	int	i;
 
-	(void)shell;
-	(void)cmd;
 	i = 0;
-	while (i < env->length)
+	while (i < shell->env->length)
 	{
-		if (ft_strchr(env->vars[i], '='))
-			ft_putendl_fd(env->vars[i], STDOUT_FILENO);
+		if (ft_strchr(shell->env->vars[i], '='))
+			ft_putendl_fd(shell->env->vars[i], STDOUT_FILENO);
 		++i;
 	}
 }

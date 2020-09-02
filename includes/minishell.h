@@ -13,7 +13,7 @@ typedef struct s_shell		t_shell;
 typedef struct s_env		t_env;
 typedef struct s_command	t_command;
 
-typedef	void (*t_builtin)(t_shell *shell, t_env *env, t_command *cmd);
+typedef	void (*t_builtin)(t_shell *shell);
 
 typedef struct	s_shell
 {
@@ -21,6 +21,8 @@ typedef struct	s_shell
 	unsigned char	exit_status;
 	t_builtin		builtin[7];
 	char			b_name[7][7];
+	t_env			*env;
+	t_command		*cmd;
 }				t_shell;
 
 /*
@@ -351,45 +353,15 @@ char			**env_split(char const *s);
 int				valid_key(char *key);
 
 /*
-**	builtins/builtin_exit.c
+**	builtins
 */
 
-void			builtin_exit(t_shell *shell, t_env *env, t_command *cmd);
-
-/*
-**	builtins/builtin_env.c
-*/
-
-void			builtin_env(t_shell *shell, t_env *env, t_command *cmd);
-
-/*
-**	builtins/builtin_pwd.c
-*/
-
-void			builtin_pwd(t_shell *shell, t_env *env, t_command *cmd);
-
-/*
-**	builtins/builtin_cd.c
-*/
-
-void			builtin_cd(t_shell *shell, t_env *env, t_command *cmd);
-
-/*
-**	builtins/builtin_echo.c
-*/
-
-void			builtin_echo(t_shell *shell, t_env *env, t_command *cmd);
-
-/*
-**	builtins/builtin_export.c
-*/
-
-void			builtin_export(t_shell *shell, t_env *env, t_command *cmd);
-
-/*
-**	builtins/builtin_unset.c
-*/
-
-void			builtin_unset(t_shell *shell, t_env *env, t_command *cmd);
+void			builtin_cd(t_shell *shell);
+void			builtin_echo(t_shell *shell);
+void			builtin_env(t_shell *shell);
+void			builtin_exit(t_shell *shell);
+void			builtin_export(t_shell *shell);
+void			builtin_pwd(t_shell *shell);
+void			builtin_unset(t_shell *shell);
 
 #endif

@@ -113,7 +113,7 @@ int		main(int argc, char **argv, char **envp)
 				table = parse(&tokens);
 				expand_env(&shell, (t_command*)table->content, &env);
 				quote_removal((t_command*)table->content);
-				shell.exit_status = 42;
+				shell.exit_status = 0;
 				execute_loop(&shell, table, &env);
 				free_command_table(&table);
 			}
