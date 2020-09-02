@@ -241,7 +241,7 @@ void			resize_down_env(t_env *env, int remove);
 
 void			shell_error(char *message);
 void			shell_error_param(char *message, char *param);
-void			shell_error_malloc();
+void			shell_error_malloc(void);
 void			shell_error_syntax(char *s);
 void			shell_error_builtin_param(char *message, char *builtin,
 					char *param);
@@ -270,6 +270,11 @@ t_list			*parse(t_list **tokens);
 int				validate_command(t_parser *parser);
 void			create_command(t_list **table, t_parser *parser);
 void			parse_command(t_command *command, t_parser *parser);
+
+/*
+**	parser/parse_redirect.c
+*/
+
 void			handle_redirect(t_command *command, t_parser *parser,
 					t_redirect redirect);
 

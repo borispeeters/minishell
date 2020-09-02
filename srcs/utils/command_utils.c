@@ -21,8 +21,6 @@ t_list		*prepare_command(int length)
 	t_list		*link;
 	t_command	*command;
 
-	if (length <= 0)
-		return (NULL);
 	command = malloc(sizeof(t_command));
 	if (command == NULL)
 		shell_error_malloc();

@@ -85,11 +85,6 @@ void		create_command(t_list **table, t_parser *parser)
 
 	length = validate_command(parser);
 	new = prepare_command(length);
-	if (new == NULL)
-	{
-		printf("Iets ging fout lmaoooo\n");
-		return ;
-	}
 	parse_command((t_command*)new->content, parser);
 	ft_lstadd_back(table, new);
 }
@@ -126,32 +121,3 @@ void		parse_command(t_command *command, t_parser *parser)
 		command->pipe ^= PIPE_IN;
 }
 
-/*
-**	This function will handle a redirect, and put the right information in the
-**	struct.
-*/
-
-void		handle_redirect(t_command *command, t_parser *parser,
-				t_redirect redirect)
-{
-	char		*file;
-	t_filemode	*mode;
-	t_list		*tmp;
-
-	file = (char *)parser->start->next->content;
-	if (redirect == REDIRECT_IN)
-	{
-		ft_lstadd_back(&(command->files_in), ft_lstnew(file));
-	}
-	else
-	{
-		mode = malloc(sizeof(t_filemode));
-		*mode = (redirect == REDIRECT_OUT_TRUNC) ? TRUNC : APPEND;
-		ft_lstadd_back(&(command->files_out), ft_lstnew(file));
-		ft_lstadd_back(&(command->out_modes), ft_lstnew(mode));
-	}
-	tmp = parser->start;
-	parser->start = parser->start->next;
-	free(tmp->content);
-	free(tmp);
-}
