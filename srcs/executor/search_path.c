@@ -109,7 +109,7 @@ static char	*found_path(t_path *path, char **env, char *cmd)
 **	and if it can't be found return the original command.
 */
 
-char	*search_path(char *cmd, char **env)
+char		*search_path(char *cmd, char **env)
 {
 	t_path	path;
 	char	*ret;

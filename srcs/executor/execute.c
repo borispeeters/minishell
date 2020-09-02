@@ -112,7 +112,7 @@ void			handle_pipes(t_executor *exec, t_list *table)
 		dup2(exec->in, STDIN_FILENO);
 		close(exec->in);
 	}
-	if (exec->fd[1] != 1)
+	if (exec->fd[1] != STDOUT_FILENO)
 	{
 		dup2(exec->fd[1], STDOUT_FILENO);
 		close(exec->fd[1]);
