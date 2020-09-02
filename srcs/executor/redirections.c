@@ -17,6 +17,20 @@ static void	try_to_open(int *fd, char *file, int oflag, mode_t mode)
 }
 
 /*
+**	This function will handle the call to dup2 for stdin or stdout.
+*/
+
+static int	duplicate_fd(int fd, int io)
+{
+	if (fd != io)
+	{
+		dup2(fd, io);
+		close(fd);
+	}
+	return (0);
+}
+
+/*
 **	This function will redirect the output from the standard output
 **	to an output file.
 */
@@ -46,8 +60,7 @@ int			output_redir(t_command *cmd)
 		tmp_files_out = tmp_files_out->next;
 		tmp_out_modes = tmp_out_modes->next;
 	}
-	dup2(cmd->fd_out, 1);
-	return (0);
+	return (duplicate_fd(cmd->fd_out, 1));
 }
 
 /*
@@ -70,7 +83,5 @@ int			input_redir(t_command *cmd)
 			return (1);
 		cmd->files_in = cmd->files_in->next;
 	}
-	if (cmd->fd_in != 0)
-		dup2(cmd->fd_in, 0);
-	return (0);
+	return (duplicate_fd(cmd->fd_in, 0));
 }

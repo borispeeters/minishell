@@ -1,9 +1,9 @@
+#include <errno.h>
+#include <string.h>
 #include <sys/wait.h>
 #include <unistd.h>
 #include "libft.h"
 #include "minishell.h"
-#include <string.h>
-#include <errno.h>
 
 /*
 **	Quick utility function that either calls the search_path function if no
@@ -12,9 +12,14 @@
 
 static char		*get_path_from_arg(char *arg, t_env *env)
 {
+	char	*ret;
+
 	if (ft_strchr(arg, '/') == NULL)
 		return (search_path(arg, env->vars));
-	return (ft_strdup(arg));
+	ret = ft_strdup(arg);
+	if (ret == NULL)
+		shell_error_malloc();
+	return (ret);
 }
 
 /*
@@ -22,16 +27,95 @@ static char		*get_path_from_arg(char *arg, t_env *env)
 **	worked. If it failed, it will print an error and return 0.
 */
 
-static int		find_command(t_list *table, t_executor *exec, t_env *env)
+static int		find_command(t_executor *exec, t_env *env)
 {
-	exec->vars = ((t_command*)table->content)->vars;
 	exec->command = get_path_from_arg(exec->vars[0], env);
 	if (exec->command == NULL)
 	{
 		shell_error_param("command not found", exec->vars[0]);
-		return (0);
+		return (1);
 	}
+	return (0);
+}
+
+void		exec_binary(t_shell *shell, t_env *env, t_command *cmd, t_executor *exec)
+{
+	(void)shell;
+	exec->vars = cmd->vars;
+	if (find_command(exec, env) != 0)
+		return ;
+	exec->pid = fork();
+	if (exec->pid < 0)
+	{
+		free(exec->command);
+		shell_error("fork failed");
+		return ;
+	}
+	if (exec->pid == 0)
+	{
+		close(exec->in);
+		close(exec->fd[1]);
+		execve(exec->command, exec->vars, env->vars);
+		shell_error_param(strerror(errno), exec->command);
+		exit(127); // FIX LOLLL
+	}
+	wait(NULL);
+	if (exec->command)
+		free(exec->command);
+}
+
+int			is_builtin(t_shell *shell, t_command *cmd)
+{
+	int	i;
+
+	i = 0;
+	while (i < 7)
+	{
+		if (ft_strcmp(cmd->vars[0], shell->b_name[i]) == 0)
+			return (1);
+		++i;
+	}
+	return (0);
+}
+
+void		exec_builtin(t_shell *shell, t_env *env, t_command *cmd, t_builtin builtin)
+{
+	builtin(shell, env, cmd);
+}
+
+
+int			exec_command(t_shell *shell, t_env *env, t_command *cmd, t_executor *exec)
+{
+	int	i;
+
+	i = 0;
+	while (i < 7)
+	{
+		if (ft_strcmp(cmd->vars[0], shell->b_name[i]) == 0)
+		{
+			exec_builtin(shell, env, cmd, shell->builtin[i]);
+			// shell->builtin[i](shell, env, cmd);
+			return (0);
+		}
+		++i;
+	}
+	exec_binary(shell, env, cmd, exec);
 	return (1);
+}
+
+void		handle_pipes(t_executor *exec, t_list *table)
+{
+	if (table->next)
+	{
+		pipe(exec->fd);
+		if (exec->in != 0)
+		{
+			dup2(exec->in, 0);
+			close(exec->in);
+		}
+		dup2(exec->fd[1], 1);
+		close(exec->fd[1]);
+	}
 }
 
 /*
@@ -39,55 +123,30 @@ static int		find_command(t_list *table, t_executor *exec, t_env *env)
 **	pipes and redirects if necessary, then execute the command.
 */
 
-void		execute(t_list *table, t_env *env)
+void		execute_loop(t_shell *shell, t_list *table, t_env *env)
 {
 	t_executor	exec;
+	int			bak[2];
 
 	exec.in = 0;
 	exec.fd[1] = 1;
 	while (table)
 	{
-		if (!find_command(table, &exec, env))
-			return ;
-		if (table->next)
-			pipe(exec.fd);
-		// builtin?
-		exec.pid = fork();
-		if (exec.pid < 0)
+		exec.command = NULL;
+		bak[0] = dup(0);
+		bak[1] = dup(1);
+		handle_pipes(&exec, table);
+		if (output_redir((t_command*)table->content) ||
+				input_redir((t_command*)table->content))
 		{
-			free(exec.command);
-			shell_error("fork failed");
+			printf("SAAAUUUS\n");
 			return ;
 		}
-		if (exec.pid == 0)
-		{
-			if (exec.in != 0)
-			{
-				dup2(exec.in, 0);
-				close(exec.in);
-			}
-			if (exec.fd[1] != 1)
-			{
-				dup2(exec.fd[1], 1);
-				close(exec.fd[1]);
-			}
-			if (output_redir((t_command*)table->content) ||
-					input_redir((t_command*)table->content))
-			{
-				printf("SAAAUUUS\n");
-				return ;
-			}
-			execve(exec.command, exec.vars, env->vars);
-			shell_error_param(strerror(errno), exec.command);
-			exit(1); // FIX LOLLL
-		}
-		wait(NULL);
-		free(exec.command);
+		exec_command(shell, env, (t_command*)table->content, &exec);
 		if (table->next)
-		{
-			close(exec.fd[1]);
 			exec.in = exec.fd[0];
-		}
+		dup2(bak[0], 0);
+		dup2(bak[1], 1);
 		table = table->next;
 	}
 }

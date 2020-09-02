@@ -69,21 +69,22 @@ void	export_print(t_env *env)
 	free_var_array(vars);
 }
 
-void	builtin_export(t_env *env, char **vars)
+void	builtin_export(t_shell *shell, t_env *env, t_command *cmd)
 {
 	char	**pair;
 	int		i;
 
+	(void)shell;
 	i = 1;
-	while (vars[i])
+	while (cmd->vars[i])
 	{
-		pair = env_split(vars[i]);
+		pair = env_split(cmd->vars[i]);
 		if (pair == NULL)
 			shell_error_malloc();
 		if (valid_key(pair[0]))
 			set_env(env, pair[0], pair[1]);
 		else
-			shell_error_env(vars[i], "export");
+			shell_error_env(cmd->vars[i], "export");
 		free_var_array(pair);
 		++i;
 	}

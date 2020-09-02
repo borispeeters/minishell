@@ -102,12 +102,12 @@ void	resize_up_env(t_env *env, char *new)
 **	and scale down the list if necessary.
 */
 
-void	resize_down_env(t_env *env, int remove)
+void	resize_down_env(t_env *env, int i)
 {
 	char	**tmp;
-	int		i;
 
-	i = remove;
+	if (i == env->length)
+		return ;
 	--env->length;
 	while (i < env->length)
 	{

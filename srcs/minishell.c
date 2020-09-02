@@ -55,6 +55,29 @@ void	free_command_table(t_list **table)
 	ft_lstclear(table, free_content);
 }
 
+void	clear_screen()
+{
+	ft_putstr_fd("\e[1;1H\e[2J", STDOUT_FILENO);
+}
+
+void	init_builtins(t_shell *shell)
+{
+	shell->builtin[0] = builtin_cd;
+	shell->builtin[1] = builtin_echo;
+	shell->builtin[2] = builtin_env;
+	shell->builtin[3] = builtin_exit;
+	shell->builtin[4] = builtin_export;
+	shell->builtin[5] = builtin_pwd;
+	shell->builtin[6] = builtin_unset;
+	ft_strlcpy(shell->b_name[0], "cd", 3);
+	ft_strlcpy(shell->b_name[1], "echo", 5);
+	ft_strlcpy(shell->b_name[2], "env", 4);
+	ft_strlcpy(shell->b_name[3], "exit", 5);
+	ft_strlcpy(shell->b_name[4], "export", 7);
+	ft_strlcpy(shell->b_name[5], "pwd", 4);
+	ft_strlcpy(shell->b_name[6], "unset", 6);
+}
+
 int		main(int argc, char **argv, char **envp)
 {
 	t_env	env;
@@ -68,8 +91,11 @@ int		main(int argc, char **argv, char **envp)
 		shell_error("Scripting is not supported");
 		return (1);
 	}
+	// clear_screen();
 	(void)argv;
 	init_env(&env, envp);
+	init_builtins(&shell);
+
 	line = NULL;
 	shell.status = 1;
 	while (shell.status)
@@ -88,15 +114,13 @@ int		main(int argc, char **argv, char **envp)
 				expand_env(&shell, (t_command*)table->content, &env);
 				quote_removal((t_command*)table->content);
 				shell.exit_status = 42;
-				execute(table, &env);
+				execute_loop(&shell, table, &env);
 				free_command_table(&table);
 			}
 		}
 		free_shell(&line, &tokens);
 	}
 	free_env(&env);
-	write(1, "exit\n", 5);
-	printf("exit status: %d\n", shell.exit_status);
-	// system("leaks minishell");
+	ft_putendl_fd("exit", STDOUT_FILENO);
 	return (shell.exit_status);
 }

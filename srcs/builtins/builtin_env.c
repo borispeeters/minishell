@@ -1,10 +1,12 @@
 #include <unistd.h>
 #include "minishell.h"
 
-void	builtin_env(t_env *env)
+void	builtin_env(t_shell *shell, t_env *env, t_command *cmd)
 {
 	int	i;
 
+	(void)shell;
+	(void)cmd;
 	i = 0;
 	while (i < env->length)
 	{

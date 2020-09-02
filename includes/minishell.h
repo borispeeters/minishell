@@ -6,10 +6,19 @@
 
 # include <stdio.h> //
 
+
+typedef struct s_shell		t_shell;
+typedef struct s_env		t_env;
+typedef struct s_command	t_command;
+
+typedef	void (*t_builtin)(t_shell *shell, t_env *env, t_command *cmd);
+
 typedef struct	s_shell
 {
 	int				status;
 	unsigned char	exit_status;
+	t_builtin		builtin[7];
+	char			b_name[7][7];
 }				t_shell;
 
 /*
@@ -280,7 +289,7 @@ void			quote_removal(t_command *cmd);
 **	executor/execute_loop.c
 */
 
-void			execute(t_list *table, t_env *env);
+void			execute_loop(t_shell *shell, t_list *table, t_env *env);
 
 /*
 **	executor/search_path.c
@@ -343,42 +352,42 @@ int				valid_key(char *key);
 **	builtins/builtin_exit.c
 */
 
-void			builtin_exit(t_shell *shell, char **vars);
+void			builtin_exit(t_shell *shell, t_env *env, t_command *cmd);
 
 /*
 **	builtins/builtin_env.c
 */
 
-void			builtin_env(t_env *env);
+void			builtin_env(t_shell *shell, t_env *env, t_command *cmd);
 
 /*
 **	builtins/builtin_pwd.c
 */
 
-void			builtin_pwd(t_shell *shell);
+void			builtin_pwd(t_shell *shell, t_env *env, t_command *cmd);
 
 /*
 **	builtins/builtin_cd.c
 */
 
-void			builtin_cd(t_shell *shell, t_env *env, char **vars);
+void			builtin_cd(t_shell *shell, t_env *env, t_command *cmd);
 
 /*
 **	builtins/builtin_echo.c
 */
 
-void			builtin_echo(t_shell *shell, char **vars);
+void			builtin_echo(t_shell *shell, t_env *env, t_command *cmd);
 
 /*
 **	builtins/builtin_export.c
 */
 
-void			builtin_export(t_env *env, char **vars);
+void			builtin_export(t_shell *shell, t_env *env, t_command *cmd);
 
 /*
 **	builtins/builtin_unset.c
 */
 
-void			builtin_unset(t_env *env, char **vars);
+void			builtin_unset(t_shell *shell, t_env *env, t_command *cmd);
 
 #endif

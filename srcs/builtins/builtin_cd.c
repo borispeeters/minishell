@@ -10,7 +10,7 @@ static void	cd_error(t_shell *shell, char *err_msg, char *param)
 	shell->exit_status = 1;
 }
 
-void		builtin_cd(t_shell *shell, t_env *env, char **vars)
+void		builtin_cd(t_shell *shell, t_env *env, t_command *cmd)
 {
 	char	*prev_dir;
 	char	*cur_dir;
@@ -18,9 +18,9 @@ void		builtin_cd(t_shell *shell, t_env *env, char **vars)
 
 	prev_dir = NULL;
 	prev_dir = getcwd(prev_dir, 1);
-	if (vars[1] && chdir(vars[1]) != 0)
+	if (cmd->vars[1] && chdir(cmd->vars[1]) != 0)
 		cd_error(shell, strerror(errno), "cd");
-	else if (vars[1] == NULL)
+	else if (cmd->vars[1] == NULL)
 	{
 		home = get_env(env, "HOME");
 		if (!*home)

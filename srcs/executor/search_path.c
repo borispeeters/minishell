@@ -75,6 +75,8 @@ static char	*search_path_dirs(t_path *path, char *cmd)
 		{
 			ret = ft_strdup(path->abs);
 			free_path(path);
+			if (ret == NULL)
+				shell_error_malloc();
 			return (ret);
 		}
 		++i;
@@ -110,6 +112,7 @@ static char	*found_path(t_path *path, char **env, char *cmd)
 char	*search_path(char *cmd, char **env)
 {
 	t_path	path;
+	char	*ret;
 
 	path.path = NULL;
 	path.path_dirs = NULL;
@@ -120,5 +123,8 @@ char	*search_path(char *cmd, char **env)
 			return (found_path(&path, env, cmd));
 		++env;
 	}
-	return (ft_strdup(cmd));
+	ret = ft_strdup(cmd);
+	if (ret == NULL)
+		shell_error_malloc();
+	return (ret);
 }
