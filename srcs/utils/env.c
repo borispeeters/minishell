@@ -108,6 +108,7 @@ void	resize_down_env(t_env *env, int i)
 
 	if (i == env->length)
 		return ;
+	free(env->vars[i]);
 	--env->length;
 	while (i < env->length)
 	{

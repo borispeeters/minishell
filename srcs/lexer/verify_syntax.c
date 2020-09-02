@@ -33,9 +33,11 @@ int			verify_syntax(t_list *token)
 	while (token)
 	{
 		str = (char*)token->content;
-		if (is_metacharacter(str[0]))
+		if (is_metacharacter(*str))
 		{
-			if (ft_strncmp(str, ">>>", 3) == 0 || token_active == META)
+			if (((ft_strcmp(str, ">") == 0 || ft_strcmp(str, ">>") == 0
+				|| ft_strcmp(str, "<") == 0) && !token->next)
+				|| ((ft_strncmp(str, ">>>", 3) == 0 || token_active == META)))
 			{
 				shell_error_syntax(str);
 				return (1);

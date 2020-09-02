@@ -78,9 +78,25 @@ int				is_builtin(t_shell *shell, t_command *cmd)
 }
 
 void			exec_builtin(t_shell *shell, t_env *env, t_command *cmd,
-					t_builtin builtin)
+					t_executor *exec, t_builtin builtin)
 {
-	builtin(shell, env, cmd);
+	if (cmd->pipe == PIPE_NONE)
+	{
+		builtin(shell, env, cmd);
+		return ;
+	}
+	exec->pid = fork();
+	if (exec->pid < 0)
+	{
+		shell_error("fork failed");
+		return ;
+	}
+	if (exec->pid == 0)
+	{
+		builtin(shell, env, cmd);
+		exit(shell->exit_status);
+	}
+	wait(NULL);
 }
 
 int				exec_command(t_shell *shell, t_env *env, t_command *cmd,
@@ -93,7 +109,7 @@ int				exec_command(t_shell *shell, t_env *env, t_command *cmd,
 	{
 		if (ft_strcmp(cmd->vars[0], shell->b_name[i]) == 0)
 		{
-			exec_builtin(shell, env, cmd, shell->builtin[i]);
+			exec_builtin(shell, env, cmd, exec, shell->builtin[i]);
 			// shell->builtin[i](shell, env, cmd);
 			return (0);
 		}
@@ -112,10 +128,10 @@ void			handle_pipes(t_executor *exec, t_list *table)
 		dup2(exec->in, STDIN_FILENO);
 		close(exec->in);
 	}
-	if (exec->fd[1] != STDOUT_FILENO)
+	if (exec->fd[WRITE_END] != STDOUT_FILENO)
 	{
-		dup2(exec->fd[1], STDOUT_FILENO);
-		close(exec->fd[1]);
+		dup2(exec->fd[WRITE_END], STDOUT_FILENO);
+		close(exec->fd[WRITE_END]);
 	}
 }
 
@@ -131,13 +147,13 @@ void			execute_loop(t_shell *shell, t_list *table, t_env *env)
 	t_command	*command;
 
 	exec.in = STDIN_FILENO;
-	exec.fd[1] = STDOUT_FILENO;
+	exec.fd[WRITE_END] = STDOUT_FILENO;
 	while (table)
 	{
 		exec.command = NULL;
 		command = table->content;
-		bak[0] = dup(STDIN_FILENO);
-		bak[1] = dup(STDOUT_FILENO);
+		bak[READ_END] = dup(STDIN_FILENO);
+		bak[WRITE_END] = dup(STDOUT_FILENO);
 		handle_pipes(&exec, table);
 		if (output_redir(command) || input_redir(command))
 		{
@@ -146,11 +162,11 @@ void			execute_loop(t_shell *shell, t_list *table, t_env *env)
 		}
 		exec_command(shell, env, command, &exec);
 		if (table->next)
-			exec.in = exec.fd[0];
-		dup2(bak[0], STDIN_FILENO);
-		dup2(bak[1], STDOUT_FILENO);
-		close(bak[0]);
-		close(bak[1]);
+			exec.in = exec.fd[READ_END];
+		dup2(bak[READ_END], STDIN_FILENO);
+		dup2(bak[WRITE_END], STDOUT_FILENO);
+		close(bak[READ_END]);
+		close(bak[WRITE_END]);
 		table = table->next;
 	}
 }
