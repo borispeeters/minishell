@@ -17,19 +17,6 @@ void	print_list(t_list *node)
 	write(1, "\n_____END TOKENS__________\n\n", 27);
 }
 
-void	signal_handler(int sig)
-{
-	if (sig == SIGINT)
-	{
-		write(1, "\b\b  \n", 5);
-		write(1, "minishell-0.1$ ", 15);
-	}
-	if (sig == SIGQUIT)
-	{
-		write(1, "\b\b  \b\b", 6);
-	}
-}
-
 void	free_shell(char **line, t_list **tokens)
 {
 	free(*line);
@@ -60,6 +47,11 @@ void	clear_screen()
 	ft_putstr_fd("\e[1;1H\e[2J", STDOUT_FILENO);
 }
 
+void	write_prompt()
+{
+	ft_putstr_fd("minishell-0.1$ ", STDOUT_FILENO);
+}
+
 void	init_builtins(t_shell *shell)
 {
 	shell->builtin[0] = builtin_cd;
@@ -76,6 +68,19 @@ void	init_builtins(t_shell *shell)
 	ft_strlcpy(shell->b_name[4], "export", 7);
 	ft_strlcpy(shell->b_name[5], "pwd", 4);
 	ft_strlcpy(shell->b_name[6], "unset", 6);
+}
+
+void	signal_handler(int sig)
+{
+	if (sig == SIGINT)
+	{
+		ft_putendl_fd("\b\b  ", STDOUT_FILENO);
+		write_prompt();
+	}
+	if (sig == SIGQUIT)
+	{
+		ft_putstr_fd("\b\b  \b\b", STDOUT_FILENO);
+	}
 }
 
 int		main(int argc, char **argv, char **envp)
@@ -102,7 +107,7 @@ int		main(int argc, char **argv, char **envp)
 	{
 		signal(SIGINT, signal_handler);
 		signal(SIGQUIT, signal_handler);
-		write(1, "minishell-0.1$ ", 15);
+		write_prompt();
 		shell.status = get_next_line(0, &line);
 		tokens = lexer(line);
 		// print_list(tokens);

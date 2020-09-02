@@ -1,4 +1,5 @@
 #include <errno.h>
+#include <signal.h>
 #include <string.h>
 #include <sys/wait.h>
 #include <unistd.h>
@@ -27,22 +28,29 @@ static char		*get_path_from_arg(char *arg, t_env *env)
 **	worked. If it failed, it will print an error and return 0.
 */
 
-static int		find_command(t_executor *exec, t_env *env)
+static int		find_command(t_shell *shell, t_executor *exec)
 {
-	exec->command = get_path_from_arg(exec->vars[0], env);
+	exec->command = get_path_from_arg(exec->vars[0], shell->env);
 	if (exec->command == NULL)
 	{
+		shell->exit_status = 127;
 		shell_error_param("command not found", exec->vars[0]);
 		return (1);
 	}
 	return (0);
 }
 
+void	signal_exec(int sig)
+{
+	signal(sig, signal_exec);
+}
+
 void			exec_binary(t_shell *shell, t_executor *exec)
 {
-	(void)shell;
+	int	status;
+
 	exec->vars = shell->cmd->vars;
-	if (find_command(exec, shell->env) != 0)
+	if (find_command(shell, exec) != 0)
 		return ;
 	exec->pid = fork();
 	if (exec->pid < 0)
@@ -57,7 +65,16 @@ void			exec_binary(t_shell *shell, t_executor *exec)
 		shell_error_param(strerror(errno), exec->command);
 		exit(127); // FIX LOLLL
 	}
-	wait(NULL);
+	waitpid(exec->pid, &status, WUNTRACED);
+	if (WIFSIGNALED(status))
+	{
+		shell->sig = WTERMSIG(status);
+		shell->exit_status = 128 + shell->sig;
+	}
+	if (WIFEXITED(status))
+	{
+		shell->exit_status = WEXITSTATUS(status);
+	}
 	if (exec->command)
 		free(exec->command);
 }
@@ -129,8 +146,11 @@ void			execute_loop(t_shell *shell, t_list *table, t_env *env)
 	shell->env = env;
 	exec.in = STDIN_FILENO;
 	exec.fd[WRITE_END] = STDOUT_FILENO;
+	signal(SIGINT, signal_exec);
+	signal(SIGQUIT, signal_exec);
 	while (table)
 	{
+		shell->sig = 0;
 		exec.command = NULL;
 		shell->cmd = table->content;
 		bak[READ_END] = dup(STDIN_FILENO);
@@ -148,6 +168,10 @@ void			execute_loop(t_shell *shell, t_list *table, t_env *env)
 		dup2(bak[WRITE_END], STDOUT_FILENO);
 		close(bak[READ_END]);
 		close(bak[WRITE_END]);
+		if (shell->sig == SIGINT)
+			ft_putchar_fd('\n', 1);
+		if (shell->sig == SIGQUIT)
+			ft_putendl_fd("Quit: 3", 1);
 		table = table->next;
 	}
 }

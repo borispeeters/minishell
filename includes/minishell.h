@@ -23,6 +23,7 @@ typedef struct	s_shell
 	char			b_name[7][7];
 	t_env			*env;
 	t_command		*cmd;
+	int				sig;
 }				t_shell;
 
 /*
