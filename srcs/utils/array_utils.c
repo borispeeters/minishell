@@ -11,8 +11,6 @@ char		**malloc_var_array(int n)
 	char	**array;
 	int		i;
 
-	if (n <= 1)
-		return (NULL);
 	array = malloc(sizeof(char *) * (n + 1));
 	if (array == NULL)
 		shell_error_malloc();

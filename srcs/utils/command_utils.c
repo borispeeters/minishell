@@ -31,7 +31,7 @@ t_list		*prepare_command(int length)
 		free(command);
 		shell_error_malloc();
 	}
-	command->vars = malloc_var_array(length + 1);
+	command->vars = malloc_var_array(length);
 	if (command->vars == NULL)
 	{
 		free_command(command);
