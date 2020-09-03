@@ -22,24 +22,35 @@ static int	replace_exit_status(t_shell *shell, char **vars, int i)
 }
 
 /*
+**	This function will handle escape character and quotes.
+*/
+
+static void	exp_quote_handler(t_expansion *exp, char c)
+{
+	if (c == '\\')
+		exp_escape_char(exp);
+	if (c == '\"')
+		exp_double_quote(exp);
+	if (c == '\'')
+		exp_single_quote(exp);
+}
+
+/*
 **	This function will loop through the command arguments
 **	and delegate work to the helper functions.
 */
 
-static void	exp_str_loop(t_shell *shell, t_env *env, t_expansion *exp, char **vars)
+static void	exp_str_loop(t_shell *shell, t_env *env, t_expansion *exp,
+		char **vars)
 {
 	int	i;
 
 	i = 0;
 	while ((*vars)[i])
 	{
-		if ((*vars)[i] == '\\')
-			exp_escape_char(exp);
-		if ((*vars)[i] == '\"')
-			exp_double_quote(exp);
-		if ((*vars)[i] == '\'')
-			exp_single_quote(exp);
-		if ((*vars)[i] == '$' && exp->quote != SNGL_QUOTE && exp->escape != ESCAPE) 
+		exp_quote_handler(exp, (*vars)[i]);
+		if ((*vars)[i] == '$' && exp->quote != SNGL_QUOTE &&
+				exp->escape != ESCAPE)
 		{
 			if ((*vars)[i + 1] == '?')
 				i += replace_exit_status(shell, vars, i);

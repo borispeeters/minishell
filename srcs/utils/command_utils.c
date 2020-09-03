@@ -16,6 +16,7 @@ static void	free_command(t_command *command)
 /*
 **	This function will malloc a command structure, and the vars array in it.
 */
+
 t_list		*prepare_command(int length)
 {
 	t_list		*link;

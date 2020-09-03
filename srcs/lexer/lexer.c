@@ -63,7 +63,7 @@ static void	init_lexer(t_list **head, t_lexer *lex)
 }
 
 /*
-**	The main lexer function. 
+**	The main lexer function.
 */
 
 t_list		*lexer(char *line)
