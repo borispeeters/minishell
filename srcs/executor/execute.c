@@ -172,7 +172,7 @@ void			execute_loop(t_shell *shell, t_list *table, t_env *env)
 		shell->cmd = table->content;
 		bak[READ_END] = dup(STDIN_FILENO);
 		bak[WRITE_END] = dup(STDOUT_FILENO);
-		if (handle_pipes(&exec, table) == 0 && output_redir(shell->cmd) == 0 && input_redir(shell->cmd) == 0)
+		if (handle_pipes(&exec, table) == 0 && output_redir(shell->cmd) == 0 && input_redir(shell->cmd) == 0 && shell->cmd->vars[0] != NULL)
 		{
 			exec_command(shell, &exec);
 		}
