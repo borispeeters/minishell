@@ -22,12 +22,19 @@ static void	try_to_open(int *fd, char *file, int oflag, mode_t mode)
 
 static int	duplicate_fd(int fd, int io)
 {
+	int	ret;
+
+	ret = 0;
 	if (fd != io)
 	{
-		dup2(fd, io);
+		if (dup2(fd, io) == -1)
+		{
+			shell_error(strerror(errno));
+			ret = 1;
+		}
 		close(fd);
 	}
-	return (0);
+	return (ret);
 }
 
 /*

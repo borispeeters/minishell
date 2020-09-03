@@ -96,7 +96,7 @@ int		main(int argc, char **argv, char **envp)
 		shell_error("Scripting is not supported");
 		return (1);
 	}
-	clear_screen();
+	// clear_screen();
 	(void)argv;
 	init_env(&env, envp);
 	init_builtins(&shell);
