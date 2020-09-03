@@ -6,7 +6,7 @@ CFLAGS =	-Wall -Werror -Wextra
 SDIR =		srcs
 ODIR =		objs
 _OBJS =		minishell \
-			parser/parse parser/expand_env parser/replace_env parser/quote_removal parser/quote_removal_states \
+			parser/parse parser/parser_redirect parser/expand_env parser/replace_env parser/quote_removal parser/quote_removal_states \
 			lexer/lexer lexer/lexer_states lexer/lexer_special lexer/verify_syntax \
 			executor/execute executor/search_path executor/redirections \
 			utils/shell_utils utils/array_utils utils/command_utils utils/env utils/expansion_utils utils/get_set_env utils/error_utils utils/env_error_utils utils/env_split utils/valid_key \

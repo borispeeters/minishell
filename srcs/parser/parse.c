@@ -2,39 +2,55 @@
 #include "libft.h"
 
 /*
+**	Helper function for the parse loop that handles the separators. Returns
+**	1 if a ; was encountered, 0 otherwise.
+*/
+
+static int	handle_separator(t_parser *parser, t_list **comm_table,
+				t_list **tokens)
+{
+	t_list	*tmp;
+	char	*token;
+
+	token = (char*)(*tokens)->content;
+	parser->sep = is_separator(token);
+	if (parser->sep)
+	{
+		create_command(comm_table, parser);
+		tmp = parser->start;
+		parser->prev_sep = parser->sep;
+		parser->start = (*tokens)->next;
+		free(tmp->content);
+		free(tmp);
+	}
+	if (parser->sep == SEMICOLON)
+	{
+		*tokens = (*tokens)->next;
+		return (1);
+	}
+	*tokens = (*tokens)->next;
+	return (0);
+}
+
+/*
 **	The main parse function, will loop over the list and delegate work to
 **	other functions.
 */
 
-t_list			*parse(t_list **tokens)
+t_list		*parse(t_list **tokens)
 {
-	char			*token;
 	t_parser		parser;
 	t_list			*comm_table;
-	t_list			*tmp;
+	int				found_semicolon;
 
 	comm_table = NULL;
 	parser.start = *tokens;
 	parser.prev_sep = NO_SEPARATOR;
 	while (*tokens != NULL)
 	{
-		token = (char *)(*tokens)->content;
-		parser.sep = is_separator(token);
-		if (parser.sep)
-		{
-			create_command(&comm_table, &parser);
-			tmp = parser.start;
-			parser.prev_sep = parser.sep;
-			parser.start = (*tokens)->next;
-			free(tmp->content);
-			free(tmp);
-		}
-		if (parser.sep == SEMICOLON)
-		{
-			*tokens = (*tokens)->next;
+		found_semicolon = handle_separator(&parser, &comm_table, tokens);
+		if (found_semicolon)
 			return (comm_table);
-		}
-		*tokens = (*tokens)->next;
 	}
 	if (parser.start != NULL)
 		create_command(&comm_table, &parser);
@@ -85,11 +101,6 @@ void		create_command(t_list **table, t_parser *parser)
 
 	length = validate_command(parser);
 	new = prepare_command(length);
-	if (new == NULL)
-	{
-		printf("Iets ging fout lmaoooo\n");
-		return ;
-	}
 	parse_command((t_command*)new->content, parser);
 	ft_lstadd_back(table, new);
 }
@@ -124,30 +135,4 @@ void		parse_command(t_command *command, t_parser *parser)
 		command->pipe ^= PIPE_OUT;
 	if (parser->prev_sep == PIPE)
 		command->pipe ^= PIPE_IN;
-}
-
-/*
-**	This function will handle a redirect, and put the right information in the
-**	struct.
-*/
-
-void		handle_redirect(t_command *command, t_parser *parser,
-				t_redirect redirect)
-{
-	char		*file;
-	t_filemode	*mode;
-
-	file = (char *)parser->start->next->content;
-	if (redirect == REDIRECT_IN)
-	{
-		ft_lstadd_back(&(command->files_in), ft_lstnew(file));
-	}
-	else
-	{
-		mode = malloc(sizeof(t_filemode));
-		*mode = (redirect == REDIRECT_OUT_TRUNC) ? TRUNC : APPEND;
-		ft_lstadd_back(&(command->files_out), ft_lstnew(file));
-		ft_lstadd_back(&(command->out_modes), ft_lstnew(mode));
-	}
-	parser->start = parser->start->next;
 }
