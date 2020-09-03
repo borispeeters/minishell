@@ -45,4 +45,3 @@ void		handle_redirect(t_command *command, t_parser *parser,
 	free(tmp->content);
 	free(tmp);
 }
-

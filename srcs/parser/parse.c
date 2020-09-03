@@ -2,39 +2,55 @@
 #include "libft.h"
 
 /*
+**	Helper function for the parse loop that handles the separators. Returns
+**	1 if a ; was encountered, 0 otherwise.
+*/
+
+static int	handle_separator(t_parser *parser, t_list **comm_table,
+				t_list **tokens)
+{
+	t_list	*tmp;
+	char	*token;
+
+	token = (char*)(*tokens)->content;
+	parser->sep = is_separator(token);
+	if (parser->sep)
+	{
+		create_command(comm_table, parser);
+		tmp = parser->start;
+		parser->prev_sep = parser->sep;
+		parser->start = (*tokens)->next;
+		free(tmp->content);
+		free(tmp);
+	}
+	if (parser->sep == SEMICOLON)
+	{
+		*tokens = (*tokens)->next;
+		return (1);
+	}
+	*tokens = (*tokens)->next;
+	return (0);
+}
+
+/*
 **	The main parse function, will loop over the list and delegate work to
 **	other functions.
 */
 
-t_list			*parse(t_list **tokens)
+t_list		*parse(t_list **tokens)
 {
-	char			*token;
 	t_parser		parser;
 	t_list			*comm_table;
-	t_list			*tmp;
+	int				found_semicolon;
 
 	comm_table = NULL;
 	parser.start = *tokens;
 	parser.prev_sep = NO_SEPARATOR;
 	while (*tokens != NULL)
 	{
-		token = (char *)(*tokens)->content;
-		parser.sep = is_separator(token);
-		if (parser.sep)
-		{
-			create_command(&comm_table, &parser);
-			tmp = parser.start;
-			parser.prev_sep = parser.sep;
-			parser.start = (*tokens)->next;
-			free(tmp->content);
-			free(tmp);
-		}
-		if (parser.sep == SEMICOLON)
-		{
-			*tokens = (*tokens)->next;
+		found_semicolon = handle_separator(&parser, &comm_table, tokens);
+		if (found_semicolon)
 			return (comm_table);
-		}
-		*tokens = (*tokens)->next;
 	}
 	if (parser.start != NULL)
 		create_command(&comm_table, &parser);
@@ -120,4 +136,3 @@ void		parse_command(t_command *command, t_parser *parser)
 	if (parser->prev_sep == PIPE)
 		command->pipe ^= PIPE_IN;
 }
-
