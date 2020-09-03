@@ -370,4 +370,24 @@ void			builtin_export(t_shell *shell);
 void			builtin_pwd(t_shell *shell);
 void			builtin_unset(t_shell *shell);
 
+/*
+**	free_shell.c
+*/
+
+void			free_shell(char **line, t_list **tokens);
+void			free_command_table(t_list **table);
+
+/*
+**	prompt.c
+*/
+
+void			write_prompt(void);
+
+/*
+**	signal.c
+*/
+
+void			signal_handler(int sig);
+void			signal_exec(int sig);
+
 #endif

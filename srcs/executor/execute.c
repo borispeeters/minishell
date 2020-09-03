@@ -40,15 +40,33 @@ static int		find_command(t_shell *shell, t_executor *exec)
 	return (0);
 }
 
-void	signal_exec(int sig)
-{
-	signal(sig, signal_exec);
-}
+/*
+**	This function waits for the child process to finish
+**	and receives its exit status.
+*/
 
-void			exec_binary(t_shell *shell, t_executor *exec)
+void			wait_cmd(t_shell *shell, t_executor *exec)
 {
 	int	status;
 
+	waitpid(exec->pid, &status, WUNTRACED);
+	if (WIFSIGNALED(status))
+	{
+		shell->sig = WTERMSIG(status);
+		shell->exit_status = 128 + shell->sig;
+	}
+	if (WIFEXITED(status))
+	{
+		shell->exit_status = WEXITSTATUS(status);
+	}
+}
+
+/*
+**	This function handles the execution of a binary file in a child process.
+*/
+
+void			exec_binary(t_shell *shell, t_executor *exec)
+{
 	exec->vars = shell->cmd->vars;
 	if (find_command(shell, exec) != 0)
 		return ;
@@ -63,23 +81,19 @@ void			exec_binary(t_shell *shell, t_executor *exec)
 	{
 		execve(exec->command, exec->vars, shell->env->vars);
 		shell_error_param(strerror(errno), exec->command);
-		exit(127); // FIX LOLLL
+		exit(127);
 	}
-	waitpid(exec->pid, &status, WUNTRACED);
-	if (WIFSIGNALED(status))
-	{
-		shell->sig = WTERMSIG(status);
-		shell->exit_status = 128 + shell->sig;
-	}
-	if (WIFEXITED(status))
-	{
-		shell->exit_status = WEXITSTATUS(status);
-	}
+	wait_cmd(shell, exec);
 	if (exec->command)
 		free(exec->command);
 }
 
-void			exec_builtin(t_shell *shell, t_executor *exec, t_builtin builtin)
+/*
+**	This function forks a new process if we're in a pipeline
+**	and then executes the correct builtin.
+*/
+
+void		exec_builtin(t_shell *shell, t_executor *exec, t_builtin builtin)
 {
 	if (shell->cmd->pipe == PIPE_NONE)
 	{
@@ -100,6 +114,11 @@ void			exec_builtin(t_shell *shell, t_executor *exec, t_builtin builtin)
 	wait(NULL);
 }
 
+/*
+**	This function will look for a builtin
+**	and if can't find one will execute a command.
+*/
+
 void			exec_command(t_shell *shell, t_executor *exec)
 {
 	int	i;
@@ -117,6 +136,11 @@ void			exec_command(t_shell *shell, t_executor *exec)
 	exec_binary(shell, exec);
 }
 
+/*
+**	This function will redirect the standard input and standard output
+**	to and from a pipe.
+*/
+
 int				duplicate_pipe(int fd, int stream)
 {
 	int	ret;
@@ -133,6 +157,10 @@ int				duplicate_pipe(int fd, int stream)
 	}
 	return (ret);
 }
+
+/*
+**	This function will setup a pipeline.
+*/
 
 int				handle_pipes(t_executor *exec, t_list *table)
 {
@@ -172,7 +200,8 @@ void			execute_loop(t_shell *shell, t_list *table, t_env *env)
 		shell->cmd = table->content;
 		bak[READ_END] = dup(STDIN_FILENO);
 		bak[WRITE_END] = dup(STDOUT_FILENO);
-		if (handle_pipes(&exec, table) == 0 && output_redir(shell->cmd) == 0 && input_redir(shell->cmd) == 0 && shell->cmd->vars[0] != NULL)
+		if (handle_pipes(&exec, table) == 0 && output_redir(shell->cmd) == 0 
+		&& input_redir(shell->cmd) == 0 && shell->cmd->vars[0] != NULL)
 		{
 			exec_command(shell, &exec);
 		}
