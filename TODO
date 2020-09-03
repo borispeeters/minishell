@@ -1,7 +1,2 @@
-EXEC LOOP
-> LEAK
 IETS GING FOUT LAMOOOOOO
 redirect zonder command ^^^
-als redirect faalt, exit? (Want subproces)
-BUILTINS goed aanroepen
-signals mogendlijk

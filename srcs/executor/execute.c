@@ -56,7 +56,7 @@ void			exec_binary(t_shell *shell, t_executor *exec)
 	if (exec->pid < 0)
 	{
 		free(exec->command);
-		shell_error("fork failed");
+		shell_error(strerror(errno));
 		return ;
 	}
 	if (exec->pid == 0)
@@ -117,20 +117,38 @@ void			exec_command(t_shell *shell, t_executor *exec)
 	exec_binary(shell, exec);
 }
 
-void			handle_pipes(t_executor *exec, t_list *table)
+int				duplicate_pipe(int fd, int stream)
 {
-	if (table->next)
-		pipe(exec->fd);
-	if (exec->in != STDIN_FILENO)
+	int	ret;
+
+	ret = 0;
+	if (fd != stream)
 	{
-		dup2(exec->in, STDIN_FILENO);
-		close(exec->in);
+		if (dup2(fd, stream) == -1)
+		{
+			shell_error(strerror(errno));
+			ret = 1;
+		}
+		close(fd);
 	}
-	if (exec->fd[WRITE_END] != STDOUT_FILENO)
+	return (ret);
+}
+
+int				handle_pipes(t_executor *exec, t_list *table)
+{
+	int	ret;
+
+	ret = 0;
+	exec->fd[READ_END] = STDIN_FILENO;
+	exec->fd[WRITE_END] = STDOUT_FILENO;
+	if (table->next && pipe(exec->fd) == -1)
 	{
-		dup2(exec->fd[WRITE_END], STDOUT_FILENO);
-		close(exec->fd[WRITE_END]);
+		shell_error(strerror(errno));
+		return (1);
 	}
+	ret += duplicate_pipe(exec->in, STDIN_FILENO);
+	ret += duplicate_pipe(exec->fd[WRITE_END], STDOUT_FILENO);
+	return (ret);
 }
 
 /*
@@ -145,7 +163,6 @@ void			execute_loop(t_shell *shell, t_list *table, t_env *env)
 
 	shell->env = env;
 	exec.in = STDIN_FILENO;
-	exec.fd[WRITE_END] = STDOUT_FILENO;
 	signal(SIGINT, signal_exec);
 	signal(SIGQUIT, signal_exec);
 	while (table)
@@ -155,17 +172,20 @@ void			execute_loop(t_shell *shell, t_list *table, t_env *env)
 		shell->cmd = table->content;
 		bak[READ_END] = dup(STDIN_FILENO);
 		bak[WRITE_END] = dup(STDOUT_FILENO);
-		handle_pipes(&exec, table);
-		if (output_redir(shell->cmd) || input_redir(shell->cmd))
+		if (handle_pipes(&exec, table) == 0 && output_redir(shell->cmd) == 0 && input_redir(shell->cmd) == 0)
 		{
-			printf("SAAAUUUS\n");
-			return ;
+			exec_command(shell, &exec);
 		}
-		exec_command(shell, &exec);
 		if (table->next)
 			exec.in = exec.fd[READ_END];
-		dup2(bak[READ_END], STDIN_FILENO);
-		dup2(bak[WRITE_END], STDOUT_FILENO);
+		if (dup2(bak[READ_END], STDIN_FILENO) == -1)
+		{
+			shell_error(strerror(errno));
+		}
+		if (dup2(bak[WRITE_END], STDOUT_FILENO) == -1)
+		{
+			shell_error(strerror(errno));
+		}
 		close(bak[READ_END]);
 		close(bak[WRITE_END]);
 		if (shell->sig == SIGINT)
