@@ -54,7 +54,7 @@ void		shell_error_syntax(char *token)
 
 void		shell_error_builtin_param(char *message, char *builtin, char *param)
 {
-	ft_putstr_fd("minishell: ",  STDERR_FILENO);
+	ft_putstr_fd("minishell: ", STDERR_FILENO);
 	ft_putstr_fd(builtin, STDERR_FILENO);
 	ft_putstr_fd(": ", STDERR_FILENO);
 	ft_putstr_fd(param, STDERR_FILENO);
