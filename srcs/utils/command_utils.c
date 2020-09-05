@@ -1,5 +1,5 @@
-#include "minishell.h"
-#include "libft.h"
+#include <libft.h>
+#include <minishell.h>
 
 /*
 **	This function will free a command struct and its variables.

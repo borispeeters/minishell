@@ -1,6 +1,6 @@
 #include <stdlib.h>
-#include "libft.h"
-#include "minishell.h"
+#include <libft.h>
+#include <minishell.h>
 
 /*
 **	This function will replace a subsection of str with replace.
@@ -13,6 +13,8 @@ void		str_replace(char **str, int index, int len, char *replace)
 
 	new_len = ft_strlen(*str) - len + ft_strlen(replace);
 	tmp = malloc(sizeof(*tmp) * (new_len + 1));
+	if (tmp == NULL)
+		shell_error_malloc();
 	ft_strlcpy(tmp, *str, index + 1);
 	ft_strlcat(tmp, replace, ft_strlen(tmp) + ft_strlen(replace) + 1);
 	ft_strlcat(tmp, *str + index + len, new_len + 1);

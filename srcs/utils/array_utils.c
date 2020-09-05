@@ -1,5 +1,5 @@
 #include <stdlib.h>
-#include "minishell.h"
+#include <minishell.h>
 
 /*
 **	This function will malloc a 2-dimensional char array with n elements,
@@ -29,7 +29,7 @@ char		**malloc_var_array(int n)
 
 void		free_var_array(char **array)
 {
-	int		i;
+	int	i;
 
 	i = 0;
 	while (*(array + i) != NULL)

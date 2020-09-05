@@ -1,5 +1,5 @@
-#include "minishell.h"
-#include "libft.h"
+#include <libft.h>
+#include <minishell.h>
 
 /*
 **	This helper function will try to create a new link in a list, and

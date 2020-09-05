@@ -1,5 +1,10 @@
-#include "libft.h"
-#include "minishell.h"
+#include <unistd.h>
+#include <libft.h>
+#include <minishell.h>
+
+/*
+**	This function will return a deep copy of the environment list.
+*/
 
 char	**copy_env_list(t_env *env)
 {
@@ -7,14 +12,25 @@ char	**copy_env_list(t_env *env)
 	char	**vars;
 
 	vars = malloc_var_array(env->length);
+	if (vars == NULL)
+		shell_error_malloc();
 	i = 0;
 	while (env->vars[i])
 	{
 		vars[i] = ft_strdup(env->vars[i]);
+		if (vars[i] == NULL)
+		{
+			free_var_array(vars);
+			shell_error_malloc();
+		}
 		++i;
 	}
 	return (vars);
 }
+
+/*
+**	Sort the entire list using the bubblesort algorithm.
+*/
 
 char	**sort_env_list(t_env *env)
 {
@@ -43,6 +59,10 @@ char	**sort_env_list(t_env *env)
 	return (vars);
 }
 
+/*
+**	This function will print the environment list in the correct format.
+*/
+
 void	export_print(t_env *env)
 {
 	char	**vars;
@@ -69,6 +89,11 @@ void	export_print(t_env *env)
 	free_var_array(vars);
 }
 
+/*
+**	Builtin export can set new variables in the environment list.
+**	If no argument is given, display the entire list.
+*/
+
 void	builtin_export(t_shell *shell)
 {
 	char	**pair;
@@ -78,8 +103,6 @@ void	builtin_export(t_shell *shell)
 	while (shell->cmd->vars[i])
 	{
 		pair = env_split(shell->cmd->vars[i]);
-		if (pair == NULL)
-			shell_error_malloc();
 		if (valid_key(pair[0]))
 			set_env(shell->env, pair[0], pair[1]);
 		else

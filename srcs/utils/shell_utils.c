@@ -1,5 +1,5 @@
-#include "minishell.h"
-#include "libft.h"
+#include <libft.h>
+#include <minishell.h>
 
 /*
 **	A simple function that frees the given parameter
@@ -28,10 +28,10 @@ int			is_space(int c)
 
 int			is_metacharacter(int c)
 {
-	char	metachar[8];
+	char	metachar[6];
 	int		i;
 
-	ft_strlcpy(metachar, "\n|;()<>", 8);
+	ft_strlcpy(metachar, "\n|;<>", 6);
 	i = 0;
 	while (metachar[i])
 	{

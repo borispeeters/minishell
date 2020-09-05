@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include <minishell.h>
 
 /*
 **	This function will loop through the command arguments
@@ -37,7 +37,7 @@ void		quote_removal(t_command *cmd)
 	char		**vars;
 
 	vars = cmd->vars;
-	while (*vars != NULL)
+	while (*vars)
 	{
 		exp.quote = NO_QUOTE;
 		exp.escape = NO_ESCAPE;

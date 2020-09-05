@@ -6,10 +6,11 @@ CFLAGS =	-Wall -Werror -Wextra
 SDIR =		srcs
 ODIR =		objs
 _OBJS =		minishell \
-			parser/parse parser/parser_redirect parser/expand_env parser/replace_env parser/quote_removal parser/quote_removal_states \
-			lexer/lexer lexer/lexer_states lexer/lexer_special lexer/verify_syntax \
-			executor/execute executor/search_path executor/redirections \
-			utils/shell_utils utils/array_utils utils/command_utils utils/env utils/expansion_utils utils/get_set_env utils/error_utils utils/env_error_utils utils/env_split utils/valid_key \
+			lexer/lexer lexer/lexer_special lexer/lexer_states lexer/verify_syntax \
+			parser/expand_env parser/parse parser/parser_redirect parser/quote_removal parser/quote_removal_states parser/replace_env \
+			executor/exec_loop executor/execute executor/pipes executor/redirections executor/search_path executor/wait \
+			utils/array_utils utils/command_utils utils/error_utils utils/expansion_utils utils/prompt utils/shell_utils utils/signal utils/valid_key \
+			env/env_error_utils env/env_split env/get_set_env env/init_env env/resize_env \
 			builtins/builtin_cd builtins/builtin_echo builtins/builtin_env builtins/builtin_exit builtins/builtin_export builtins/builtin_pwd builtins/builtin_unset
 OBJS =		$(addsuffix .o, $(addprefix $(ODIR)/, $(_OBJS)))
 LIBFT =		libft.a
@@ -30,7 +31,7 @@ test: all
 
 $(ODIR)/%.o: $(SDIR)/%.c $(INC)/$(HEADER)
 	@mkdir -p $(ODIR)/$(dir $*)
-	$(CC) $(CFLAGS) -I$(INC) -c $< -o $@
+	$(CC) $(CFLAGS) -I$(INC) -I$(LIBFTMAP) -c $< -o $@
 
 clean:
 	$(RM) $(OBJS)

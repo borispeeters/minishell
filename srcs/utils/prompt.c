@@ -1,5 +1,9 @@
 #include <unistd.h>
-#include "libft.h"
+#include <libft.h>
+
+/*
+**	General function to print the prompt for the minishell.
+*/
 
 void	write_prompt(void)
 {

@@ -1,6 +1,11 @@
 #include <unistd.h>
-#include "libft.h"
-#include "minishell.h"
+#include <libft.h>
+#include <minishell.h>
+
+/*
+**	Builtin echo will display all its arguments
+**	followed by a newline, unless the -n option is specified.
+*/
 
 void	builtin_echo(t_shell *shell)
 {

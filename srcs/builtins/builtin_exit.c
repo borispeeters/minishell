@@ -1,16 +1,53 @@
 #include <unistd.h>
-#include "libft.h"
-#include "minishell.h"
+#include <libft.h>
+#include <minishell.h>
 
-void	builtin_exit(t_shell *shell)
+/*
+**	This helper function will check if the string given as input parameter
+**	only contains digits.
+*/
+
+static int	str_digit(char *str)
 {
-	if (shell->cmd->vars[2] != NULL)
+	int	i;
+
+	i = 0;
+	while (str[i])
 	{
-		shell_error_param("too many arguments", "exit");
-		shell->exit_status = 1;
-		return ;
+		if (!ft_isdigit(str[i]))
+			return (0);
+		++i;
 	}
-	if (shell->cmd->vars[1])
-		shell->exit_status = ft_atoi(shell->cmd->vars[1]);
+	return (1);
+}
+
+/*
+**	Builtin exit will exit the shell with the current exit status,
+**	or with the number given as argument.
+*/
+
+void		builtin_exit(t_shell *shell)
+{
+	int	i;
+
+	i = 1;
+	while (shell->cmd->vars[i])
+	{
+		if (i == 2)
+		{
+			shell_error_param("too many arguments", "exit");
+			shell->exit_status = 1;
+			return ;
+		}
+		if (!str_digit(shell->cmd->vars[i]))
+		{
+			shell_error_builtin_param("numeric argument required", "exit",
+			shell->cmd->vars[i]);
+			shell->exit_status = 255;
+			break ;
+		}
+		shell->exit_status = ft_atoi(shell->cmd->vars[i]);
+		++i;
+	}
 	shell->status = 0;
 }

@@ -1,17 +1,16 @@
 #include <errno.h>
-#include <signal.h>
+#include <stdlib.h>
 #include <string.h>
-#include <sys/wait.h>
 #include <unistd.h>
-#include "libft.h"
-#include "minishell.h"
+#include <libft.h>
+#include <minishell.h>
 
 /*
 **	Quick utility function that either calls the search_path function if no
 **	is found, and otherwise copies the command.
 */
 
-static char		*get_path_from_arg(char *arg, t_env *env)
+static char	*get_path_from_arg(char *arg, t_env *env)
 {
 	char	*ret;
 
@@ -28,7 +27,7 @@ static char		*get_path_from_arg(char *arg, t_env *env)
 **	worked. If it failed, it will print an error and return 0.
 */
 
-static int		find_command(t_shell *shell, t_executor *exec)
+static int	find_command(t_shell *shell, t_executor *exec)
 {
 	exec->command = get_path_from_arg(exec->vars[0], shell->env);
 	if (exec->command == NULL)
@@ -41,31 +40,10 @@ static int		find_command(t_shell *shell, t_executor *exec)
 }
 
 /*
-**	This function waits for the child process to finish
-**	and receives its exit status.
-*/
-
-void			wait_cmd(t_shell *shell, t_executor *exec)
-{
-	int	status;
-
-	waitpid(exec->pid, &status, WUNTRACED);
-	if (WIFSIGNALED(status))
-	{
-		shell->sig = WTERMSIG(status);
-		shell->exit_status = 128 + shell->sig;
-	}
-	if (WIFEXITED(status))
-	{
-		shell->exit_status = WEXITSTATUS(status);
-	}
-}
-
-/*
 **	This function handles the execution of a binary file in a child process.
 */
 
-void			exec_binary(t_shell *shell, t_executor *exec)
+static void	exec_binary(t_shell *shell, t_executor *exec)
 {
 	exec->vars = shell->cmd->vars;
 	if (find_command(shell, exec) != 0)
@@ -93,7 +71,7 @@ void			exec_binary(t_shell *shell, t_executor *exec)
 **	and then executes the correct builtin.
 */
 
-void		exec_builtin(t_shell *shell, t_executor *exec, t_builtin builtin)
+static void	exec_builtin(t_shell *shell, t_executor *exec, t_builtin builtin)
 {
 	if (shell->cmd->pipe == PIPE_NONE)
 	{
@@ -111,7 +89,7 @@ void		exec_builtin(t_shell *shell, t_executor *exec, t_builtin builtin)
 		builtin(shell);
 		exit(shell->exit_status);
 	}
-	wait(NULL);
+	wait_cmd(shell, exec);
 }
 
 /*
@@ -119,7 +97,7 @@ void		exec_builtin(t_shell *shell, t_executor *exec, t_builtin builtin)
 **	and if can't find one will execute a command.
 */
 
-void			exec_command(t_shell *shell, t_executor *exec)
+void		exec_command(t_shell *shell, t_executor *exec)
 {
 	int	i;
 
@@ -134,93 +112,4 @@ void			exec_command(t_shell *shell, t_executor *exec)
 		++i;
 	}
 	exec_binary(shell, exec);
-}
-
-/*
-**	This function will redirect the standard input and standard output
-**	to and from a pipe.
-*/
-
-int				duplicate_pipe(int fd, int stream)
-{
-	int	ret;
-
-	ret = 0;
-	if (fd != stream)
-	{
-		if (dup2(fd, stream) == -1)
-		{
-			shell_error(strerror(errno));
-			ret = 1;
-		}
-		close(fd);
-	}
-	return (ret);
-}
-
-/*
-**	This function will setup a pipeline.
-*/
-
-int				handle_pipes(t_executor *exec, t_list *table)
-{
-	int	ret;
-
-	ret = 0;
-	exec->fd[READ_END] = STDIN_FILENO;
-	exec->fd[WRITE_END] = STDOUT_FILENO;
-	if (table->next && pipe(exec->fd) == -1)
-	{
-		shell_error(strerror(errno));
-		return (1);
-	}
-	ret += duplicate_pipe(exec->in, STDIN_FILENO);
-	ret += duplicate_pipe(exec->fd[WRITE_END], STDOUT_FILENO);
-	return (ret);
-}
-
-/*
-**	Main execute loop. Will loop through the command table and will handle
-**	pipes and redirects if necessary, then execute the command.
-*/
-
-void			execute_loop(t_shell *shell, t_list *table, t_env *env)
-{
-	t_executor	exec;
-	int			bak[2];
-
-	shell->env = env;
-	exec.in = STDIN_FILENO;
-	signal(SIGINT, signal_exec);
-	signal(SIGQUIT, signal_exec);
-	while (table)
-	{
-		shell->sig = 0;
-		exec.command = NULL;
-		shell->cmd = table->content;
-		bak[READ_END] = dup(STDIN_FILENO);
-		bak[WRITE_END] = dup(STDOUT_FILENO);
-		if (handle_pipes(&exec, table) == 0 && output_redir(shell->cmd) == 0 
-		&& input_redir(shell->cmd) == 0 && shell->cmd->vars[0] != NULL)
-		{
-			exec_command(shell, &exec);
-		}
-		if (table->next)
-			exec.in = exec.fd[READ_END];
-		if (dup2(bak[READ_END], STDIN_FILENO) == -1)
-		{
-			shell_error(strerror(errno));
-		}
-		if (dup2(bak[WRITE_END], STDOUT_FILENO) == -1)
-		{
-			shell_error(strerror(errno));
-		}
-		close(bak[READ_END]);
-		close(bak[WRITE_END]);
-		if (shell->sig == SIGINT)
-			ft_putchar_fd('\n', 1);
-		if (shell->sig == SIGQUIT)
-			ft_putendl_fd("Quit: 3", 1);
-		table = table->next;
-	}
 }

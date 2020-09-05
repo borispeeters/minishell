@@ -1,5 +1,5 @@
-#include "libft.h"
-#include "minishell.h"
+#include <libft.h>
+#include <minishell.h>
 
 /*
 **	This function is called when a non-special character is encountered

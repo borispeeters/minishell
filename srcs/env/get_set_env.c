@@ -1,6 +1,6 @@
 #include <stdlib.h>
-#include "libft.h"
-#include "minishell.h"
+#include <libft.h>
+#include <minishell.h>
 
 /*
 **	This function will return the index of the environment variable
@@ -42,10 +42,13 @@ char		*get_env(t_env *env, char *key)
 
 	i = get_env_index(env, key);
 	if (env->vars[i] == NULL)
-		return (ft_strdup(""));
+	{
+		value = ft_strdup("");
+		if (value == NULL)
+			shell_error_malloc();
+		return (value);
+	}
 	pair = env_split(env->vars[i]);
-	if (pair == NULL)
-		shell_error_malloc();
 	value = (pair[1]) ? ft_strdup(pair[1]) : ft_strdup("");
 	if (value == NULL)
 		shell_error_malloc();

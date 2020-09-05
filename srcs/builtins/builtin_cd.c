@@ -1,8 +1,13 @@
 #include <string.h>
 #include <sys/errno.h>
 #include <unistd.h>
-#include "libft.h"
-#include "minishell.h"
+#include <libft.h>
+#include <minishell.h>
+
+/*
+**	In case of an error, print it and set the exit status to 1
+**	to indicate something went wrong.
+*/
 
 static void	cd_error(t_shell *shell, char *err_msg, char *param)
 {
@@ -10,29 +15,62 @@ static void	cd_error(t_shell *shell, char *err_msg, char *param)
 	shell->exit_status = 1;
 }
 
-void		builtin_cd(t_shell *shell)
+/*
+**	Update the PWD and OLDPWD environment variables after changing directory.
+*/
+
+static void	update_pwd(t_shell *shell, char *oldpwd, char *pwd)
 {
-	char	*prev_dir;
-	char	*cur_dir;
+	if (ft_strcmp(oldpwd, pwd))
+	{
+		set_env(shell->env, "OLDPWD", oldpwd);
+		set_env(shell->env, "PWD", pwd);
+	}
+}
+
+/*
+**	Change working directory to HOME.
+*/
+
+static void	go_home(t_shell *shell)
+{
 	char	*home;
 
-	prev_dir = NULL;
-	prev_dir = getcwd(prev_dir, 1);
+	home = get_env(shell->env, "HOME");
+	if (home == NULL)
+		shell_error_malloc();
+	if (!*home)
+		cd_error(shell, "HOME not set", "cd");
+	else if (chdir(home) != 0)
+		cd_error(shell, strerror(errno), home);
+	free(home);
+}
+
+/*
+**	Builtin cd will change the working directory to the specified argument.
+**	If not given, it will default to the HOME environment variable.
+*/
+
+void		builtin_cd(t_shell *shell)
+{
+	char	*oldpwd;
+	char	*pwd;
+
+	oldpwd = NULL;
+	oldpwd = getcwd(oldpwd, 1);
+	if (oldpwd == NULL)
+		shell_error_malloc();
 	if (shell->cmd->vars[1] && chdir(shell->cmd->vars[1]) != 0)
 		cd_error(shell, strerror(errno), shell->cmd->vars[1]);
 	else if (shell->cmd->vars[1] == NULL)
 	{
-		home = get_env(shell->env, "HOME");
-		if (!*home)
-			cd_error(shell, "HOME not set", "cd");
-		else if (chdir(home) != 0)
-			cd_error(shell, strerror(errno), home);
-		free(home);
+		go_home(shell);
 	}
-	cur_dir = NULL;
-	cur_dir = getcwd(cur_dir, 1);
-	set_env(shell->env, "OLDPWD", prev_dir);
-	free(prev_dir);
-	set_env(shell->env, "PWD", cur_dir);
-	free(cur_dir);
+	pwd = NULL;
+	pwd = getcwd(pwd, 1);
+	if (pwd == NULL)
+		shell_error_malloc();
+	update_pwd(shell, oldpwd, pwd);
+	free(oldpwd);
+	free(pwd);
 }

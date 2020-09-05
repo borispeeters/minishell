@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <sys/stat.h>
-#include "libft.h"
-#include "minishell.h"
+#include <libft.h>
+#include <minishell.h>
 
 /*
 **	A utility function to free memory used for PATH traversal.
