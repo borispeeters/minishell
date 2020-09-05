@@ -106,7 +106,10 @@ void	builtin_export(t_shell *shell)
 		if (valid_key(pair[0]))
 			set_env(shell->env, pair[0], pair[1]);
 		else
+		{
+			shell->exit_status = 1;
 			shell_error_env(shell->cmd->vars[i], "export");
+		}
 		free_var_array(pair);
 		++i;
 	}

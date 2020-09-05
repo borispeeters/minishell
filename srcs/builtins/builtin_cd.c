@@ -11,8 +11,11 @@
 
 static void	cd_error(t_shell *shell, char *err_msg, char *param)
 {
-	shell_error_builtin_param(err_msg, "cd", param);
 	shell->exit_status = 1;
+	if (param)
+		shell_error_builtin_param(err_msg, "cd", param);
+	else
+		shell_error_param(err_msg, "cd");
 }
 
 /*
@@ -40,10 +43,42 @@ static void	go_home(t_shell *shell)
 	if (home == NULL)
 		shell_error_malloc();
 	if (!*home)
-		cd_error(shell, "HOME not set", "cd");
+		cd_error(shell, "HOME not set", NULL);
 	else if (chdir(home) != 0)
 		cd_error(shell, strerror(errno), home);
 	free(home);
+}
+
+/*
+**	Change working directory to OLDPWD.
+*/
+
+static void	go_oldpwd(t_shell *shell)
+{
+	char	**pair;
+	int		i;
+
+	i = get_env_index(shell->env, "OLDPWD");
+	if (shell->env->vars[i] == NULL)
+	{
+		cd_error(shell, "OLDPWD not set", NULL);
+		return ;
+	}
+	pair = env_split(shell->env->vars[i]);
+	if (pair[1] == NULL)
+	{
+		cd_error(shell, "OLDPWD not set", NULL);
+		free_var_array(pair);
+		return ;
+	}
+	if (chdir(pair[1]) != 0)
+	{
+		cd_error(shell, strerror(errno), pair[1]);
+		free_var_array(pair);
+		return ;
+	}
+	free_var_array(pair);
+	builtin_pwd(shell);
 }
 
 /*
@@ -60,12 +95,15 @@ void		builtin_cd(t_shell *shell)
 	oldpwd = getcwd(oldpwd, 1);
 	if (oldpwd == NULL)
 		shell_error_malloc();
-	if (shell->cmd->vars[1] && chdir(shell->cmd->vars[1]) != 0)
-		cd_error(shell, strerror(errno), shell->cmd->vars[1]);
-	else if (shell->cmd->vars[1] == NULL)
+	if (shell->cmd->vars[1])
 	{
-		go_home(shell);
+		if (ft_strcmp(shell->cmd->vars[1], "-") == 0)
+			go_oldpwd(shell);
+		else if (chdir(shell->cmd->vars[1]) != 0)
+			cd_error(shell, strerror(errno), shell->cmd->vars[1]);
 	}
+	else if (shell->cmd->vars[1] == NULL)
+		go_home(shell);
 	pwd = NULL;
 	pwd = getcwd(pwd, 1);
 	if (pwd == NULL)

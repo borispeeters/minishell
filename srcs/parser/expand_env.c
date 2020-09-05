@@ -41,8 +41,7 @@ static void	exp_quote_handler(t_expansion *exp, char c)
 **	and delegate work to the helper functions.
 */
 
-static void	exp_str_loop(t_shell *shell, t_env *env, t_expansion *exp,
-		char **vars)
+static void	exp_str_loop(t_shell *shell, t_expansion *exp, char **vars)
 {
 	int	i;
 
@@ -56,7 +55,7 @@ static void	exp_str_loop(t_shell *shell, t_env *env, t_expansion *exp,
 			if ((*vars)[i + 1] == '?')
 				i += replace_exit_status(shell, vars, i);
 			else if (is_env((*vars)[i + 1]))
-				i += found_env(env, vars, i);
+				i += found_env(shell->env, vars, i);
 			else
 				++i;
 			continue ;
@@ -75,15 +74,13 @@ void		expand_env(t_shell *shell, t_command *cmd, t_env *env)
 {
 	t_expansion	exp;
 	char		**vars;
-	int			i;
 
 	vars = cmd->vars;
-	while (*vars != NULL)
+	while (*vars)
 	{
 		exp.quote = NO_QUOTE;
 		exp.escape = NO_ESCAPE;
-		i = 0;
-		exp_str_loop(shell, env, &exp, vars);
+		exp_str_loop(shell, &exp, vars);
 		++vars;
 	}
 }
