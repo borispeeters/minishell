@@ -1,6 +1,6 @@
 #include <stdlib.h>
-#include <libft.h>
-#include <minishell.h>
+#include "libft.h"
+#include "minishell.h"
 
 /*
 **	This function will return the index of the environment variable

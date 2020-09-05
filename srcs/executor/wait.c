@@ -1,5 +1,5 @@
 #include <sys/wait.h>
-#include <minishell.h>
+#include "minishell.h"
 
 /*
 **	This function waits for the child process to finish

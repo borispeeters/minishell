@@ -1,6 +1,6 @@
 #include <unistd.h>
-#include <libft.h>
-#include <minishell.h>
+#include "libft.h"
+#include "minishell.h"
 
 /*
 **	This function will add a token to the end of the list.

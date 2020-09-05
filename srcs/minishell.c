@@ -1,7 +1,7 @@
 #include <signal.h>
 #include <unistd.h>
-#include <libft.h>
-#include <minishell.h>
+#include "libft.h"
+#include "minishell.h"
 
 /*
 **	Initializes some values for the builtins

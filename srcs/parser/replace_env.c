@@ -1,6 +1,6 @@
 #include <stdlib.h>
-#include <libft.h>
-#include <minishell.h>
+#include "libft.h"
+#include "minishell.h"
 
 /*
 **	This function will replace a subsection of str with replace.

@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <unistd.h>
-#include <libft.h>
-#include <minishell.h>
+#include "libft.h"
+#include "minishell.h"
 
 /*
 **	Builtin pwd will display the working directory that the user is in.

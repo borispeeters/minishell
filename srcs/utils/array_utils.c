@@ -1,5 +1,5 @@
 #include <stdlib.h>
-#include <minishell.h>
+#include "minishell.h"
 
 /*
 **	This function will malloc a 2-dimensional char array with n elements,

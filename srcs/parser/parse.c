@@ -1,5 +1,5 @@
-#include <libft.h>
-#include <minishell.h>
+#include "libft.h"
+#include "minishell.h"
 
 /*
 **	Helper function for the parse loop that handles the separators. Returns

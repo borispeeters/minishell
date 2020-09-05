@@ -1,5 +1,5 @@
-#include <libft.h>
-#include <minishell.h>
+#include "libft.h"
+#include "minishell.h"
 
 /*
 **	A simple function that frees the given parameter

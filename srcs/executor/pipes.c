@@ -1,8 +1,8 @@
 #include <errno.h>
 #include <string.h>
 #include <unistd.h>
-#include <libft.h>
-#include <minishell.h>
+#include "libft.h"
+#include "minishell.h"
 
 /*
 **	This function will redirect the standard input and standard output

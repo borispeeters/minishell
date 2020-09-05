@@ -2,7 +2,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <errno.h>
-#include <minishell.h>
+#include "minishell.h"
 
 /*
 **	Short helper function that tries to open a file, and prints an error it

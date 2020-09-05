@@ -1,5 +1,5 @@
-#include <libft.h>
-#include <minishell.h>
+#include "libft.h"
+#include "minishell.h"
 
 /*
 **	This function will return non-zero if c is a character

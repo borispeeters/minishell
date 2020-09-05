@@ -1,6 +1,6 @@
 #include <stdlib.h>
-#include <libft.h>
-#include <minishell.h>
+#include "libft.h"
+#include "minishell.h"
 
 /*
 **	Helper function that frees allocated memory then exits.

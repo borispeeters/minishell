@@ -1,6 +1,6 @@
 #include <unistd.h>
-#include <libft.h>
-#include <minishell.h>
+#include "libft.h"
+#include "minishell.h"
 
 /*
 **	Builtin env will display all the variables in the environment list.

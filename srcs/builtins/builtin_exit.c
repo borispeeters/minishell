@@ -1,6 +1,6 @@
 #include <unistd.h>
-#include <libft.h>
-#include <minishell.h>
+#include "libft.h"
+#include "minishell.h"
 
 /*
 **	This helper function will check if the string given as input parameter

@@ -1,8 +1,8 @@
 #include <string.h>
 #include <sys/errno.h>
 #include <unistd.h>
-#include <libft.h>
-#include <minishell.h>
+#include "libft.h"
+#include "minishell.h"
 
 /*
 **	In case of an error, print it and set the exit status to 1

@@ -1,5 +1,5 @@
-#include <libft.h>
-#include <minishell.h>
+#include "libft.h"
+#include "minishell.h"
 
 /*
 **	This function will replace $? by the current exit status of the shell.

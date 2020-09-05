@@ -1,5 +1,5 @@
 #include <stdlib.h>
-#include <minishell.h>
+#include "minishell.h"
 
 /*
 **	This function will handle the allocation for the bigger environment list.

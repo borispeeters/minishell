@@ -1,7 +1,7 @@
 #include <signal.h>
 #include <unistd.h>
-#include <libft.h>
-#include <minishell.h>
+#include "libft.h"
+#include "minishell.h"
 
 /*
 **	This function is executed when a signal is caught.

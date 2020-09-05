@@ -1,6 +1,6 @@
 #include <stdlib.h>
-#include <libft.h>
-#include <minishell.h>
+#include "libft.h"
+#include "minishell.h"
 
 /*
 **	This function will free the environment list on exit of the shell.
