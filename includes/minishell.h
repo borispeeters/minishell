@@ -307,10 +307,17 @@ void				meta_encounter(t_lexer *lex, char *line, t_list **head);
 int					verify_syntax(t_list *token);
 
 /*
+**	parser/escape_quotes.c
+*/
+
+int					count_quote_escape(char const *s);
+void				escape_quotes(char *s);
+
+/*
 **	parser/expand_env.c
 */
 
-void				expand_env(t_shell *shell, t_command *cmd, t_env *env);
+void				expand_env(t_shell *shell, t_command *cmd);
 
 /*
 **	parser/parse.c
@@ -347,7 +354,7 @@ int					qr_escape(t_expansion *exp, char **vars, int i);
 */
 
 int					found_env(t_env *env, char **vars, int i);
-void				str_replace(char **str, int index, int len, char *replace);
+int					str_replace(char **str, int index, int len, char *replace);
 
 /*
 **	utils/array_utils.c
@@ -383,6 +390,13 @@ void				exp_double_quote(t_expansion *exp);
 void				exp_single_quote(t_expansion *exp);
 
 /*
+**	utils/parse_utils.c
+*/
+
+t_separator			is_separator(char *token);
+t_redirect			is_redirect(char *token);
+
+/*
 **	utils/prompt.c
 */
 
@@ -395,8 +409,7 @@ void				write_prompt(void);
 void				free_content(void *content);
 int					is_space(int c);
 int					is_metacharacter(int c);
-t_separator			is_separator(char *token);
-t_redirect			is_redirect(char *token);
+int					is_quote_escape(int c);
 
 /*
 **	utils/signal.c

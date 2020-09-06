@@ -59,7 +59,7 @@ static void	command_loop(t_shell *shell, t_list *tokens)
 	while (shell->status && tokens != NULL)
 	{
 		table = parse(&tokens);
-		expand_env(shell, (t_command*)table->content, shell->env);
+		expand_env(shell, (t_command*)table->content);
 		quote_removal((t_command*)table->content);
 		shell->exit_status = 0;
 		execute_loop(shell, table);

@@ -7,9 +7,9 @@ SDIR =		srcs
 ODIR =		objs
 _OBJS =		minishell \
 			lexer/lexer lexer/lexer_special lexer/lexer_states lexer/verify_syntax \
-			parser/expand_env parser/parse parser/parser_redirect parser/quote_removal parser/quote_removal_states parser/replace_env \
+			parser/escape_quotes parser/expand_env parser/parse parser/parser_redirect parser/quote_removal parser/quote_removal_states parser/replace_env \
 			executor/exec_loop executor/execute executor/pipes executor/redirections executor/search_path executor/wait \
-			utils/array_utils utils/command_utils utils/error_utils utils/expansion_utils utils/prompt utils/shell_utils utils/signal utils/valid_key \
+			utils/array_utils utils/command_utils utils/error_utils utils/expansion_utils utils/parse_utils utils/prompt utils/shell_utils utils/signal utils/valid_key \
 			env/env_error_utils env/env_split env/get_set_env env/init_env env/resize_env \
 			builtins/builtin_cd builtins/builtin_echo builtins/builtin_env builtins/builtin_exit builtins/builtin_export builtins/builtin_pwd builtins/builtin_unset
 OBJS =		$(addsuffix .o, $(addprefix $(ODIR)/, $(_OBJS)))

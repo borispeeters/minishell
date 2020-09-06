@@ -6,7 +6,7 @@
 **	This function will return a deep copy of the environment list.
 */
 
-char	**copy_env_list(t_env *env)
+static char	**copy_env_list(t_env *env)
 {
 	int		i;
 	char	**vars;
@@ -32,7 +32,7 @@ char	**copy_env_list(t_env *env)
 **	Sort the entire list using the bubblesort algorithm.
 */
 
-char	**sort_env_list(t_env *env)
+static char	**sort_env_list(t_env *env)
 {
 	int		i;
 	int		j;
@@ -60,10 +60,29 @@ char	**sort_env_list(t_env *env)
 }
 
 /*
+**	Prints the value of an environment variable
+**	with a backslash preceding double quotes and backslashes.
+*/
+
+static void	export_print_value(char const *s)
+{
+	int	i;
+
+	i = 0;
+	while (s[i])
+	{
+		if (s[i] == '\"' || s[i] == '\\')
+			ft_putchar_fd('\\', STDOUT_FILENO);
+		ft_putchar_fd(s[i], STDOUT_FILENO);
+		++i;
+	}
+}
+
+/*
 **	This function will print the environment list in the correct format.
 */
 
-void	export_print(t_env *env)
+static void	export_print(t_env *env)
 {
 	char	**vars;
 	char	**pair;
@@ -79,10 +98,10 @@ void	export_print(t_env *env)
 		if (pair[1])
 		{
 			ft_putstr_fd("=\"", STDOUT_FILENO);
-			ft_putstr_fd(pair[1], STDOUT_FILENO);
+			export_print_value(pair[1]);
 			ft_putstr_fd("\"", STDOUT_FILENO);
 		}
-		ft_putstr_fd("\n", STDOUT_FILENO);
+		ft_putchar_fd('\n', STDOUT_FILENO);
 		free_var_array(pair);
 		++i;
 	}
@@ -94,7 +113,7 @@ void	export_print(t_env *env)
 **	If no argument is given, display the entire list.
 */
 
-void	builtin_export(t_shell *shell)
+void		builtin_export(t_shell *shell)
 {
 	char	**pair;
 	int		i;

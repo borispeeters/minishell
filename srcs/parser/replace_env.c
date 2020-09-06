@@ -6,20 +6,24 @@
 **	This function will replace a subsection of str with replace.
 */
 
-void		str_replace(char **str, int index, int len, char *replace)
+int			str_replace(char **str, int index, int len, char *replace)
 {
 	char	*tmp;
 	int		new_len;
+	int		quotes;
 
+	quotes = count_quote_escape(replace);
 	new_len = ft_strlen(*str) - len + ft_strlen(replace);
-	tmp = malloc(sizeof(*tmp) * (new_len + 1));
+	tmp = malloc(sizeof(*tmp) * (new_len + quotes + 1));
 	if (tmp == NULL)
 		shell_error_malloc();
 	ft_strlcpy(tmp, *str, index + 1);
 	ft_strlcat(tmp, replace, ft_strlen(tmp) + ft_strlen(replace) + 1);
 	ft_strlcat(tmp, *str + index + len, new_len + 1);
+	escape_quotes(tmp);
 	free(*str);
 	*str = tmp;
+	return (ft_strlen(replace) + quotes);
 }
 
 /*
@@ -62,8 +66,7 @@ int			found_env(t_env *env, char **vars, int i)
 	free(key);
 	if (value == NULL)
 		shell_error_malloc();
-	str_replace(vars, i, len, value);
-	len = ft_strlen(value);
+	len = str_replace(vars, i, len, value);
 	free(value);
 	return (len);
 }

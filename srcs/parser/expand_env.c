@@ -70,7 +70,7 @@ static void	exp_str_loop(t_shell *shell, t_expansion *exp, char **vars)
 **	The main function for the expander.
 */
 
-void		expand_env(t_shell *shell, t_command *cmd, t_env *env)
+void		expand_env(t_shell *shell, t_command *cmd)
 {
 	t_expansion	exp;
 	char		**vars;
