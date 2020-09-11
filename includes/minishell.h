@@ -6,6 +6,8 @@
 # define READ_END 0
 # define WRITE_END 1
 
+#include <stdio.h>//lol remove pls
+
 struct s_shell;
 struct s_env;
 struct s_command;
@@ -357,9 +359,22 @@ int					found_env(t_env *env, char **vars, int i);
 int					str_replace(char **str, int index, int len, char *replace);
 
 /*
+**	parser/split_words.c
+*/
+
+void				split_words(t_command *cmd);
+
+/*
+**	parser/word_split_realloc.c
+*/
+
+void				realloc_vars(t_command *cmd, char **split, int index);
+
+/*
 **	utils/array_utils.c
 */
 
+int					arrlen(char **array);
 char				**malloc_var_array(int n);
 void				free_var_array(char **array);
 
@@ -388,6 +403,7 @@ int					is_env(int c);
 void				exp_escape_char(t_expansion *exp);
 void				exp_double_quote(t_expansion *exp);
 void				exp_single_quote(t_expansion *exp);
+void				exp_quote_handler(t_expansion *exp, char c);
 
 /*
 **	utils/parse_utils.c

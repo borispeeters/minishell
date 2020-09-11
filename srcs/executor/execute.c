@@ -59,7 +59,7 @@ static void	exec_binary(t_shell *shell, t_executor *exec)
 	{
 		execve(exec->command, exec->vars, shell->env->vars);
 		shell_error_param(strerror(errno), exec->command);
-		exit(127);
+		exit(126);
 	}
 	wait_cmd(shell, exec);
 	if (exec->command)

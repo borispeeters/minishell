@@ -2,6 +2,20 @@
 #include "minishell.h"
 
 /*
+**	Returns the length of a string array.
+*/
+
+int			arrlen(char **array)
+{
+	int	i;
+
+	i = 0;
+	while (array[i])
+		++i;
+	return (i);
+}
+
+/*
 **	This function will malloc a 2-dimensional char array with n elements,
 **	all set to NULL.
 */

@@ -55,3 +55,17 @@ void	exp_single_quote(t_expansion *exp)
 	else if (exp->quote == NO_QUOTE && exp->escape != ESCAPE)
 		exp->quote = SNGL_QUOTE;
 }
+
+/*
+**	This function will handle escape character and quotes.
+*/
+
+void	exp_quote_handler(t_expansion *exp, char c)
+{
+	if (c == '\\')
+		exp_escape_char(exp);
+	if (c == '\"')
+		exp_double_quote(exp);
+	if (c == '\'')
+		exp_single_quote(exp);
+}
