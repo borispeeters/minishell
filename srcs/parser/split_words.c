@@ -61,7 +61,6 @@ void		split_words(t_command *cmd)
 	i = 0;
 	while (cmd->vars[i])
 	{
-		printf("PRE cmd->vars[%d]: [%s]\n", i, cmd->vars[i]);
 		exp.quote = NO_QUOTE;
 		exp.escape = NO_ESCAPE;
 		tmp = ft_strtrim(cmd->vars[i], " \t\n");
@@ -69,11 +68,9 @@ void		split_words(t_command *cmd)
 		if (tmp == NULL)
 			shell_error_malloc();
 		cmd->vars[i] = tmp;
-		printf("lol cmd->vars[%d]: [%s]\n", i, cmd->vars[i]);
 		split_loop(cmd, &exp, i);
 		split_insert(cmd, i, '\t');
 		split_insert(cmd, i, ' ');
-		printf("POST cmd->vars[%d]: [%s]\n", i, cmd->vars[i]);
 		if (cmd->vars[i])
 			++i;
 	}
