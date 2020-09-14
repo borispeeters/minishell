@@ -23,7 +23,6 @@ static void	split_insert(t_command *cmd, int i, int c)
 {
 	char	**split;
 
-	// printf("split_insert cmd->vars[%d]: [%s]\n", i, cmd->vars[i]);
 	if (cmd->vars[i] == NULL)
 		return ;
 	split = ft_split(cmd->vars[i], c);

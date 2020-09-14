@@ -2,34 +2,59 @@
 #include "libft.h"
 #include "minishell.h"
 
-static void	insert_split(t_command *cmd, char **split, char **tmp, int index)
+static void	insert_pre_split(t_command *cmd, char **tmp, int *i, int end)
 {
-	int	i;
+	while (*i < end)
+	{
+		tmp[*i] = ft_strdup(cmd->vars[*i]);
+		if (tmp[*i] == NULL)
+		{
+			free_var_array(tmp);
+			shell_error_malloc();
+		}
+		++(*i);
+	}
+}
+
+static void	insert_at_split(char **split, char **tmp, int *i)
+{
 	int	j;
 
+	j = 0 - *i;
+	while (split[j + *i])
+	{
+		tmp[*i] = ft_strdup(split[j + *i]);
+		if (tmp[*i] == NULL)
+		{
+			free_var_array(tmp);
+			shell_error_malloc();
+		}
+		++(*i);
+	}
+}
+
+static void	insert_post_split(t_command *cmd, char **tmp, int *i, int len)
+{
+	while (cmd->vars[*i + 1 - len])
+	{
+		tmp[*i] = ft_strdup(cmd->vars[*i + 1 - len]);
+		if (tmp[*i] == NULL)
+		{
+			free_var_array(tmp);
+			shell_error_malloc();
+		}
+		++(*i);
+	}
+}
+
+static void	insert_split(t_command *cmd, char **split, char **tmp, int end)
+{
+	int	i;
+
 	i = 0;
-	while (i < index)
-	{
-		tmp[i] = ft_strdup(cmd->vars[i]);
-		if (tmp[i] == NULL)
-			shell_error_malloc();
-		++i;
-	}
-	j = 0 - i;
-	while (split[j + i])
-	{
-		tmp[i] = ft_strdup(split[j + i]);
-		if (tmp[i] == NULL)
-			shell_error_malloc();
-		++i;
-	}
-	while (cmd->vars[i + 1 - arrlen(split)])
-	{
-		tmp[i] = ft_strdup(cmd->vars[i + 1 - arrlen(split)]);
-		if (tmp[i] == NULL)
-			shell_error_malloc();
-		++i;
-	}
+	insert_pre_split(cmd, tmp, &i, end);
+	insert_at_split(split, tmp, &i);
+	insert_post_split(cmd, tmp, &i, arrlen(split));
 }
 
 void		realloc_vars(t_command *cmd, char **split, int index)
