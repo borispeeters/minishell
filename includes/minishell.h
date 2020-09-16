@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        ::::::::            */
+/*   minishell.h                                        :+:    :+:            */
+/*                                                     +:+                    */
+/*   By: bpeeters <bpeeters@student.codam.nl>         +#+                     */
+/*                                                   +#+                      */
+/*   Created: 2020/09/16 14:23:20 by bpeeters      #+#    #+#                 */
+/*   Updated: 2020/09/16 14:23:20 by bpeeters      ########   odam.nl         */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
@@ -5,8 +17,6 @@
 # include <libft.h>
 # define READ_END 0
 # define WRITE_END 1
-
-#include <stdio.h>//lol remove pls
 
 struct s_shell;
 struct s_env;
