@@ -6,7 +6,7 @@
 /*   By: mpeerdem <marvin@codam.nl>                   +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2019/10/31 09:22:09 by mpeerdem      #+#    #+#                 */
-/*   Updated: 2019/11/11 13:27:44 by mpeerdem      ########   odam.nl         */
+/*   Updated: 2020/09/17 08:51:16 by mpeerdem      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ char			*ft_strtrim(char const *s1, char const *set)
 	i = 1;
 	while (i <= result_size && ft_strchr(set, *(s1 + (result_size - i))))
 		i++;
-	if (i >= result_size)
+	if (i > result_size)
 		return (ft_strdup(""));
 	result_size -= (i - 1);
 	i = 0;
