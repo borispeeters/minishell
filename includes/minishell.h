@@ -6,7 +6,7 @@
 /*   By: bpeeters <bpeeters@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/16 14:23:20 by bpeeters      #+#    #+#                 */
-/*   Updated: 2020/09/16 14:23:20 by bpeeters      ########   odam.nl         */
+/*   Updated: 2020/09/17 11:33:18 by bpeeters      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -393,6 +393,7 @@ void				free_var_array(char **array);
 */
 
 t_list				*prepare_command(int length);
+void				free_command_table(t_list **table);
 
 /*
 **	utils/error_utils.c

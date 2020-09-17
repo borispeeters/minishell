@@ -6,7 +6,7 @@
 /*   By: bpeeters <bpeeters@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/16 14:22:29 by bpeeters      #+#    #+#                 */
-/*   Updated: 2020/09/16 14:22:30 by bpeeters      ########   odam.nl         */
+/*   Updated: 2020/09/17 10:31:28 by bpeeters      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,5 +19,5 @@
 
 void	write_prompt(void)
 {
-	ft_putstr_fd("minishell-0.1$ ", STDOUT_FILENO);
+	ft_putstr_fd("minishell-1.0$ ", STDOUT_FILENO);
 }

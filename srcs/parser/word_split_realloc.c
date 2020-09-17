@@ -6,13 +6,18 @@
 /*   By: bpeeters <bpeeters@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/16 14:22:13 by bpeeters      #+#    #+#                 */
-/*   Updated: 2020/09/16 14:22:14 by bpeeters      ########   odam.nl         */
+/*   Updated: 2020/09/17 12:02:48 by bpeeters      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdlib.h>
 #include "libft.h"
 #include "minishell.h"
+
+/*
+**	Inserts the original vars that came before the splitted words
+**	into the new vars.
+*/
 
 static void	insert_pre_split(t_command *cmd, char **tmp, int *i, int end)
 {
@@ -27,6 +32,10 @@ static void	insert_pre_split(t_command *cmd, char **tmp, int *i, int end)
 		++(*i);
 	}
 }
+
+/*
+**	Inserts the splitted words into the new vars.
+*/
 
 static void	insert_at_split(char **split, char **tmp, int *i)
 {
@@ -45,6 +54,11 @@ static void	insert_at_split(char **split, char **tmp, int *i)
 	}
 }
 
+/*
+**	Inserts the original vars that came after the splitted words
+**	into the new vars.
+*/
+
 static void	insert_post_split(t_command *cmd, char **tmp, int *i, int len)
 {
 	while (cmd->vars[*i + 1 - len])
@@ -59,6 +73,10 @@ static void	insert_post_split(t_command *cmd, char **tmp, int *i, int len)
 	}
 }
 
+/*
+**	Delegates the insertion to three helper functions.
+*/
+
 static void	insert_split(t_command *cmd, char **split, char **tmp, int end)
 {
 	int	i;
@@ -68,6 +86,10 @@ static void	insert_split(t_command *cmd, char **split, char **tmp, int end)
 	insert_at_split(split, tmp, &i);
 	insert_post_split(cmd, tmp, &i, arrlen(split));
 }
+
+/*
+**	Allocates the command arguments to make room for the splitted words.
+*/
 
 void		realloc_vars(t_command *cmd, char **split, int index)
 {

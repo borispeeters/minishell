@@ -6,7 +6,7 @@
 #    By: bpeeters <bpeeters@student.codam.nl>         +#+                      #
 #                                                    +#+                       #
 #    Created: 2020/09/16 14:16:44 by bpeeters      #+#    #+#                  #
-#    Updated: 2020/09/16 14:18:18 by bpeeters      ########   odam.nl          #
+#    Updated: 2020/09/17 10:33:06 by bpeeters      ########   odam.nl          #
 #                                                                              #
 # **************************************************************************** #
 
@@ -47,9 +47,6 @@ $(NAME): $(OBJS) $(LIBFTMAP)/$(LIBFT)
 
 $(LIBFTMAP)/$(LIBFT):
 	make -C $(LIBFTMAP)
-
-test: all
-	./minishell
 
 $(ODIR)/%.o: $(SDIR)/%.c $(INC)/$(HEADER)
 	@mkdir -p $(ODIR)/$(dir $*)

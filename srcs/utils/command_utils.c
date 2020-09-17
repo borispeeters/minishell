@@ -6,7 +6,7 @@
 /*   By: bpeeters <bpeeters@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/16 14:22:19 by bpeeters      #+#    #+#                 */
-/*   Updated: 2020/09/16 14:22:19 by bpeeters      ########   odam.nl         */
+/*   Updated: 2020/09/17 11:33:02 by bpeeters      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,4 +54,26 @@ t_list		*prepare_command(int length)
 	command->out_modes = NULL;
 	command->pipe = PIPE_NONE;
 	return (link);
+}
+
+/*
+**	Frees the memory used by the command table.
+*/
+
+void		free_command_table(t_list **table)
+{
+	t_list		*node;
+	t_command	*cmd;
+
+	node = *table;
+	while (node)
+	{
+		cmd = node->content;
+		ft_lstclear(&cmd->files_in, free_content);
+		ft_lstclear(&cmd->files_out, free_content);
+		ft_lstclear(&cmd->out_modes, free_content);
+		free_var_array(cmd->vars);
+		node = node->next;
+	}
+	ft_lstclear(table, free_content);
 }

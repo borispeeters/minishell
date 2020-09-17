@@ -6,11 +6,15 @@
 /*   By: bpeeters <bpeeters@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/16 14:22:11 by bpeeters      #+#    #+#                 */
-/*   Updated: 2020/09/16 14:22:11 by bpeeters      ########   odam.nl         */
+/*   Updated: 2020/09/17 11:59:25 by bpeeters      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+/*
+**	Reset the array back to its previous state.
+*/
 
 static void	reset_array(char **array, int c)
 {
@@ -31,6 +35,10 @@ static void	reset_array(char **array, int c)
 	}
 }
 
+/*
+**	Insert the splitted words into the command arguments.
+*/
+
 static void	split_insert(t_command *cmd, int i, int c)
 {
 	char	**split;
@@ -45,6 +53,10 @@ static void	split_insert(t_command *cmd, int i, int c)
 	realloc_vars(cmd, split, i);
 	free_var_array(split);
 }
+
+/*
+**	Does some preparation for word splitting.
+*/
 
 static void	split_loop(t_command *cmd, t_expansion *exp, int i)
 {
@@ -62,6 +74,11 @@ static void	split_loop(t_command *cmd, t_expansion *exp, int i)
 		++j;
 	}
 }
+
+/*
+**	This function will loop through the command arguments
+**	and split words only if expansion took place.
+*/
 
 void		split_words(t_command *cmd)
 {

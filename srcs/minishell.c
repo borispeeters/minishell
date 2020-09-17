@@ -6,7 +6,7 @@
 /*   By: bpeeters <bpeeters@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/16 14:22:40 by bpeeters      #+#    #+#                 */
-/*   Updated: 2020/09/16 14:22:40 by bpeeters      ########   odam.nl         */
+/*   Updated: 2020/09/17 11:51:39 by bpeeters      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,28 +39,6 @@ static void	init_builtins(t_shell *shell)
 }
 
 /*
-**	Frees the memory used by the command table.
-*/
-
-static void	free_command_table(t_list **table)
-{
-	t_list		*node;
-	t_command	*cmd;
-
-	node = *table;
-	while (node)
-	{
-		cmd = node->content;
-		ft_lstclear(&cmd->files_in, free_content);
-		ft_lstclear(&cmd->files_out, free_content);
-		ft_lstclear(&cmd->out_modes, free_content);
-		free_var_array(cmd->vars);
-		node = node->next;
-	}
-	ft_lstclear(table, free_content);
-}
-
-/*
 **	Function to loop through commands separated by the ';' token.
 */
 
@@ -78,6 +56,23 @@ static void	command_loop(t_shell *shell, t_list *tokens)
 		execute_loop(shell, table);
 		free_command_table(&table);
 	}
+}
+
+/*
+**	This function checks if the syntax is valid
+**	and if it is goes to the command loop.
+**	Otherwise updates the exit status and prints an error.
+*/
+
+static void	check_syntax(t_shell *shell, t_list *tokens)
+{
+	if (verify_syntax(tokens) != 0)
+	{
+		shell->exit_status = 258 % 256;
+		ft_lstclear(&tokens, free_content);
+		return ;
+	}
+	command_loop(shell, tokens);
 }
 
 /*
@@ -104,8 +99,8 @@ static void	shell_loop(t_shell *shell)
 			return ;
 		}
 		tokens = lexer(line);
-		if (tokens != NULL && verify_syntax(tokens) == 0)
-			command_loop(shell, tokens);
+		if (tokens != NULL)
+			check_syntax(shell, tokens);
 		free(line);
 		line = NULL;
 	}

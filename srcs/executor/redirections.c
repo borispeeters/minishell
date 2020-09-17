@@ -6,7 +6,7 @@
 /*   By: bpeeters <bpeeters@student.codam.nl>         +#+                     */
 /*                                                   +#+                      */
 /*   Created: 2020/09/16 14:21:32 by bpeeters      #+#    #+#                 */
-/*   Updated: 2020/09/16 14:21:33 by bpeeters      ########   odam.nl         */
+/*   Updated: 2020/09/17 10:51:57 by bpeeters      ########   odam.nl         */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,17 +90,19 @@ int			output_redir(t_command *cmd)
 int			input_redir(t_command *cmd)
 {
 	char	*file;
+	t_list	*tmp_files_in;
 
 	cmd->fd_in = 0;
-	while (cmd->files_in)
+	tmp_files_in = cmd->files_in;
+	while (tmp_files_in)
 	{
-		file = (char*)cmd->files_in->content;
+		file = (char*)tmp_files_in->content;
 		if (cmd->fd_in != 0)
 			close(cmd->fd_in);
 		try_to_open(&cmd->fd_in, file, O_RDONLY, 0644);
 		if (cmd->fd_in == -1)
 			return (1);
-		cmd->files_in = cmd->files_in->next;
+		tmp_files_in = tmp_files_in->next;
 	}
 	return (duplicate_fd(cmd->fd_in, 0));
 }
